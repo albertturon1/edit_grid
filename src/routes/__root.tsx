@@ -24,10 +24,16 @@ export const NAVBAR_HEIGHT = 80;
 
 function RootComponent() {
 	return (
-		<div className="min-w-[300px]">
+		<div>
 			<Navbar height={NAVBAR_HEIGHT} />
-			<Link to="/" className="[&.active]:font-bold" />
-			<Outlet />
+			<div
+				style={{
+					marginTop: NAVBAR_HEIGHT,
+				}}
+			>
+				<Link to="/" className="[&.active]:font-bold" />
+				<Outlet />
+			</div>
 			<RouterDevtools />
 		</div>
 	);
