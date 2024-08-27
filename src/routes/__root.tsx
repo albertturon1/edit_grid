@@ -28,7 +28,7 @@ function RootComponent() {
 			<Navbar height={NAVBAR_HEIGHT} />
 			<div
 				style={{
-					marginTop: NAVBAR_HEIGHT,
+					paddingTop: NAVBAR_HEIGHT,
 				}}
 			>
 				<Link to="/" className="[&.active]:font-bold" />
