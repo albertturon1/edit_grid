@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { FilePickerRow } from "@/components/file-picker";
+import { VirtualizedTable } from "@/components/virtualized-table/virtualized-table";
 import { Landing } from "@/features/home/components/landing";
 
 export function HomePage() {
@@ -13,7 +14,11 @@ export function HomePage() {
 				overflow: "hidden",
 			}}
 		>
-			{data.length === 0 ? <Landing onFileChange={setData} /> : null}
+			{data.length === 0 ? (
+				<Landing onFileChange={setData} />
+			) : (
+				<VirtualizedTable data={data} />
+			)}
 		</div>
 	);
 }
