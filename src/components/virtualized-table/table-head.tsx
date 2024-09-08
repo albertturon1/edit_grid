@@ -14,13 +14,14 @@ type TableHeadProps<T extends Table<any>> = {
 // biome-ignore lint/suspicious/noExplicitAny: generic
 export function TableHead<T extends Table<any>>({ table }: TableHeadProps<T>) {
 	return (
-		<thead className="bg-background grid sticky top-0 z-10 py-2">
+		<thead className="bg-background grid sticky top-0 z-10 py-2 ">
 			{table.getHeaderGroups().map((headerGroup) => (
 				<tr className="flex w-full" key={headerGroup.id}>
 					{headerGroup.headers.map((header, idx) => {
 						return (
 							<th
 								className={cx(
+									"",
 									VIRTUALIZED_TABLE_CELL_CLASSES,
 									idx === 0 ? VIRTUALIZED_TABLE_STICKY_CLASSES : "",
 								)}

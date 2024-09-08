@@ -1,6 +1,7 @@
 import { useRef, type ChangeEvent } from "react";
 import Papa from "papaparse";
 import { FileUp } from "lucide-react";
+import toast from "react-hot-toast";
 
 export type FilePickerRow = Record<string, string>;
 
@@ -9,10 +10,17 @@ export type SupportedFormats = ".csv" | ".json";
 type FilePickerProps = {
 	onFileChange: (values: FilePickerRow[]) => void;
 	accept: Partial<Record<SupportedFormats, boolean>>;
+	fileSizeLimit?: { size: number; unit: "MB" };
 	className?: string;
 };
 
-export function FilePicker({ onFileChange, accept }: FilePickerProps) {
+const ONE_BYTE = 1048576;
+
+export function FilePicker({
+	onFileChange,
+	accept,
+	fileSizeLimit,
+}: FilePickerProps) {
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	function handleButtonClick(e: React.MouseEvent<HTMLButtonElement>) {
@@ -26,6 +34,18 @@ export function FilePicker({ onFileChange, accept }: FilePickerProps) {
 		const firstFile = event?.target.files?.[0];
 
 		if (!firstFile) {
+			return;
+		}
+
+		if (fileSizeLimit && firstFile.size > ONE_BYTE * fileSizeLimit.size) {
+			toast.error(
+				`File "${firstFile.name}" is too big!\n\nTry again with a different file.`,
+				{
+					className: "text-sm",
+					duration: 5000,
+				},
+			);
+
 			return;
 		}
 
@@ -53,7 +73,12 @@ export function FilePicker({ onFileChange, accept }: FilePickerProps) {
 					</div>
 					<div className="flex flex-col gap-y-2">
 						<div>{"Click here to upload your file or drag and drop"}</div>
-						<div className="text-slate-400 text-sm">{`Supported formats: ${acceptConcat}`}</div>
+						<div>
+							<div className="text-slate-400 text-sm">{`Supported formats: ${acceptConcat}`}</div>
+							{fileSizeLimit ? (
+								<div className="text-slate-400 text-sm">{`File size limit: ${fileSizeLimit.size}${fileSizeLimit.unit}`}</div>
+							) : null}
+						</div>
 					</div>
 				</div>
 			</button>
