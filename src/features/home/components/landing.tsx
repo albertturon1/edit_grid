@@ -16,7 +16,7 @@ export function Landing({ onFileChange }: LandingProps) {
 
 	return (
 		<div className="flex flex-1 relative">
-			<BouncingBoxes size={50} speed={0.45} gap={40} color={boxesColor} />
+			<BouncingBoxes size={50} speed={0.45} gap={35} color={boxesColor} />
 			<HeadlineWithPicker onFileChange={onFileChange} />
 		</div>
 	);
