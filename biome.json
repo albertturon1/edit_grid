@@ -11,7 +11,8 @@
 				"noConsoleLog": "warn"
 			},
 			"correctness": {
-				"noUnusedImports": "error"
+				"noUnusedImports": "error",
+				"noUnusedVariables": "error"
 			},
 			"complexity": {
 				"useArrowFunction": "off"
