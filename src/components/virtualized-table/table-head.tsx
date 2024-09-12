@@ -14,48 +14,37 @@ type TableHeadProps<T extends Table<any>> = {
 // biome-ignore lint/suspicious/noExplicitAny: generic
 export function TableHead<T extends Table<any>>({ table }: TableHeadProps<T>) {
 	return (
-		<thead className="bg-background grid sticky top-0 z-10 py-2 ">
+		<thead className="bg-background grid sticky top-0 z-10">
 			{table.getHeaderGroups().map((headerGroup) => (
-				<tr className="flex w-full" key={headerGroup.id}>
+				<tr className="flex" key={headerGroup.id}>
 					{headerGroup.headers.map((header, idx) => {
 						return (
 							<th
 								className={cx(
-									"",
+									"relative bg-background py-2 border-b border-r overflow-hidden",
 									VIRTUALIZED_TABLE_CELL_CLASSES,
-									idx === 0 ? VIRTUALIZED_TABLE_STICKY_CLASSES : "",
+									idx === 0 ? VIRTUALIZED_TABLE_STICKY_CLASSES : "", //?width: cell.column.getSize()
 								)}
+								style={{ width: header.getSize() }}
 								key={header.id}
-								style={{
-									display: "flex",
-									width: header.getSize(),
-								}}
+								colSpan={header.colSpan}
 							>
+								{header.isPlaceholder
+									? null
+									: flexRender(
+											header.column.columnDef.header,
+											header.getContext(),
+										)}
 								<div
 									onMouseDown={header.getResizeHandler()}
 									onTouchStart={header.getResizeHandler()}
-									className="absolute top-0 right-0 h-full w-[5px] hover:bg-gray-300 cursor-col-resize"
-								/>
-								<div
-									className={
-										header.column.getCanSort()
-											? ""
-											: // ? "cursor-pointer select-none"
-												""
-									}
-									// onClick={header.column.getToggleSortingHandler()}
-									// onKeyUp={header.column.getToggleSortingHandler()}
-								>
-									{flexRender(
-										header.column.columnDef.header,
-										header.getContext(),
+									className={cx(
+										"absolute right-0 top-0 h-full w-[5px] cursor-col-resize select-none touch-none",
+										header.column.getIsResizing()
+											? "bg-blue-300 opacity-100"
+											: "",
 									)}
-									{/*  {{
-                    asc: " 🔼",
-                    desc: " 🔽",
-                  }[header.column.getIsSorted() as string] ?? null}
-                  */}
-								</div>
+								/>
 							</th>
 						);
 					})}

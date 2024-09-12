@@ -37,10 +37,9 @@ export function TableBody<T extends Table<any>>({
 
 	return (
 		<tbody
+			className="relative"
 			style={{
-				display: "grid",
 				height: `${rowVirtualizer.getTotalSize()}px`, //tells scrollbar how big the table is
-				position: "relative", //needed for absolute positioning of rows
 			}}
 		>
 			{rowVirtualizer.getVirtualItems().map((virtualRow) => {
@@ -51,17 +50,16 @@ export function TableBody<T extends Table<any>>({
 						data-index={virtualRow.index} //needed for dynamic row height measurement
 						ref={(node) => rowVirtualizer.measureElement(node)} //measure dynamic row height
 						key={row.id}
+						className="flex absolute w-full"
 						style={{
-							display: "flex",
-							position: "absolute",
 							transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
-							width: "100%",
 						}}
 					>
 						{row.getVisibleCells().map((cell, idx) => {
 							return (
 								<td
 									className={cx(
+										"flex items-center border-b border-r bg-background overflow-hidden py-1",
 										VIRTUALIZED_TABLE_CELL_CLASSES,
 										idx === 0 ? VIRTUALIZED_TABLE_STICKY_CLASSES : "",
 									)}
