@@ -55,13 +55,16 @@ export function TableBody<T extends Table<any>>({
 							transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
 						}}
 					>
-						{row.getVisibleCells().map((cell, idx) => {
+						{row.getVisibleCells().map((cell, cellIdx) => {
 							return (
 								<td
 									className={cx(
-										"flex items-center border-b border-r bg-background overflow-hidden py-1",
+										"flex items-center border-b border-r overflow-hidden py-1",
 										VIRTUALIZED_TABLE_CELL_CLASSES,
-										idx === 0 ? VIRTUALIZED_TABLE_STICKY_CLASSES : "",
+										cellIdx === 0 ? VIRTUALIZED_TABLE_STICKY_CLASSES : "",
+										Number(cell.getContext().row.id) % 2 === 0
+											? "bg-gray-50"
+											: "",
 									)}
 									key={cell.id}
 									style={{
