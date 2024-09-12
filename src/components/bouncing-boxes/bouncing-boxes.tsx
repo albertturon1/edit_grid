@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "react";
-import { handleCollision, isColliding } from "./handleCollision";
 import { getBoxes } from "./getBoxes";
 import { useAnimationFrame } from "@/lib/useAnimationFrame";
+// import { handleCollision, isColliding } from "./handleCollision";
 
 export type Box = {
 	id: number;
@@ -21,7 +21,7 @@ type BouncingBoxesProps = {
 
 type Dimensions = { width: number; height: number };
 
-const WALL_GAP = 0.0;
+const WALL_GAP = 0.005;
 
 export function BouncingBoxes({ size, speed, color, gap }: BouncingBoxesProps) {
 	const ref = useRef<HTMLDivElement>(null); // Create a reference to the DOM element
@@ -33,7 +33,7 @@ export function BouncingBoxes({ size, speed, color, gap }: BouncingBoxesProps) {
 
 	//generate new boxes on resize
 	useEffect(() => {
-		setBoxes(() =>
+		setBoxes(
 			getBoxes({
 				size,
 				speed,
@@ -70,11 +70,11 @@ export function BouncingBoxes({ size, speed, color, gap }: BouncingBoxesProps) {
 				}
 
 				// Check collisions with other boxes
-				for (const otherBox of newBoxes) {
-					if (box !== otherBox && isColliding(box, otherBox)) {
-						handleCollision(box, otherBox);
-					}
-				}
+				// for (const otherBox of newBoxes) {
+				// 	if (box !== otherBox && isColliding(box, otherBox)) {
+				// 		handleCollision(box, otherBox);
+				// 	}
+				// }
 			}
 
 			return newBoxes;

@@ -2,7 +2,7 @@ import { BouncingBoxes } from "@/components/bouncing-boxes/bouncing-boxes";
 import {
 	HeadlineWithPicker,
 	type HeadlineWithPickerProps,
-} from "./headline-picker";
+} from "@/features/home/components/headline-picker";
 import { getValueFromSystemTheme, useTheme } from "@/components/theme-provider";
 
 type LandingProps = {
@@ -16,7 +16,7 @@ export function Landing({ onFileChange }: LandingProps) {
 
 	return (
 		<div className="flex flex-1 relative">
-			<BouncingBoxes size={50} speed={0.45} gap={35} color={boxesColor} />
+			<BouncingBoxes size={50} speed={0.45} gap={25} color={boxesColor} />
 			<HeadlineWithPicker onFileChange={onFileChange} />
 		</div>
 	);
