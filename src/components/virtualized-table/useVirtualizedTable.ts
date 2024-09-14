@@ -38,8 +38,11 @@ export function useVirtualizedTable<Data extends Record<PropertyKey, string>[]>(
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
-		debugTable: true,
 		columnResizeMode: "onChange",
+		enableColumnResizing: true,
+		debugTable: true,
+		debugHeaders: true,
+		debugColumns: true,
 	});
 
 	return table;

@@ -16,11 +16,11 @@ export function useAnimationFrame(callback: (...args: any[]) => any) {
 		requestRef.current = requestAnimationFrame(animate);
 	};
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: animate changes on every render
 	useEffect(() => {
 		requestRef.current = requestAnimationFrame(animate);
 
 		//@ts-expect-error
 		return () => cancelAnimationFrame(requestRef.current);
-	}, []);
+		// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	}, [animate]);
 }

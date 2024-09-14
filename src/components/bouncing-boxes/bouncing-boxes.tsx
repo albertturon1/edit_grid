@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "react";
-import { handleCollision, isColliding } from "./handleCollision";
 import { getBoxes } from "./getBoxes";
 import { useAnimationFrame } from "@/lib/useAnimationFrame";
+// import { handleCollision, isColliding } from "./handleCollision";
 
 export type Box = {
 	id: number;
@@ -19,9 +19,16 @@ type BouncingBoxesProps = {
 	color: string;
 };
 
+type Dimensions = { width: number; height: number };
+
+const WALL_GAP = 0.005;
+
 export function BouncingBoxes({ size, speed, color, gap }: BouncingBoxesProps) {
 	const ref = useRef<HTMLDivElement>(null); // Create a reference to the DOM element
-	const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+	const [dimensions, setDimensions] = useState<Dimensions>({
+		width: 0,
+		height: 0,
+	});
 	const [boxes, setBoxes] = useState<Box[]>([]);
 
 	//generate new boxes on resize
@@ -41,8 +48,6 @@ export function BouncingBoxes({ size, speed, color, gap }: BouncingBoxesProps) {
 	function updateBoxesPositions() {
 		setBoxes((prev) => {
 			const newBoxes = prev.map((box) => ({ ...box }));
-			const canvasWidth = window.innerWidth;
-			const canvasHeight = window.innerHeight;
 
 			for (const box of newBoxes) {
 				// Move box
@@ -50,15 +55,26 @@ export function BouncingBoxes({ size, speed, color, gap }: BouncingBoxesProps) {
 				box.y += box.vy;
 
 				// Bounce off walls
-				if (box.x <= 0 || box.x + box.size >= canvasWidth) box.vx *= -1;
-				if (box.y <= 0 || box.y + box.size >= canvasHeight) box.vy *= -1;
+				if (
+					box.x <= dimensions.width * WALL_GAP ||
+					box.x + box.size >= dimensions.width * 1 - WALL_GAP
+				) {
+					box.vx *= -1;
+				}
+
+				if (
+					box.y <= dimensions.height * WALL_GAP ||
+					box.y + box.size >= dimensions.height * 1 - WALL_GAP
+				) {
+					box.vy *= -1;
+				}
 
 				// Check collisions with other boxes
-				for (const otherBox of newBoxes) {
-					if (box !== otherBox && isColliding(box, otherBox)) {
-						handleCollision(box, otherBox);
-					}
-				}
+				// for (const otherBox of newBoxes) {
+				// 	if (box !== otherBox && isColliding(box, otherBox)) {
+				// 		handleCollision(box, otherBox);
+				// 	}
+				// }
 			}
 
 			return newBoxes;
@@ -103,7 +119,7 @@ export function BouncingBoxes({ size, speed, color, gap }: BouncingBoxesProps) {
 function Box({ x, y, size, color }: Box & { color: string }) {
 	return (
 		<div
-			className="absolute rounded"
+			className="absolute rounded-full"
 			style={{
 				left: x,
 				top: y,

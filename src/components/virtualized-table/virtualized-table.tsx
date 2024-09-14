@@ -7,7 +7,7 @@ import { useWindowDimensions } from "@/lib/useWindowDimensions";
 
 export const VIRTUALIZED_TABLE_STICKY_CLASSES =
 	"sticky left-0 z-10 bg-background";
-export const VIRTUALIZED_TABLE_CELL_CLASSES = "flex pl-1.5 py-0 items-center";
+export const VIRTUALIZED_TABLE_CELL_CLASSES = "flex pl-1.5";
 
 type VirtualizedTableProps<Data extends Record<PropertyKey, string>[]> = {
 	data: Data;
@@ -39,7 +39,7 @@ export function VirtualizedTable<Data extends Record<PropertyKey, string>[]>({
 			*/}
 			<div className="overflow-auto relative h-full" ref={tableContainerRef}>
 				{/* Even though we're still using sematic table tags, we must use CSS grid and flexbox for dynamic row heights */}
-				<table className="grid tabular-nums">
+				<table className="tabular-nums w-full border-slate-500">
 					<TableHead table={table} />
 					<TableBody table={table} tableContainerRef={tableContainerRef} />
 				</table>
