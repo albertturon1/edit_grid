@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { TableHead } from "@/components/virtualized-table/table-head";
 import { TableBody } from "@/components/virtualized-table/table-body";
+import { TableManagement } from "@/components/virtualized-table/table-management";
 import { useVirtualizedTable } from "@/components/virtualized-table/useVirtualizedTable";
 import { NAVBAR_HEIGHT } from "@/routes/__root";
 import { useWindowDimensions } from "@/lib/useWindowDimensions";
@@ -34,6 +35,7 @@ export function VirtualizedTable<Data extends Record<PropertyKey, string>[]>({
 				paddingBottom: NAVBAR_HEIGHT, // to keep scrollbar visible
 			}}
 		>
+			<TableManagement table={table} />
 			{/* 
 				overflow-auto - scrollable table container
 				relative - needed for sticky header
