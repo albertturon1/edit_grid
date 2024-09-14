@@ -3,7 +3,7 @@ import type { Table, Row } from "@tanstack/react-table";
 import type { FilePickerRow } from "@/components/file-picker";
 import { flexRender } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import cx from "clsx";
+import { cn } from "@/lib/utils";
 import {
 	VIRTUALIZED_TABLE_CELL_CLASSES,
 	VIRTUALIZED_TABLE_STICKY_CLASSES,
@@ -42,7 +42,7 @@ export function TableBody<T extends Table<any>>({
 				height: `${rowVirtualizer.getTotalSize()}px`, //tells scrollbar how big the table is
 			}}
 		>
-			{rowVirtualizer.getVirtualItems().map((virtualRow) => {
+			{rowVirtualizer.getVirtualItems().map((virtualRow, rowIdx, rowItems) => {
 				const row = rows[virtualRow.index] as Row<FilePickerRow>;
 
 				return (
@@ -50,23 +50,27 @@ export function TableBody<T extends Table<any>>({
 						data-index={virtualRow.index} //needed for dynamic row height measurement
 						ref={(node) => rowVirtualizer.measureElement(node)} //measure dynamic row height
 						key={row.id}
-						className="flex absolute w-full"
+						className={cn(
+							"flex absolute w-full",
+							rowIdx !== rowItems.length - 1 ? "border-b" : "", // border-b is already applied to the entire table
+						)}
 						style={{
 							transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
 						}}
 					>
-						{row.getVisibleCells().map((cell, cellIdx) => {
+						{row.getVisibleCells().map((cell, cellIdx, cellItems) => {
 							return (
 								<td
-									className={cx(
-										"flex border-b border-r overflow-hidden py-2",
+									key={cell.id}
+									className={cn(
+										"flex overflow-hidden py-2",
 										VIRTUALIZED_TABLE_CELL_CLASSES,
-										cellIdx === 0 ? VIRTUALIZED_TABLE_STICKY_CLASSES : "",
+										cellIdx === 0 ? VIRTUALIZED_TABLE_STICKY_CLASSES : "", //sticky first cell
 										Number(cell.getContext().row.id) % 2 === 0
 											? "bg-gray-50"
-											: "",
+											: "", // from the first row, every second row has a backgroundColor to make the table easier to read
+										cellIdx !== cellItems.length - 1 ? "border-r" : "", // border-r is already applied to the entire table
 									)}
-									key={cell.id}
 									style={{
 										width: cell.column.getSize(),
 									}}

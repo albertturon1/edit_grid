@@ -31,15 +31,18 @@ export function VirtualizedTable<Data extends Record<PropertyKey, string>[]>({
 			className="w-full text-sm"
 			style={{
 				height: height - NAVBAR_HEIGHT,
+				paddingBottom: NAVBAR_HEIGHT, // to keep scrollbar visible
 			}}
 		>
 			{/* 
 				overflow-auto - scrollable table container
 				relative - needed for sticky header
-			*/}
-			<div className="overflow-auto relative h-full" ref={tableContainerRef}>
-				{/* Even though we're still using sematic table tags, we must use CSS grid and flexbox for dynamic row heights */}
-				<table className="tabular-nums w-full border-slate-500">
+				*/}
+			<div
+				className="overflow-auto relative h-full mx-2 border rounded"
+				ref={tableContainerRef}
+			>
+				<table className="tabular-nums bg-background grid">
 					<TableHead table={table} />
 					<TableBody table={table} tableContainerRef={tableContainerRef} />
 				</table>

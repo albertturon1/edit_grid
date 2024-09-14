@@ -4,7 +4,7 @@ import {
 	VIRTUALIZED_TABLE_CELL_CLASSES,
 	VIRTUALIZED_TABLE_STICKY_CLASSES,
 } from "@/components/virtualized-table/virtualized-table";
-import cx from "clsx";
+import { cn } from "@/lib/utils";
 
 // biome-ignore lint/suspicious/noExplicitAny: generic
 type TableHeadProps<T extends Table<any>> = {
@@ -17,13 +17,14 @@ export function TableHead<T extends Table<any>>({ table }: TableHeadProps<T>) {
 		<thead className="bg-background grid sticky top-0 z-10">
 			{table.getHeaderGroups().map((headerGroup) => (
 				<tr className="flex" key={headerGroup.id}>
-					{headerGroup.headers.map((header, idx) => {
+					{headerGroup.headers.map((header, idx, items) => {
 						return (
 							<th
-								className={cx(
-									"relative bg-background py-2 border-b border-r overflow-hidden",
+								className={cn(
+									"relative bg-background border-b py-2 overflow-hidden",
 									VIRTUALIZED_TABLE_CELL_CLASSES,
-									idx === 0 ? VIRTUALIZED_TABLE_STICKY_CLASSES : "", //?width: cell.column.getSize()
+									idx === 0 ? VIRTUALIZED_TABLE_STICKY_CLASSES : "", // sticky first cell
+									idx !== items.length - 1 ? "border-r" : "", // border-r is already applied to the entire table
 								)}
 								style={{ width: header.getSize() }}
 								key={header.id}
@@ -38,7 +39,7 @@ export function TableHead<T extends Table<any>>({ table }: TableHeadProps<T>) {
 								<div
 									onMouseDown={header.getResizeHandler()}
 									onTouchStart={header.getResizeHandler()}
-									className={cx(
+									className={cn(
 										"absolute right-0 top-0 h-full w-[5px] cursor-col-resize select-none touch-none",
 										header.column.getIsResizing()
 											? "bg-blue-300 opacity-100"
