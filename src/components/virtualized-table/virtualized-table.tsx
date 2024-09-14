@@ -7,7 +7,7 @@ import { useWindowDimensions } from "@/lib/useWindowDimensions";
 
 export const VIRTUALIZED_TABLE_STICKY_CLASSES =
 	"sticky left-0 z-10 bg-background";
-export const VIRTUALIZED_TABLE_CELL_CLASSES = "flex pl-1.5 items-center";
+export const VIRTUALIZED_TABLE_CELL_CLASSES = "flex pl-1.5";
 
 type VirtualizedTableProps<Data extends Record<PropertyKey, string>[]> = {
 	data: Data;

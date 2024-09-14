@@ -59,7 +59,7 @@ export function TableBody<T extends Table<any>>({
 							return (
 								<td
 									className={cx(
-										"flex items-center border-b border-r overflow-hidden py-1",
+										"flex border-b border-r overflow-hidden py-2",
 										VIRTUALIZED_TABLE_CELL_CLASSES,
 										cellIdx === 0 ? VIRTUALIZED_TABLE_STICKY_CLASSES : "",
 										Number(cell.getContext().row.id) % 2 === 0
