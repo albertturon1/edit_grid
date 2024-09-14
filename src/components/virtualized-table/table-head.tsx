@@ -11,24 +11,28 @@ type TableHeadProps<T extends Table<any>> = {
 	table: T;
 };
 
+const NUMERICAL_COLUMN_ID =
+	"text-white/0 cursor-default selection:cursor-default"; // properties to hide the “0” from the first cell - it is rendered to keep the layout stable when no column is visible except the numeric one.
+
 // biome-ignore lint/suspicious/noExplicitAny: generic
 export function TableHead<T extends Table<any>>({ table }: TableHeadProps<T>) {
 	return (
-		<thead className="bg-background grid sticky top-0 z-10">
+		<thead className="bg-background grid sticky top-0 z-10 border-b">
 			{table.getHeaderGroups().map((headerGroup) => (
 				<tr className="flex" key={headerGroup.id}>
-					{headerGroup.headers.map((header, idx, items) => {
+					{headerGroup.headers.map((header, idx) => {
 						return (
 							<th
-								className={cn(
-									"relative bg-background border-b py-2 overflow-hidden",
-									VIRTUALIZED_TABLE_CELL_CLASSES,
-									idx === 0 ? VIRTUALIZED_TABLE_STICKY_CLASSES : "", // sticky first cell
-									idx !== items.length - 1 ? "border-r" : "", // border-r is already applied to the entire table
-								)}
-								style={{ width: header.getSize() }}
 								key={header.id}
 								colSpan={header.colSpan}
+								style={{ width: header.getSize() }}
+								className={cn(
+									"relative bg-background py-2 overflow-hidden font-semibold border-r",
+									VIRTUALIZED_TABLE_CELL_CLASSES,
+									idx === 0
+										? cn(VIRTUALIZED_TABLE_STICKY_CLASSES, NUMERICAL_COLUMN_ID)
+										: "", // sticky first cell
+								)}
 							>
 								{header.isPlaceholder
 									? null

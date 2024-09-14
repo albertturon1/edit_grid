@@ -6,8 +6,7 @@ import { useVirtualizedTable } from "@/components/virtualized-table/useVirtualiz
 import { NAVBAR_HEIGHT } from "@/routes/__root";
 import { useWindowDimensions } from "@/lib/useWindowDimensions";
 
-export const VIRTUALIZED_TABLE_STICKY_CLASSES =
-	"sticky left-0 z-10 bg-background";
+export const VIRTUALIZED_TABLE_STICKY_CLASSES = "sticky left-0 z-10";
 export const VIRTUALIZED_TABLE_CELL_CLASSES = "flex pl-1.5";
 
 type VirtualizedTableProps<Data extends Record<PropertyKey, string>[]> = {
