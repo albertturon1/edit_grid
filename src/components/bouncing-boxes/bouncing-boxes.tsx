@@ -16,7 +16,7 @@ type BouncingBoxesProps = {
 	size: number;
 	gap: number;
 	speed: number;
-	color: string;
+	color?: string;
 };
 
 type Dimensions = { width: number; height: number };
@@ -105,18 +105,19 @@ export function BouncingBoxes({ size, speed, color, gap }: BouncingBoxesProps) {
 	}, []);
 
 	return (
-		<>
-			<h1 className="absolute z-10">{boxes.length}</h1>
-			<div ref={ref} className="h-full w-full">
-				{boxes.map((box) => (
-					<Box key={box.id} {...box} color={color} />
-				))}
-			</div>
-		</>
+		<div ref={ref} className="h-full w-full">
+			{boxes.map((box) => (
+				<Box key={box.id} {...box} color={color} />
+			))}
+		</div>
 	);
 }
 
-function Box({ x, y, size, color }: Box & { color: string }) {
+function Box({ x, y, size, color }: Box & { color: string | undefined }) {
+	const [backgroundColor] = useState(
+		color || `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+	);
+
 	return (
 		<div
 			className="absolute rounded-full"
@@ -125,7 +126,7 @@ function Box({ x, y, size, color }: Box & { color: string }) {
 				top: y,
 				width: size,
 				height: size,
-				backgroundColor: color,
+				backgroundColor,
 			}}
 		/>
 	);
