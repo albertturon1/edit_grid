@@ -20,6 +20,6 @@
 		}
 	},
 	"files": {
-		"ignore": ["src/routeTree.gen.ts"]
+		"ignore": ["src/routeTree.gen.ts", "src/lib/types/**"]
 	}
 }

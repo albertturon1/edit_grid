@@ -19,7 +19,7 @@ export function HomePage() {
 			{data.length === 0 ? (
 				<Landing onFileChange={setData} />
 			) : (
-				<VirtualizedTable data={data} />
+				<VirtualizedTable data={data} onDataChange={setData} />
 			)}
 		</div>
 	);

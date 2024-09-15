@@ -1,9 +1,6 @@
 import type { Table } from "@tanstack/react-table";
 import { flexRender } from "@tanstack/react-table";
-import {
-	VIRTUALIZED_TABLE_CELL_CLASSES,
-	VIRTUALIZED_TABLE_STICKY_CLASSES,
-} from "@/components/virtualized-table/virtualized-table";
+import { VIRTUALIZED_TABLE_STICKY_CLASSES } from "@/components/virtualized-table/virtualized-table";
 import { cn } from "@/lib/utils";
 
 // biome-ignore lint/suspicious/noExplicitAny: generic
@@ -27,8 +24,7 @@ export function TableHead<T extends Table<any>>({ table }: TableHeadProps<T>) {
 								colSpan={header.colSpan}
 								style={{ width: header.getSize() }}
 								className={cn(
-									"relative bg-background py-2 overflow-hidden font-semibold border-r",
-									VIRTUALIZED_TABLE_CELL_CLASSES,
+									"relative bg-background overflow-hidden font-semibold border-r py-2 flex pl-2",
 									idx === 0
 										? cn(VIRTUALIZED_TABLE_STICKY_CLASSES, NUMERICAL_COLUMN_ID)
 										: "", // sticky first cell
