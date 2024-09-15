@@ -9,9 +9,9 @@ export type HeadlineWithPickerProps = {
 
 export function HeadlineWithPicker({ onFileChange }: HeadlineWithPickerProps) {
 	return (
-		<div className="absolute z-10 top-0 right-0 left-0 bottom-0 flex flex-1 flex-col">
+		<div className="absolute z-10 top-0 right-0 left-0 bottom-0 flex flex-1 flex-col bg-slate-100/10">
 			<div className="flex flex-1 bg-background opacity-50" />
-			<div className="absolute z-10 top-0 right-0 left-0 bottom-0 flex flex-1 flex-col justify-center items-center gap-y-10 px-3 sm:px-6 backdrop-blur-2xl pb-[5%]">
+			<div className="absolute z-10 top-0 right-0 left-0 bottom-0 flex flex-1 flex-col justify-center items-center gap-y-10 px-3 sm:px-6 backdrop-blur-3xl pb-[5%]">
 				<Headline />
 				<div className="flex justify-center items-center">
 					<FilePicker
