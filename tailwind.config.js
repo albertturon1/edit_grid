@@ -22,9 +22,9 @@ module.exports = {
 				input: "hsl(var(--input))",
 				ring: "hsl(var(--ring))",
 				background: "hsl(var(--background))",
-				'picker-primary': "hsl(var(--picker-primary))",
-				'picker-secondary': "hsl(var(--picker-secondary))",
-				'picker-icon-background': "hsl(var(--picker-icon-background))",
+				"picker-primary": "hsl(var(--picker-primary))",
+				"picker-secondary": "hsl(var(--picker-secondary))",
+				"picker-icon-background": "hsl(var(--picker-icon-background))",
 				foreground: "hsl(var(--foreground))",
 				primary: {
 					DEFAULT: "hsl(var(--primary))",
