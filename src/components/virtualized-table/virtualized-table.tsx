@@ -11,11 +11,13 @@ export const VIRTUALIZED_TABLE_STICKY_CLASSES = "sticky left-0 z-10";
 type VirtualizedTableProps<Data extends Record<PropertyKey, string>[]> = {
 	data: Data;
 	onDataChange: Dispatch<React.SetStateAction<Data>>;
+	originalFilename: string;
 };
 
 export function VirtualizedTable<Data extends Record<PropertyKey, string>[]>({
 	data,
 	onDataChange,
+	originalFilename,
 }: VirtualizedTableProps<Data>) {
 	const table = useVirtualizedTable(data, onDataChange);
 	const { height } = useWindowDimensions();
@@ -35,13 +37,13 @@ export function VirtualizedTable<Data extends Record<PropertyKey, string>[]>({
 				paddingBottom: NAVBAR_HEIGHT, // to keep scrollbar visible
 			}}
 		>
-			<TableManagement table={table} />
+			<TableManagement table={table} originalFilename={originalFilename} />
 			{/* 
 				overflow-auto - scrollable table container
 				relative - needed for sticky header
 				*/}
 			<div
-				className="overflow-auto relative h-full mx-2 border rounded"
+				className="overflow-auto relative h-full border rounded"
 				ref={tableContainerRef}
 			>
 				<table className="tabular-nums bg-background grid">

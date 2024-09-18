@@ -7,8 +7,8 @@ export type FilePickerRow = Record<string, string>;
 
 export type SupportedFormats = ".csv" | ".json";
 
-type FilePickerProps = {
-	onFileChange: (values: FilePickerRow[]) => void;
+export type FilePickerProps = {
+	onFileChange: (props: { filename: string; values: FilePickerRow[] }) => void;
 	accept: Partial<Record<SupportedFormats, boolean>>;
 	fileSizeLimit?: { size: number; unit: "MB" };
 	className?: string;
@@ -53,7 +53,10 @@ export function FilePicker({
 			header: true,
 			skipEmptyLines: true,
 			complete: (results) => {
-				onFileChange(results.data as FilePickerRow[]);
+				onFileChange({
+					filename: firstFile.name,
+					values: results.data as FilePickerRow[],
+				});
 			},
 		});
 	}

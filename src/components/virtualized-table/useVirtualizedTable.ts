@@ -10,7 +10,8 @@ import { tableDefaultColumn } from "./default-column";
 
 const columnHelper = createColumnHelper<FilePickerRow>();
 
-export const ___INTERNAL_ID_COLUMN_NAME = "___INTERNAL_ID___000";
+export const ___INTERNAL_ID_COLUMN_ID = "___INTERNAL_ID___000";
+export const ___INTERNAL_ID_COLUMN_NAME = "___000___";
 
 export function useVirtualizedTable<Data extends Record<PropertyKey, string>[]>(
 	data: Data,
@@ -20,9 +21,9 @@ export function useVirtualizedTable<Data extends Record<PropertyKey, string>[]>(
 
 	const columns = useMemo(
 		() => [
-			columnHelper.accessor("0", {
+			columnHelper.accessor(___INTERNAL_ID_COLUMN_NAME, {
 				// rendering 0 to keep the layout stable when no column is visible except the numeric one - should be hidden using CSS
-				id: ___INTERNAL_ID_COLUMN_NAME,
+				id: ___INTERNAL_ID_COLUMN_ID,
 				cell: ({ row, table }) => {
 					return (
 						(table
