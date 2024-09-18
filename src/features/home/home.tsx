@@ -7,6 +7,7 @@ import { useWindowDimensions } from "@/lib/useWindowDimensions";
 
 export function HomePage() {
 	const [data, setData] = useState<FilePickerRow[]>([]);
+	const [originalFilename, setOriginalFilename] = useState<string>("");
 	const { height } = useWindowDimensions();
 
 	return (
@@ -17,9 +18,20 @@ export function HomePage() {
 			}}
 		>
 			{data.length === 0 ? (
-				<Landing onFileChange={setData} />
+				<Landing
+					onFileChange={({ filename, values }) => {
+						setData(values);
+						setOriginalFilename(filename);
+					}}
+				/>
 			) : (
-				<VirtualizedTable data={data} onDataChange={setData} />
+				<div className="w-full h-full px-5">
+					<VirtualizedTable
+						data={data}
+						originalFilename={originalFilename}
+						onDataChange={setData}
+					/>
+				</div>
 			)}
 		</div>
 	);

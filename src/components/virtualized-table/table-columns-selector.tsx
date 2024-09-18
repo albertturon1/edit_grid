@@ -5,9 +5,12 @@ import {
 	DropdownMenuTrigger,
 	DropdownMenuContent,
 	DropdownMenuCheckboxItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ___INTERNAL_ID_COLUMN_NAME } from "./useVirtualizedTable";
+import { ___INTERNAL_ID_COLUMN_ID } from "./useVirtualizedTable";
+import { Columns } from "lucide-react";
 
 type TableManagementProps<T extends Table<FilePickerRow>> = {
 	table: T;
@@ -19,31 +22,42 @@ export function TableColumnsSelector<T extends Table<FilePickerRow>>({
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button
-					variant="outline"
-					className="ml-auto bg-slate-100 text-slate-900"
-				>
-					{"Columns"}
+				<Button className="flex gap-x-2 font-medium" variant="outline">
+					<Columns className="h-4 w-4" />
+					{"Select Columns"}
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent align="end" aria-modal={false}>
-				{table.getAllColumns().reduce((acc, column) => {
-					// omitting numeral column
-					if (column.getCanHide() && column.id !== ___INTERNAL_ID_COLUMN_NAME) {
-						acc.push(
-							<DropdownMenuCheckboxItem
-								onSelect={(event) => event.preventDefault()} //prevent closing dropdown menu after selecting an option
-								key={column.id}
-								checked={column.getIsVisible()}
-								onCheckedChange={(value) => column.toggleVisibility(!!value)}
-							>
-								{column.id}
-							</DropdownMenuCheckboxItem>,
-						);
-					}
-					return acc;
-				}, [] as JSX.Element[])}
+			<DropdownMenuContent className="w-56">
+				<DropdownMenuLabel>{"Toggle Columns"}</DropdownMenuLabel>
+				<DropdownMenuSeparator />
+				<DropdownItems table={table} />
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
+}
+
+function DropdownItems<T extends Table<FilePickerRow>>({
+	table,
+}: { table: T }) {
+	return table.getAllColumns().map((column) => {
+		// not displaying numerical column
+		if (column.id === ___INTERNAL_ID_COLUMN_ID) {
+			return null;
+		}
+
+		// omitting numerical column
+		return (
+			<DropdownMenuCheckboxItem
+				onSelect={(event) => {
+					// prevent closing dropdown menu after selecting an option
+					event.preventDefault();
+				}}
+				key={column.id}
+				checked={column.getCanHide()}
+				onCheckedChange={(value) => column.toggleVisibility(!!value)}
+			>
+				{column.id}
+			</DropdownMenuCheckboxItem>
+		);
+	});
 }
