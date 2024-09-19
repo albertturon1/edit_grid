@@ -6,7 +6,7 @@ import {
 // import { getValueFromSystemTheme, useTheme } from "@/components/theme-provider";
 
 type LandingProps = {
-	onFileChange: HeadlineWithPickerProps["onFileChange"];
+	onFileChange: HeadlineWithPickerPropss["onFileChange"];
 };
 
 export function Landing({ onFileChange }: LandingProps) {
