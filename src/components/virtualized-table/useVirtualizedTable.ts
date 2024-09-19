@@ -3,10 +3,12 @@ import {
 	getCoreRowModel,
 	getSortedRowModel,
 	useReactTable,
+	type RowSelectionState,
 } from "@tanstack/react-table";
-import { useMemo, type Dispatch } from "react";
+import { useMemo, useState, type Dispatch } from "react";
 import type { FilePickerRow } from "@/components/file-picker";
 import { tableDefaultColumn } from "./default-column";
+import { TableNumericalCell } from "./table-numerical-cell";
 
 const columnHelper = createColumnHelper<FilePickerRow>();
 
@@ -17,6 +19,7 @@ export function useVirtualizedTable<Data extends Record<PropertyKey, string>[]>(
 	data: Data,
 	onDataChange: Dispatch<React.SetStateAction<Data>>,
 ) {
+	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 	const firstElement = data[0] ?? [];
 
 	const columns = useMemo(
@@ -24,15 +27,11 @@ export function useVirtualizedTable<Data extends Record<PropertyKey, string>[]>(
 			columnHelper.accessor(___INTERNAL_ID_COLUMN_NAME, {
 				// rendering 0 to keep the layout stable when no column is visible except the numeric one - should be hidden using CSS
 				id: ___INTERNAL_ID_COLUMN_ID,
-				cell: ({ row, table }) => {
-					return (
-						(table
-							.getSortedRowModel()
-							?.flatRows?.findIndex((flatRow) => flatRow.id === row.id) || 0) +
-						1
-					);
-				},
+				cell: TableNumericalCell,
 				size: getNoCellSize(data.length), //starting column size
+				meta: {
+					className: "sticky left-0", //sticky first column
+				},
 			}),
 			...Object.keys(firstElement).map((header) => {
 				return columnHelper.accessor(header, {
@@ -54,6 +53,10 @@ export function useVirtualizedTable<Data extends Record<PropertyKey, string>[]>(
 		debugTable: true,
 		debugHeaders: true,
 		debugColumns: true,
+		onRowSelectionChange: setRowSelection, //hoist up the row selection state to your own scope
+		state: {
+			rowSelection, //pass the row selection state back to the table instance
+		},
 		// Provide our updateData function to our table meta
 		meta: {
 			updateData: (rowIndex, columnId, value) => {
