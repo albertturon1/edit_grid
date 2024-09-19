@@ -7,8 +7,8 @@
 		"start": "vite",
 		"lint": "pnpm biome format --write ./",
 		"typescheck": "tsc --noEmit",
-		"test": "vitest run",
-		"test:watch": "vitest"
+		"test:unit": "vitest run",
+		"test:unit:watch": "vitest"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^3.9.0",
