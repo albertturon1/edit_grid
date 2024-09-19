@@ -1,11 +1,8 @@
-import type { Dispatch } from "react";
-import type { FilePickerRow } from "@/components/file-picker";
+import type { FilePickerProps } from "@/components/file-picker";
 import { FilePicker } from "@/components/file-picker";
 import { Logo } from "@/components/logo";
 
-export type HeadlineWithPickerProps = {
-	onFileChange: Dispatch<React.SetStateAction<FilePickerRow[]>>;
-};
+export type HeadlineWithPickerProps = Pick<FilePickerProps, "onFileChange">;
 
 export function HeadlineWithPicker({ onFileChange }: HeadlineWithPickerProps) {
 	return (
