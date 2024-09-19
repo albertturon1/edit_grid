@@ -9,7 +9,7 @@ export function exportBlobPartToFile({
 	a.download = filename;
 
 	// Trigger the download
-		a.click();
+	a.click();
 
 	// Clean up
 	window.URL.revokeObjectURL(a.href);
