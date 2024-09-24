@@ -19,7 +19,11 @@ export function VirtualizedTable<Data extends Record<PropertyKey, string>[]>({
 	onDataChange,
 	originalFilename,
 }: VirtualizedTableProps<Data>) {
-	const table = useVirtualizedTable(data, onDataChange);
+	const { table, rowSelectionMode, setRowSelectionMode } = useVirtualizedTable(
+		data,
+		onDataChange,
+	);
+
 	const { height } = useWindowDimensions();
 
 	//The virtualizer needs to know the scrollable container element
@@ -37,7 +41,12 @@ export function VirtualizedTable<Data extends Record<PropertyKey, string>[]>({
 				paddingBottom: NAVBAR_HEIGHT, // to keep scrollbar visible
 			}}
 		>
-			<TableManagement table={table} originalFilename={originalFilename} />
+			<TableManagement
+				table={table}
+				originalFilename={originalFilename}
+				rowSelectionMode={rowSelectionMode}
+				onRowSelectionModeChange={setRowSelectionMode}
+			/>
 			{/* 
 				overflow-auto - scrollable table container
 				relative - needed for sticky header

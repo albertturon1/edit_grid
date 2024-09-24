@@ -9,6 +9,7 @@ type TableNumericalCellProps = CellContext<FilePickerRow, string> & {
 	onAnchorRowChange: (row: Row<FilePickerRow> | null) => void;
 	isModifierActive: boolean;
 	onModifierStateChange: (state: boolean) => void;
+	rowSelectionMode: boolean;
 };
 
 export function TableNumericalCell({
@@ -18,6 +19,7 @@ export function TableNumericalCell({
 	onAnchorRowChange,
 	isModifierActive,
 	onModifierStateChange,
+	rowSelectionMode,
 }: TableNumericalCellProps) {
 	useOnKeyboardButtonChange({
 		key: "Shift",
@@ -85,6 +87,10 @@ export function TableNumericalCell({
 	const isCurrentRowAnchor = anchorRow?.id === row.id;
 
 	function onClick() {
+		if (!rowSelectionMode) {
+			return;
+		}
+
 		row.toggleSelected();
 		handleSelectionWithModifier();
 	}
@@ -99,16 +105,20 @@ export function TableNumericalCell({
 					? "hover:border hover:border-primary hover:rounded"
 					: "",
 				isCurrentRowAnchor ? "border border-primary rounded" : "",
+				rowSelectionMode ? "" : "cursor-default",
 				row.getIsSelected() ? "" : "text-slate-500",
 			)}
 		>
-			<Checkbox
-				checked={row.getIsSelected()}
-				className={cn(
-					"mt-[3px] opacity-50 group-hover:opacity-100",
-					row.getIsSelected() || isCurrentRowAnchor ? "opacity-100" : "",
-				)}
-			/>
+			{rowSelectionMode ? (
+				<Checkbox
+					checked={row.getIsSelected()}
+					className={cn(
+						"mt-[3px] opacity-50 group-hover:opacity-100",
+						row.getIsSelected() || isCurrentRowAnchor ? "opacity-100" : "",
+					)}
+				/>
+			) : null}
+
 			<h1 className={"mt-[1px]"}>
 				{(table
 					.getSortedRowModel()

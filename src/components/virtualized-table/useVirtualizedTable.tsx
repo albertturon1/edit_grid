@@ -26,6 +26,8 @@ export function useVirtualizedTable<Data extends Record<PropertyKey, string>[]>(
 
 	// rowSelection return an object with selected rows as {indexNumber: true} (only for already selected rows)
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+	// rowSelectionMode is boolean value that determines if row selection mode is active
+	const [rowSelectionMode, setRowSelectionMode] = useState(false);
 
 	const firstElement = useMemo(() => ({ ...(data[0] ?? {}) }), [data[0]]);
 
@@ -34,7 +36,12 @@ export function useVirtualizedTable<Data extends Record<PropertyKey, string>[]>(
 			columnHelper.accessor(___INTERNAL_ID_COLUMN_NAME, {
 				// rendering 0 to keep the layout stable when no column is visible except the numeric one - should be hidden using CSS
 				id: ___INTERNAL_ID_COLUMN_ID,
-				header: (props) => <TableNumericalHeader {...props} />,
+				header: (props) => (
+					<TableNumericalHeader
+						{...props}
+						rowSelectionMode={rowSelectionMode}
+					/>
+				),
 				cell: (props) => (
 					<TableNumericalCell
 						{...props}
@@ -42,6 +49,7 @@ export function useVirtualizedTable<Data extends Record<PropertyKey, string>[]>(
 						onAnchorRowChange={setAnchorRow}
 						isModifierActive={isModifierActive}
 						onModifierStateChange={setIsModifierActive}
+						rowSelectionMode={rowSelectionMode}
 					/>
 				),
 				size: getNoCellSize(data.length), //starting column size
@@ -55,7 +63,7 @@ export function useVirtualizedTable<Data extends Record<PropertyKey, string>[]>(
 				});
 			}),
 		],
-		[firstElement, data.length, anchorRow, isModifierActive],
+		[firstElement, data.length, anchorRow, isModifierActive, rowSelectionMode],
 	);
 
 	const table = useReactTable({
@@ -92,7 +100,7 @@ export function useVirtualizedTable<Data extends Record<PropertyKey, string>[]>(
 		},
 	});
 
-	return { table, anchorRow };
+	return { table, anchorRow, rowSelectionMode, setRowSelectionMode };
 }
 
 // function used to determine width of numeral column
