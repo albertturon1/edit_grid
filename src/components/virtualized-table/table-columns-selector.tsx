@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { FilePickerRow } from "@/components/file-picker";
 import type { Table } from "@tanstack/react-table";
 import {
@@ -10,7 +11,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ___INTERNAL_ID_COLUMN_ID } from "./useVirtualizedTable";
-import { Columns } from "lucide-react";
+import { Columns3 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type TableManagementProps<T extends Table<FilePickerRow>> = {
 	table: T;
@@ -19,12 +21,25 @@ type TableManagementProps<T extends Table<FilePickerRow>> = {
 export function TableColumnsSelector<T extends Table<FilePickerRow>>({
 	table,
 }: TableManagementProps<T>) {
+	const [columnSelectionMode, setColumnSelectionMode] = useState(false);
+
 	return (
-		<DropdownMenu>
+		<DropdownMenu
+			open={columnSelectionMode}
+			onOpenChange={setColumnSelectionMode}
+		>
 			<DropdownMenuTrigger asChild>
-				<Button className="flex gap-x-2 font-medium" variant="outline">
-					<Columns className="h-4 w-4" />
-					{"Select Columns"}
+				<Button
+					variant="outline"
+					className={cn(
+						"flex gap-x-2 font-medium",
+						columnSelectionMode ? "bg-accent" : "",
+					)}
+				>
+					<Columns3
+						className={cn("h-4 w-4", columnSelectionMode ? "text-primary" : "")}
+					/>
+					{"Columns"}
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className="w-56">
@@ -53,7 +68,7 @@ function DropdownItems<T extends Table<FilePickerRow>>({
 					event.preventDefault();
 				}}
 				key={column.id}
-				checked={column.getCanHide()}
+				checked={column.getIsVisible()}
 				onCheckedChange={(value) => column.toggleVisibility(!!value)}
 			>
 				{column.id}
