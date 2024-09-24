@@ -8,7 +8,7 @@ declare module "@tanstack/react-table" {
 	}
 
 	interface ColumnMeta {
-		// filterType: CustomFilterType | StandardFilterType;
+		// used to apply in cell.column.columnDef.meta?.className
 		className?: string;
 	  }
 }
