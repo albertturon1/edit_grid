@@ -4,11 +4,17 @@ import { VirtualizedTable } from "@/components/virtualized-table/virtualized-tab
 import { Landing } from "@/features/home/components/landing";
 import { NAVBAR_HEIGHT } from "@/routes/__root";
 import { useWindowDimensions } from "@/lib/useWindowDimensions";
+import { useBlocker } from "@tanstack/react-router";
 
 export function HomePage() {
 	const [data, setData] = useState<FilePickerRow[]>([]);
 	const [originalFilename, setOriginalFilename] = useState<string>("");
 	const { height } = useWindowDimensions();
+
+	// display alert before leaving this page
+	useBlocker({
+		condition: data.length > 0,
+	});
 
 	return (
 		<div
