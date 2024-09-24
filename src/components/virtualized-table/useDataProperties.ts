@@ -49,7 +49,9 @@ export function useDataProperties<T extends Table<FilePickerRow>>(
 	function getDataStatus(): TableDataStatus {
 		if (
 			visibleColumns.length < allColumns.length ||
-			selectedRows.length < allRows.length
+			(rowSelectionMode &&
+				selectedRows.length > 0 &&
+				selectedRows.length < allRows.length)
 		) {
 			return "partial";
 		}
