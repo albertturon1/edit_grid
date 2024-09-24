@@ -43,9 +43,11 @@ export function TableBodyRow({
 				transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
 			}}
 		>
-			{row.getVisibleCells().map((cell) => (
-				<TableBodyRowCell key={cell.id} cell={cell} className={background} />
-			))}
+			{row.getVisibleCells().map((cell) => {
+				return (
+					<TableBodyRowCell key={cell.id} cell={cell} className={background} />
+				);
+			})}
 		</tr>
 	);
 }
