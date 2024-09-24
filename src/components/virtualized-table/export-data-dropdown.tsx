@@ -18,13 +18,18 @@ import { exportBlobPartToFile } from "./exportBlobPartToFile";
 type ExportDataDropdownProps<T extends Table<FilePickerRow>> = {
 	table: T;
 	originalFilename: string;
+	rowSelectionMode: boolean;
 };
 
 export function ExportDataDropdown<T extends Table<FilePickerRow>>({
 	table,
 	originalFilename,
+	rowSelectionMode,
 }: ExportDataDropdownProps<T>) {
-	const { dataStatus, filteredRows } = useDataProperties(table);
+	const { dataStatus, selectedRows } = useDataProperties(
+		table,
+		rowSelectionMode,
+	);
 	const [isExportAsDialogOpen, setIsExportAsDialogOpen] = useState(false);
 
 	function exportAll(fn: string) {
@@ -38,7 +43,7 @@ export function ExportDataDropdown<T extends Table<FilePickerRow>>({
 	}
 
 	function exportSelected(fn: string) {
-		const content = convertIntoCsv(filteredRows);
+		const content = convertIntoCsv(selectedRows.map((e) => e.original));
 
 		exportBlobPartToFile({
 			content,
@@ -83,14 +88,14 @@ export function ExportDataDropdown<T extends Table<FilePickerRow>>({
 		}
 	}
 
-	function onSubmit(data: ExportDialogFormSchema) {
+	function onSubmit(formData: ExportDialogFormSchema) {
 		switch (dataStatus) {
 			case "full": {
-				exportAll(data.filename);
+				exportAll(formData.filename);
 				break;
 			}
 			case "partial": {
-				exportAs(data);
+				exportAs(formData);
 				break;
 			}
 		}
