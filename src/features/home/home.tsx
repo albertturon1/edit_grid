@@ -25,7 +25,7 @@ export function HomePage() {
 				height: height - NAVBAR_HEIGHT,
 			}}
 		>
-			{rows.length === 0 || !headers ? (
+			{!headers ? (
 				<Landing
 					onFileImport={({ file, headers, rows }) => {
 						setHeaders(headers);
