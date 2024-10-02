@@ -36,10 +36,6 @@ export function VirtualizedTable({
 		onRowsChange,
 	});
 
-	if (rows.length === 0) {
-		return null;
-	}
-
 	return (
 		<div
 			className="w-full text-sm"

@@ -129,6 +129,14 @@ if (import.meta.vitest) {
 			expected:
 				'Name\nJohn\nJack\n"John ""Da Man"""\nStephen\n\n"Joan ""the bone"", Anne"',
 		},
+		{
+			input: [["Name", "Value"], []],
+			expected: "Name,Value",
+		},
+		{
+			input: [[], [["Tester", "Tester2"]]],
+			expected: "Tester,Tester2",
+		},
 	];
 
 	for (const c of testCases) {

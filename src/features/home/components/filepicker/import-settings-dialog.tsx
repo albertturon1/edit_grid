@@ -73,7 +73,7 @@ export function ImportSettingsDialog({
 	// handle edge case when input "Use First Row as headers" gets toggled and value of `fromRow` is higher than maxInputNumber
 	useEffect(() => {
 		if (firstRowAsHeaders && fromRow > maxInputNumber) {
-			form.setValue("fromRow", maxInputNumber);
+			form.setValue("fromRow", Math.max(maxInputNumber, 1));
 		}
 	}, [fromRow, maxInputNumber, firstRowAsHeaders, form.setValue]);
 
@@ -101,7 +101,7 @@ export function ImportSettingsDialog({
 											type="number"
 											{...field}
 											min={1}
-											max={maxInputNumber}
+											max={Math.max(maxInputNumber, 1)}
 										/>
 									</FormControl>
 								</FormItem>
