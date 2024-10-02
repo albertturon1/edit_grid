@@ -14,43 +14,39 @@ import { z } from "zod";
 import {
 	Form,
 	FormControl,
+	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
-import type { TableDataStatus } from "./useDataProperties";
-import { ExportDialogRadioGroup } from "./export-dialog-radio-group";
+import type { TableDataStatus } from "@/components/virtualized-table/hooks/useDataProperties";
+import { ExportDialogRadioGroup } from "@/components/virtualized-table/export-dialog-radio-group";
+import { splitOnLastOccurrence } from "@/lib/utils";
+import type { TableHeaders } from "@/features/home/utils/mapHeadersToRows";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export const EXPORT_TYPE = {
 	all: "all",
 	selected: "selected",
 } as const;
 
-const exportTypeSchema = z.enum(
-	Object.values(EXPORT_TYPE) as [string, ...string[]],
-	{
-		required_error: "The export type must be selected..",
-	},
-);
+const exportTypeSchema = z.enum([EXPORT_TYPE.all, EXPORT_TYPE.selected], {
+	required_error: "The export type must be selected..",
+});
 
-const filenameSchema = z
-	.string({
-		required_error: "Filename cannot be empty.",
-	})
-	.min(1);
+const commonSchema = z.object({
+	filename: z
+		.string({
+			required_error: "Filename cannot be empty.",
+		})
+		.min(1),
+	includeHeaders: z.boolean(),
+});
 
 function createFormSchema(isPartialData: boolean) {
-	if (isPartialData) {
-		return z.object({
-			filename: filenameSchema,
-			exportType: exportTypeSchema,
-		});
-	}
-
-	return z.object({
-		filename: filenameSchema,
-		exportType: z.undefined(),
+	return commonSchema.extend({
+		exportType: isPartialData ? exportTypeSchema : z.undefined(),
 	});
 }
 
@@ -60,6 +56,8 @@ export type ExportDialogProps = {
 	dataStatus: TableDataStatus;
 	onSubmit: (data: ExportDialogFormSchema) => void;
 	onCancel: () => void;
+	originalFilename: string;
+	headers: TableHeaders;
 };
 
 export type ExportDialogFormSchema = z.infer<
@@ -70,13 +68,22 @@ export function ExportDialog({
 	open,
 	dataStatus,
 	onCancel,
+	originalFilename,
+	headers,
 	...props
 }: ExportDialogProps) {
+	const [originalFilenameExtensionless] = splitOnLastOccurrence(
+		originalFilename,
+		".",
+	);
+
 	const formSchema = createFormSchema(dataStatus === "partial");
 	const form = useForm<ExportDialogFormSchema>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			filename: "",
+			filename: originalFilenameExtensionless,
+			includeHeaders: headers.isOriginal, // based on user's selection of `firstRowAsHeaders`
+			exportType: EXPORT_TYPE.selected,
 		},
 	});
 
@@ -99,7 +106,9 @@ export function ExportDialog({
 				<DialogHeader>
 					<DialogTitle>{"Export File"}</DialogTitle>
 					<DialogDescription>
-						{"Enter a name for your file. Click export when you're done."}
+						{
+							"Configure your file export settings. Enter a file name and choose your export preferences."
+						}
 					</DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
@@ -109,17 +118,37 @@ export function ExportDialog({
 							name="filename"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>{"Filename"}</FormLabel>
+									<div>
+										<FormLabel>{"Filename"}</FormLabel>
+										<FormDescription>
+											{"Enter the name of the file."}
+										</FormDescription>
+										<FormMessage />
+									</div>
 									<FormControl>
 										<Input placeholder="Enter filename" {...field} />
 									</FormControl>
-									<FormMessage />
 								</FormItem>
 							)}
 						/>
-						{dataStatus === "full" ? null : (
+						<FormField
+							control={form.control}
+							name="includeHeaders"
+							render={({ field }) => (
+								<FormItem className="flex flex-row items-center space-x-3 space-y-0">
+									<FormControl>
+										<Checkbox
+											checked={field.value}
+											onCheckedChange={field.onChange}
+										/>
+									</FormControl>
+									<FormLabel>{"Include headers in the output"}</FormLabel>
+								</FormItem>
+							)}
+						/>
+						{dataStatus === "partial" ? (
 							<ExportDialogRadioGroup control={form.control} />
-						)}
+						) : null}
 						<DialogFooter className="w-full">
 							<Button variant="outline" onClick={onCancel}>
 								{"Cancel"}
