@@ -1,5 +1,5 @@
 import { getRandomSign } from "@/lib/utils";
-import type { Box } from "./bouncing-boxes";
+import type { Box } from "@/components/bouncing-boxes/bouncing-boxes";
 
 export function getBoxes({
 	size,

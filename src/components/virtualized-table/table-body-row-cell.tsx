@@ -1,5 +1,5 @@
 import { flexRender, type Cell } from "@tanstack/react-table";
-import type { FilePickerRow } from "../file-picker";
+import type { FilePickerRow } from "@/features/home/components/filepicker/file-picker";
 import { cn } from "@/lib/utils";
 
 type TableBodyRowCellProps = {
