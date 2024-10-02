@@ -1,4 +1,4 @@
-import type { Box } from "./bouncing-boxes";
+import type { Box } from "@/components/bouncing-boxes/bouncing-boxes";
 
 export function handleCollision(box1: Box, box2: Box) {
 	const dx = box1.x - box2.x;

@@ -1,9 +1,9 @@
 import type { Row } from "@tanstack/react-table";
 import type { VirtualItem, Virtualizer } from "@tanstack/react-virtual";
-import type { FilePickerRow } from "../file-picker";
+import type { FilePickerRow } from "@/features/home/components/filepicker/file-picker";
 import { cn } from "@/lib/utils";
-import { useTheme, getValueFromSystemTheme } from "../theme-provider";
-import { TableBodyRowCell } from "./table-body-row-cell";
+import { useTheme, getValueFromSystemTheme } from "@/components/theme-provider";
+import { TableBodyRowCell } from "@/components/virtualized-table/table-body-row-cell";
 
 type TableBodyRowProps = {
 	virtualRow: VirtualItem;
@@ -36,7 +36,7 @@ export function TableBodyRow({
 			ref={(node) => rowVirtualizer.measureElement(node)} //measure dynamic row height
 			key={row.id}
 			className={cn(
-				"flex absolute w-full border-b border-r",
+				"flex absolute w-full border-b",
 				background, // needed when no column is selected (none of the <td /> are rendered)
 			)}
 			style={{

@@ -1,4 +1,4 @@
-import { Toggle } from "../ui/toggle";
+import { Toggle } from "@/components/ui/toggle";
 import { Rows3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 

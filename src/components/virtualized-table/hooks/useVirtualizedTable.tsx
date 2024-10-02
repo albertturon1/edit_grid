@@ -7,20 +7,25 @@ import {
 	type RowSelectionState,
 } from "@tanstack/react-table";
 import { useMemo, useState, type Dispatch } from "react";
-import type { FilePickerRow } from "@/components/file-picker";
-import { tableDefaultColumn } from "./default-column";
-import { TableNumericalCell } from "./table-numerical-cell";
-import { TableNumericalHeader } from "./table-numerical-header";
+import { tableDefaultColumn } from "@/components/virtualized-table/default-column";
+import { TableNumericalCell } from "@/components/virtualized-table/table-numerical-cell";
+import { TableNumericalHeader } from "@/components/virtualized-table/table-numerical-header";
+import type { FilePickerRow } from "@/features/home/components/filepicker/file-picker";
 
 const columnHelper = createColumnHelper<FilePickerRow>();
 
 export const ___INTERNAL_ID_COLUMN_ID = "___INTERNAL_ID___000";
 export const ___INTERNAL_ID_COLUMN_NAME = "___000___";
 
-export function useVirtualizedTable<Data extends Record<PropertyKey, string>[]>(
-	data: Data,
-	onDataChange: Dispatch<React.SetStateAction<Data>>,
-) {
+export function useVirtualizedTable({
+	headers,
+	rows,
+	onRowsChange,
+}: {
+	rows: FilePickerRow[];
+	headers: string[];
+	onRowsChange: Dispatch<React.SetStateAction<FilePickerRow[]>>;
+}) {
 	const [anchorRow, setAnchorRow] = useState<Row<FilePickerRow> | null>(null);
 	const [isModifierActive, setIsModifierActive] = useState(false);
 
@@ -29,10 +34,8 @@ export function useVirtualizedTable<Data extends Record<PropertyKey, string>[]>(
 	// rowSelectionMode is boolean value that determines if row selection mode is active
 	const [rowSelectionMode, setRowSelectionMode] = useState(false);
 
-	const firstElement = useMemo(() => ({ ...(data[0] ?? {}) }), [data[0]]);
-
-	const columns = useMemo(
-		() => [
+	const columns = useMemo(() => {
+		return [
 			columnHelper.accessor(___INTERNAL_ID_COLUMN_NAME, {
 				// rendering 0 to keep the layout stable when no column is visible except the numeric one - should be hidden using CSS
 				id: ___INTERNAL_ID_COLUMN_ID,
@@ -52,22 +55,21 @@ export function useVirtualizedTable<Data extends Record<PropertyKey, string>[]>(
 						rowSelectionMode={rowSelectionMode}
 					/>
 				),
-				size: getNoCellSize(data.length), //starting column size
+				size: getNoCellSize(rows.length), //starting column size
 				meta: {
 					className: "sticky left-0", //sticky first column
 				},
 			}),
-			...Object.keys(firstElement).map((header) => {
+			...headers.map((header) => {
 				return columnHelper.accessor(header, {
 					header,
 				});
 			}),
-		],
-		[firstElement, data.length, anchorRow, isModifierActive, rowSelectionMode],
-	);
+		];
+	}, [headers, rows.length, anchorRow, isModifierActive, rowSelectionMode]);
 
 	const table = useReactTable({
-		data,
+		data: rows,
 		columns,
 		defaultColumn: tableDefaultColumn,
 		getCoreRowModel: getCoreRowModel(),
@@ -84,8 +86,7 @@ export function useVirtualizedTable<Data extends Record<PropertyKey, string>[]>(
 		// Provide our updateData function to our table meta
 		meta: {
 			updateData: (rowIndex, columnId, value) => {
-				//@ts-expect-error generic type conversion
-				onDataChange((old) => {
+				onRowsChange((old) => {
 					return old.map((row, index) => {
 						if (index === rowIndex && typeof value === "string") {
 							return {
@@ -110,5 +111,5 @@ function getNoCellSize(dataLength: number) {
 	const unitSize = 9;
 	const stringifiedLength = dataLength.toString().length;
 
-	return doublePadding + checkboxWidth + stringifiedLength * unitSize;
+	return doublePadding + checkboxWidth + (stringifiedLength + 1) * unitSize;
 }

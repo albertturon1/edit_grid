@@ -3,21 +3,16 @@ import {
 	HeadlineWithPicker,
 	type HeadlineWithPickerProps,
 } from "@/features/home/components/headline-picker";
-// import { getValueFromSystemTheme, useTheme } from "@/components/theme-provider";
 
 type LandingProps = {
-	onFileChange: HeadlineWithPickerProps["onFileChange"];
+	onFileImport: HeadlineWithPickerProps["onFileImport"];
 };
 
-export function Landing({ onFileChange }: LandingProps) {
-	// const { theme } = useTheme();
-	// const currentTheme = theme === "system" ? getValueFromSystemTheme() : theme;
-	// const boxesColor = currentTheme === "light" ? "#e3b1b5" : "#400C59";
-
+export function Landing({ onFileImport }: LandingProps) {
 	return (
 		<div className="flex flex-1 relative">
 			<BouncingBoxes size={50} speed={1} gap={25} />
-			<HeadlineWithPicker onFileChange={onFileChange} />
+			<HeadlineWithPicker onFileImport={onFileImport} />
 		</div>
 	);
 }

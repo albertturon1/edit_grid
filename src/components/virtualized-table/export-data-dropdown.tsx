@@ -1,4 +1,4 @@
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import {
 	DropdownMenu,
@@ -7,74 +7,101 @@ import {
 	DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
-import { ExportDialog, type ExportDialogFormSchema } from "./export-dialog";
-import { useDataProperties } from "./useDataProperties";
+import {
+	ExportDialog,
+	type ExportDialogFormSchema,
+} from "@/components/virtualized-table/export-dialog";
+import { useDataProperties } from "@/components/virtualized-table/hooks/useDataProperties";
 import { useState } from "react";
-import { convertIntoCsv } from "./convertIntoCsv";
 import type { Table } from "@tanstack/react-table";
-import type { FilePickerRow } from "../file-picker";
-import { exportBlobPartToFile } from "./exportBlobPartToFile";
+import type { FilePickerRow } from "@/features/home/components/filepicker/file-picker";
+import { convertIntoCsv } from "@/components/virtualized-table/utils/convertIntoCsv";
+import { exportBlobPartToFile } from "@/components/virtualized-table/utils/exportBlobPartToFile";
+import type { TableHeaders } from "@/features/home/utils/mapHeadersToRows";
 
 type ExportDataDropdownProps<T extends Table<FilePickerRow>> = {
 	table: T;
 	originalFilename: string;
 	rowSelectionMode: boolean;
+	headers: TableHeaders;
 };
 
 export function ExportDataDropdown<T extends Table<FilePickerRow>>({
 	table,
 	originalFilename,
 	rowSelectionMode,
+	headers,
 }: ExportDataDropdownProps<T>) {
-	const { dataStatus, selectedRows } = useDataProperties(
-		table,
-		rowSelectionMode,
-	);
+	const { dataStatus, selectedRows, allColumnNames, visibleColumnNames } =
+		useDataProperties(table, rowSelectionMode);
 	const [isExportAsDialogOpen, setIsExportAsDialogOpen] = useState(false);
-
-	function exportAll(fn: string) {
-		const rows = table.getRowModel().flatRows.map((row) => row.original);
-		const content = convertIntoCsv(rows);
-
-		exportBlobPartToFile({
-			content,
-			filename: fn,
-		});
-	}
-
-	function exportSelected(fn: string) {
-		const content = convertIntoCsv(selectedRows.map((e) => e.original));
-
-		exportBlobPartToFile({
-			content,
-			filename: fn,
-		});
-	}
 
 	const handleOpenDialog = () => {
 		setIsExportAsDialogOpen(true);
 	};
 
 	function handleExportAll() {
-		exportAll(originalFilename);
+		exportAll({
+			filename: originalFilename,
+			includeHeaders: headers.isOriginal,
+		});
 	}
 
 	function handleExportSelected() {
-		exportSelected(originalFilename);
+		exportSelected({
+			filename: originalFilename,
+			includeHeaders: headers.isOriginal,
+		});
 	}
 
-	function onExportDialogCancel() {
+	function handleExportDialogCancel() {
 		setIsExportAsDialogOpen(false);
 	}
 
-	function exportAs({ exportType, filename }: ExportDialogFormSchema) {
+	function exportAll({
+		filename,
+		includeHeaders,
+	}: { filename: string; includeHeaders: boolean }) {
+		const rows = table
+			.getRowModel()
+			.flatRows.map((row) => Object.values(row.original));
+		const headers = includeHeaders ? allColumnNames : [];
+
+		const content = convertIntoCsv(headers, rows);
+
+		exportBlobPartToFile({
+			content,
+			filename,
+		});
+	}
+
+	function exportSelected({
+		filename,
+		includeHeaders,
+	}: { filename: string; includeHeaders: boolean }) {
+		const rows = selectedRows.map((row) => Object.values(row.original));
+		const headers = includeHeaders ? visibleColumnNames : [];
+
+		const content = convertIntoCsv(headers, rows);
+
+		exportBlobPartToFile({
+			content,
+			filename,
+		});
+	}
+
+	function exportAs({
+		exportType,
+		filename,
+		includeHeaders,
+	}: ExportDialogFormSchema) {
 		switch (exportType) {
 			case "all": {
-				exportAll(filename);
+				exportAll({ filename, includeHeaders });
 				break;
 			}
 			case "selected": {
-				exportSelected(filename);
+				exportSelected({ filename, includeHeaders });
 				break;
 			}
 			case undefined: {
@@ -88,10 +115,13 @@ export function ExportDataDropdown<T extends Table<FilePickerRow>>({
 		}
 	}
 
-	function onSubmit(formData: ExportDialogFormSchema) {
+	function handleExportDialogSubmit(formData: ExportDialogFormSchema) {
 		switch (dataStatus) {
 			case "full": {
-				exportAll(formData.filename);
+				exportAll({
+					filename: formData.filename,
+					includeHeaders: formData.includeHeaders,
+				});
 				break;
 			}
 			case "partial": {
@@ -132,11 +162,13 @@ export function ExportDataDropdown<T extends Table<FilePickerRow>>({
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 			<ExportDialog
+				originalFilename={originalFilename}
 				dataStatus={dataStatus}
 				open={isExportAsDialogOpen}
 				onOpenChange={setIsExportAsDialogOpen}
-				onCancel={onExportDialogCancel}
-				onSubmit={onSubmit}
+				onCancel={handleExportDialogCancel}
+				onSubmit={handleExportDialogSubmit}
+				headers={headers}
 			/>
 		</DropdownMenu>
 	);

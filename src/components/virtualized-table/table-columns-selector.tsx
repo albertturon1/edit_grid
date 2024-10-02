@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { FilePickerRow } from "@/components/file-picker";
+import type { FilePickerRow } from "@/features/home/components/filepicker/file-picker";
 import type { Table } from "@tanstack/react-table";
 import {
 	DropdownMenu,
@@ -10,7 +10,6 @@ import {
 	DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ___INTERNAL_ID_COLUMN_ID } from "./useVirtualizedTable";
 import { Columns3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -56,7 +55,7 @@ function DropdownItems<T extends Table<FilePickerRow>>({
 }: { table: T }) {
 	return table.getAllColumns().map((column) => {
 		// not displaying numerical column
-		if (column.id === ___INTERNAL_ID_COLUMN_ID) {
+		if (typeof column.columnDef.header !== "string") {
 			return null;
 		}
 
@@ -67,11 +66,11 @@ function DropdownItems<T extends Table<FilePickerRow>>({
 					// prevent closing dropdown menu after selecting an option
 					event.preventDefault();
 				}}
-				key={column.id}
+				key={column.columnDef.header}
 				checked={column.getIsVisible()}
 				onCheckedChange={(value) => column.toggleVisibility(!!value)}
 			>
-				{column.id}
+				{column.columnDef.header}
 			</DropdownMenuCheckboxItem>
 		);
 	});

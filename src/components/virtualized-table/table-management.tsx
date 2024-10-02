@@ -1,15 +1,17 @@
-import type { FilePickerRow } from "@/components/file-picker";
+import type { FilePickerRow } from "@/features/home/components/filepicker/file-picker";
 import type { Table } from "@tanstack/react-table";
-import { TableColumnsSelector } from "./table-columns-selector";
-import { ExportDataDropdown } from "./export-data-dropdown";
-import { RowsSelectionModeToggle } from "./rows-selection-mode-toggle";
-import { SelectedRowsIndicator } from "./selected-rows-indicator";
+import { TableColumnsSelector } from "@/components/virtualized-table/table-columns-selector";
+import { ExportDataDropdown } from "@/components/virtualized-table/export-data-dropdown";
+import { RowsSelectionModeToggle } from "@/components/virtualized-table/rows-selection-mode-toggle";
+import { SelectedRowsIndicator } from "@/components/virtualized-table/selected-rows-indicator";
+import type { TableHeaders } from "@/features/home/utils/mapHeadersToRows";
 
 type TableManagementProps<T extends Table<FilePickerRow>> = {
 	table: T;
 	originalFilename: string;
 	rowSelectionMode: boolean;
 	onRowSelectionModeChange: (pressed: boolean) => void;
+	headers: TableHeaders;
 };
 
 export function TableManagement<T extends Table<FilePickerRow>>({

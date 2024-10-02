@@ -1,5 +1,5 @@
 import { useRef, type ChangeEvent } from "react";
-import Papa from "papaparse";
+import Papa, { type ParseResult } from "papaparse";
 import { FileUp } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -8,7 +8,10 @@ export type FilePickerRow = Record<string, string>;
 export type SupportedFormats = ".csv" | ".json";
 
 export type FilePickerProps = {
-	onFileChange: (props: { filename: string; values: FilePickerRow[] }) => void;
+	onFileSelect: (props: {
+		file: File;
+		result: ParseResult<unknown>;
+	}) => void;
 	accept: Partial<Record<SupportedFormats, boolean>>;
 	fileSizeLimit?: { size: number; unit: "MB" };
 	className?: string;
@@ -17,11 +20,12 @@ export type FilePickerProps = {
 const ONE_BYTE = 1048576;
 
 export function FilePicker({
-	onFileChange,
+	onFileSelect,
 	accept,
 	fileSizeLimit,
 }: FilePickerProps) {
 	const inputRef = useRef<HTMLInputElement>(null);
+	const acceptConcat = Object.keys(accept).join(",");
 
 	function handleButtonClick(e: React.MouseEvent<HTMLButtonElement>) {
 		e.preventDefault();
@@ -30,10 +34,17 @@ export function FilePicker({
 		inputRef.current.click();
 	}
 
-	function handleFilePicker(event: ChangeEvent<HTMLInputElement> | undefined) {
+	function handleInputChange(event: ChangeEvent<HTMLInputElement> | undefined) {
 		const firstFile = event?.target.files?.[0];
 
 		if (!firstFile) {
+			toast.error(
+				"Cannot open provided file!\n\nTry again with a different file.",
+				{
+					className: "text-sm",
+					duration: 5000,
+				},
+			);
 			return;
 		}
 
@@ -50,18 +61,15 @@ export function FilePicker({
 		}
 
 		Papa.parse(firstFile, {
-			header: true,
 			skipEmptyLines: true,
-			complete: (results) => {
-				onFileChange({
-					filename: firstFile.name,
-					values: results.data as FilePickerRow[],
+			complete: (props) => {
+				onFileSelect({
+					file: firstFile,
+					result: props,
 				});
 			},
 		});
 	}
-
-	const acceptConcat = Object.keys(accept).join(",");
 
 	return (
 		<>
@@ -90,7 +98,7 @@ export function FilePicker({
 				type="file"
 				accept={acceptConcat}
 				hidden
-				onChange={handleFilePicker}
+				onChange={handleInputChange}
 			/>
 		</>
 	);

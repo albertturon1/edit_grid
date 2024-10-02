@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useDetectOS } from "./useDetectOS";
+import { useDetectOS } from "@/components/virtualized-table/hooks/useDetectOS";
 
 export function useOnKeyboardButtonChange(modifiers: {
 	os?: ("mac" | "linux" | "windows")[];

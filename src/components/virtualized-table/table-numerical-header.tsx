@@ -1,7 +1,7 @@
 import type { HeaderContext } from "@tanstack/react-table";
-import type { FilePickerRow } from "../file-picker";
+import type { FilePickerRow } from "@/features/home/components/filepicker/file-picker";
 import { cn } from "@/lib/utils";
-import { Checkbox } from "../ui/checkbox";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type TableNumericalHeaderProps = HeaderContext<FilePickerRow, string> & {
 	rowSelectionMode: boolean;

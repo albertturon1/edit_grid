@@ -2,34 +2,41 @@ import { useRef, type Dispatch } from "react";
 import { TableHead } from "@/components/virtualized-table/table-head";
 import { TableBody } from "@/components/virtualized-table/table-body";
 import { TableManagement } from "@/components/virtualized-table/table-management";
-import { useVirtualizedTable } from "@/components/virtualized-table/useVirtualizedTable";
 import { NAVBAR_HEIGHT } from "@/routes/__root";
 import { useWindowDimensions } from "@/lib/useWindowDimensions";
+import { useVirtualizedTable } from "@/components/virtualized-table/hooks/useVirtualizedTable";
+import type { FilePickerRow } from "@/features/home/components/filepicker/file-picker";
+import type {
+	TableHeaders,
+	TableRows,
+} from "@/features/home/utils/mapHeadersToRows";
 
 export const VIRTUALIZED_TABLE_STICKY_CLASSES = "sticky left-0 z-10";
 
-type VirtualizedTableProps<Data extends Record<PropertyKey, string>[]> = {
-	data: Data;
-	onDataChange: Dispatch<React.SetStateAction<Data>>;
+type VirtualizedTableProps = {
+	headers: TableHeaders;
+	rows: TableRows;
+	onRowsChange: Dispatch<React.SetStateAction<FilePickerRow[]>>;
 	originalFilename: string;
 };
 
-export function VirtualizedTable<Data extends Record<PropertyKey, string>[]>({
-	data,
-	onDataChange,
+export function VirtualizedTable({
+	rows,
+	headers,
+	onRowsChange,
 	originalFilename,
-}: VirtualizedTableProps<Data>) {
-	const { table, rowSelectionMode, setRowSelectionMode } = useVirtualizedTable(
-		data,
-		onDataChange,
-	);
-
-	const { height } = useWindowDimensions();
-
+}: VirtualizedTableProps) {
 	//The virtualizer needs to know the scrollable container element
 	const tableContainerRef = useRef<HTMLDivElement>(null);
 
-	if (data.length === 0) {
+	const { height } = useWindowDimensions();
+	const { table, rowSelectionMode, setRowSelectionMode } = useVirtualizedTable({
+		rows,
+		headers: headers.values,
+		onRowsChange,
+	});
+
+	if (rows.length === 0) {
 		return null;
 	}
 
@@ -46,6 +53,7 @@ export function VirtualizedTable<Data extends Record<PropertyKey, string>[]>({
 				originalFilename={originalFilename}
 				rowSelectionMode={rowSelectionMode}
 				onRowSelectionModeChange={setRowSelectionMode}
+				headers={headers}
 			/>
 			{/* 
 				overflow-auto - scrollable table container

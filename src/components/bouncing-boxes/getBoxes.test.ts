@@ -1,6 +1,6 @@
 import { describe } from "node:test";
 import { afterEach, expect, it, vi } from "vitest";
-import * as getBoxesModule from "./getBoxes.js";
+import * as getBoxesModule from "@/components/bouncing-boxes/getBoxes.js";
 
 vi.mock("../../lib/utils", () => {
 	return {
