@@ -1,81 +1,39 @@
-import { useRef, type ChangeEvent } from "react";
-import Papa, { type ParseResult } from "papaparse";
 import { FileUp } from "lucide-react";
-import toast from "react-hot-toast";
+import type { FilePickerCoreProps } from "./file-picker-core";
+import type { MouseEvent } from "react";
+import {
+	FilePickerImportSettings,
+	type FilePickerImportSettingsProps,
+} from "@/components/file-picker-import-settings";
+
+export const filePickerAccepts: FilePickerAccept = {
+	".csv": true,
+};
 
 export type FilePickerRow = Record<string, string>;
 
 export type SupportedFormats = ".csv" | ".json";
+export type FilePickerAccept = Partial<Record<SupportedFormats, boolean>>;
 
-export type FilePickerProps = {
-	onFileSelect: (props: {
-		file: File;
-		result: ParseResult<unknown>;
-	}) => void;
-	accept: Partial<Record<SupportedFormats, boolean>>;
-	fileSizeLimit?: { size: number; unit: "MB" };
-	className?: string;
-};
-
-const ONE_BYTE = 1048576;
+export type FilePickerProps = FilePickerImportSettingsProps &
+	Omit<FilePickerCoreProps, "onFileImport"> & {
+		className?: string;
+		onClick: (event: MouseEvent<HTMLButtonElement>) => void;
+	};
 
 export function FilePicker({
-	onFileSelect,
 	accept,
 	fileSizeLimit,
+	onClick,
+	...props
 }: FilePickerProps) {
-	const inputRef = useRef<HTMLInputElement>(null);
-	const acceptConcat = Object.keys(accept).join(",");
-
-	function handleButtonClick(e: React.MouseEvent<HTMLButtonElement>) {
-		e.preventDefault();
-		if (!inputRef || !inputRef.current) return;
-
-		inputRef.current.click();
-	}
-
-	function handleInputChange(event: ChangeEvent<HTMLInputElement> | undefined) {
-		const firstFile = event?.target.files?.[0];
-
-		if (!firstFile) {
-			toast.error(
-				"Cannot open provided file!\n\nTry again with a different file.",
-				{
-					className: "text-sm",
-					duration: 5000,
-				},
-			);
-			return;
-		}
-
-		if (fileSizeLimit && firstFile.size > ONE_BYTE * fileSizeLimit.size) {
-			toast.error(
-				`File "${firstFile.name}" is too big!\n\nTry again with a different file.`,
-				{
-					className: "text-sm",
-					duration: 5000,
-				},
-			);
-
-			return;
-		}
-
-		Papa.parse(firstFile, {
-			skipEmptyLines: true,
-			complete: (props) => {
-				onFileSelect({
-					file: firstFile,
-					result: props,
-				});
-			},
-		});
-	}
+	const acceptConcat = accept ? Object.keys(accept).join(",") : null;
 
 	return (
 		<>
 			<button
 				type="button"
-				onClick={handleButtonClick}
+				onClick={onClick}
 				className="flex flex-col bg-picker-secondary p-1 rounded-2xl"
 			>
 				<div className="flex flex-col gap-y-4 justify-center items-center max-w-max px-14 py-8 rounded-2xl bg-picker-primary border border-dashed border-gray-400 text-slate-700 font-medium text-[0.9rem]">
@@ -85,7 +43,9 @@ export function FilePicker({
 					<div className="flex flex-col gap-y-2">
 						<div>{"Click here to upload your file or drag and drop"}</div>
 						<div>
-							<div className="text-slate-400 text-sm">{`Supported formats: ${acceptConcat}`}</div>
+							{acceptConcat ? (
+								<div className="text-slate-400 text-sm">{`Supported formats: ${acceptConcat}`}</div>
+							) : null}
 							{fileSizeLimit ? (
 								<div className="text-slate-400 text-sm">{`File size limit: ${fileSizeLimit.size}${fileSizeLimit.unit}`}</div>
 							) : null}
@@ -93,12 +53,10 @@ export function FilePicker({
 					</div>
 				</div>
 			</button>
-			<input
-				ref={inputRef}
-				type="file"
-				accept={acceptConcat}
-				hidden
-				onChange={handleInputChange}
+			<FilePickerImportSettings
+				{...props}
+				fileSizeLimit={{ size: 5, unit: "MB" }}
+				accept={filePickerAccepts}
 			/>
 		</>
 	);

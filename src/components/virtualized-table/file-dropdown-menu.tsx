@@ -1,38 +1,46 @@
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import {
 	DropdownMenu,
 	DropdownMenuTrigger,
 	DropdownMenuContent,
 	DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { Separator } from "@/components/ui/separator";
-import {
-	ExportDialog,
-	type ExportDialogFormSchema,
-} from "@/components/virtualized-table/export-dialog";
-import { useDataProperties } from "@/components/virtualized-table/hooks/useDataProperties";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { Table } from "@tanstack/react-table";
-import type { FilePickerRow } from "@/features/home/components/filepicker/file-picker";
-import { convertIntoCsv } from "@/components/virtualized-table/utils/convertIntoCsv";
-import { exportBlobPartToFile } from "@/components/virtualized-table/utils/exportBlobPartToFile";
+import {
+	filePickerAccepts,
+	type FilePickerRow,
+} from "@/features/home/components/filepicker/file-picker";
 import type { TableHeaders } from "@/features/home/utils/mapHeadersToRows";
+import { cn } from "@/lib/utils";
+import type { FilePickerCoreRef } from "@/features/home/components/filepicker/file-picker-core";
+import type { OnFileImport } from "@/features/home/components/headline-picker";
+import { Separator } from "../ui/separator";
+import { FilePickerImportSettings } from "../file-picker-import-settings";
+import { useDataProperties } from "./hooks/useDataProperties";
+import { ExportDialog, type ExportDialogFormSchema } from "./export-dialog";
+import { exportBlobPartToFile } from "./utils/exportBlobPartToFile";
+import { convertIntoCsv } from "./utils/convertIntoCsv";
 
-type ExportDataDropdownProps<T extends Table<FilePickerRow>> = {
+type FileDropdownMenuProps<T extends Table<FilePickerRow>> = {
 	table: T;
 	originalFilename: string;
 	rowSelectionMode: boolean;
 	headers: TableHeaders;
+	onFileImport: (props: OnFileImport) => void;
 };
 
-export function ExportDataDropdown<T extends Table<FilePickerRow>>({
-	table,
+export function FileDropdownMenu<T extends Table<FilePickerRow>>({
+	headers,
+	onFileImport,
 	originalFilename,
 	rowSelectionMode,
-	headers,
-}: ExportDataDropdownProps<T>) {
-	const { dataStatus, selectedRows, allColumnNames, visibleColumnNames } =
+	table,
+}: FileDropdownMenuProps<T>) {
+	const [active, setActive] = useState(false);
+	const inputRef = useRef<FilePickerCoreRef>(null);
+	const { dataStatus, allColumnNames, selectedRows, visibleColumnNames } =
 		useDataProperties(table, rowSelectionMode);
 	const [isExportAsDialogOpen, setIsExportAsDialogOpen] = useState(false);
 
@@ -133,19 +141,36 @@ export function ExportDataDropdown<T extends Table<FilePickerRow>>({
 		setIsExportAsDialogOpen(false);
 	}
 
+	function handleFileDropdownOpening(
+		e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+	) {
+		// @ts-expect-error
+		inputRef.current?.showFilePicker(e);
+	}
+
 	return (
-		<DropdownMenu>
+		<DropdownMenu open={active} onOpenChange={setActive}>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline" className="flex gap-x-2 font-medium">
-					<Download className="h-4 w-4" />
-					{"Export"}
+				<Button
+					variant="outline"
+					className={cn("flex gap-x-2 font-medium", active ? "bg-accent" : "")}
+				>
+					{"File"}
+					<ChevronDown className="h-4 w-4" />
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className="ml-5 flex flex-col">
+				<DropdownMenuItem
+					className="gap-x-2 py-2"
+					onClick={handleFileDropdownOpening}
+				>
+					{"Open"}
+				</DropdownMenuItem>
+				<Separator />
 				<DropdownMenuItem className="gap-x-2 py-2" onClick={handleExportAll}>
 					{dataStatus === "full" ? "Export" : "Export all"}
 				</DropdownMenuItem>
-				{dataStatus === "full" ? null : (
+				{dataStatus === "partial" ? (
 					<>
 						<Separator />
 						<DropdownMenuItem
@@ -155,12 +180,21 @@ export function ExportDataDropdown<T extends Table<FilePickerRow>>({
 							{"Export selected"}
 						</DropdownMenuItem>
 					</>
-				)}
+				) : null}
 				<Separator />
 				<DropdownMenuItem className="gap-x-2 py-2" onClick={handleOpenDialog}>
 					{"Export as"}
 				</DropdownMenuItem>
 			</DropdownMenuContent>
+			<FilePickerImportSettings
+				inputRef={inputRef}
+				onFileImport={(e) => {
+					onFileImport(e);
+					setActive(false);
+				}}
+				fileSizeLimit={{ size: 5, unit: "MB" }}
+				accept={filePickerAccepts}
+			/>
 			<ExportDialog
 				originalFilename={originalFilename}
 				dataStatus={dataStatus}
