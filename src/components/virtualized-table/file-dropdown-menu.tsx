@@ -11,13 +11,13 @@ import type { Table } from "@tanstack/react-table";
 import {
 	filePickerAccepts,
 	type FilePickerRow,
-} from "@/features/home/components/filepicker/file-picker";
-import type { TableHeaders } from "@/features/home/utils/mapHeadersToRows";
+} from "@/features/home/components/headline-file-picker";
+import type { TableHeaders } from "@/components/file-picker-import-dialog/mapHeadersToRows";
 import { cn } from "@/lib/utils";
-import type { FilePickerCoreRef } from "@/features/home/components/filepicker/file-picker-core";
+import type { FilePickerCoreRef } from "@/components/file-picker-core";
 import type { OnFileImport } from "@/features/home/components/headline-picker";
-import { Separator } from "../ui/separator";
-import { FilePickerImportSettings } from "../file-picker-import-settings";
+import { Separator } from "@/components/ui/separator";
+import { FilePickerImportDialog } from "../file-picker-import-dialog/file-picker-import-dialog";
 import { useDataProperties } from "./hooks/useDataProperties";
 import { ExportDialog, type ExportDialogFormSchema } from "./export-dialog";
 import { exportBlobPartToFile } from "./utils/exportBlobPartToFile";
@@ -186,7 +186,7 @@ export function FileDropdownMenu<T extends Table<FilePickerRow>>({
 					{"Export as"}
 				</DropdownMenuItem>
 			</DropdownMenuContent>
-			<FilePickerImportSettings
+			<FilePickerImportDialog
 				inputRef={inputRef}
 				onFileImport={(e) => {
 					onFileImport(e);

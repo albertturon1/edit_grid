@@ -1,9 +1,9 @@
-import type { FilePickerRow } from "@/features/home/components/filepicker/file-picker";
+import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 import type { Table } from "@tanstack/react-table";
 import { TableColumnsSelector } from "@/components/virtualized-table/table-columns-selector";
 import { RowsSelectionModeToggle } from "@/components/virtualized-table/rows-selection-mode-toggle";
 import { SelectedRowsIndicator } from "@/components/virtualized-table/selected-rows-indicator";
-import type { TableHeaders } from "@/features/home/utils/mapHeadersToRows";
+import type { TableHeaders } from "@/components/file-picker-import-dialog/mapHeadersToRows";
 import { FileDropdownMenu } from "./file-dropdown-menu";
 import type { OnFileImport } from "@/features/home/components/headline-picker";
 

@@ -23,7 +23,7 @@ import {
 import type { TableDataStatus } from "@/components/virtualized-table/hooks/useDataProperties";
 import { ExportDialogRadioGroup } from "@/components/virtualized-table/export-dialog-radio-group";
 import { splitOnLastOccurrence } from "@/lib/utils";
-import type { TableHeaders } from "@/features/home/utils/mapHeadersToRows";
+import type { TableHeaders } from "@/components/file-picker-import-dialog/mapHeadersToRows";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export const EXPORT_TYPE = {

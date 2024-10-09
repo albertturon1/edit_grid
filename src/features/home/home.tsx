@@ -1,10 +1,10 @@
 import { useState } from "react";
-import type { FilePickerRow } from "@/features/home/components/filepicker/file-picker";
+import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 import { VirtualizedTable } from "@/components/virtualized-table/virtualized-table";
 import { Landing } from "@/features/home/components/landing";
 import { NAVBAR_HEIGHT } from "@/routes/__root";
 import { useWindowDimensions } from "@/lib/useWindowDimensions";
-import type { TableHeaders } from "@/features/home/utils/mapHeadersToRows";
+import type { TableHeaders } from "@/components/file-picker-import-dialog/mapHeadersToRows";
 import type { OnFileImport } from "./components/headline-picker";
 // import { useBlocker } from "@tanstack/react-router";
 

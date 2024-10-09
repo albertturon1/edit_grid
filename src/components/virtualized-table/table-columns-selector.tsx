@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { FilePickerRow } from "@/features/home/components/filepicker/file-picker";
+import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 import type { Table } from "@tanstack/react-table";
 import {
 	DropdownMenu,

@@ -5,14 +5,12 @@ import { TableManagement } from "@/components/virtualized-table/table-management
 import { NAVBAR_HEIGHT } from "@/routes/__root";
 import { useWindowDimensions } from "@/lib/useWindowDimensions";
 import { useVirtualizedTable } from "@/components/virtualized-table/hooks/useVirtualizedTable";
-import type { FilePickerRow } from "@/features/home/components/filepicker/file-picker";
+import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 import type {
 	TableHeaders,
 	TableRows,
-} from "@/features/home/utils/mapHeadersToRows";
+} from "@/components/file-picker-import-dialog/mapHeadersToRows";
 import type { OnFileImport } from "@/features/home/components/headline-picker";
-
-export const VIRTUALIZED_TABLE_STICKY_CLASSES = "sticky left-0 z-10";
 
 type VirtualizedTableProps = {
 	headers: TableHeaders;

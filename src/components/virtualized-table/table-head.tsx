@@ -1,15 +1,14 @@
 import type { Table } from "@tanstack/react-table";
 import { flexRender } from "@tanstack/react-table";
-import { VIRTUALIZED_TABLE_STICKY_CLASSES } from "@/components/virtualized-table/virtualized-table";
 import { cn } from "@/lib/utils";
+
+const NUMERICAL_COLUMN_ID =
+	"text-white/0 cursor-default selection:cursor-default"; // properties to hide the “0” from the first cell - it is rendered to keep the layout stable when no column is visible except the numeric one.
 
 // biome-ignore lint/suspicious/noExplicitAny: generic
 type TableHeadProps<T extends Table<any>> = {
 	table: T;
 };
-
-const NUMERICAL_COLUMN_ID =
-	"text-white/0 cursor-default selection:cursor-default"; // properties to hide the “0” from the first cell - it is rendered to keep the layout stable when no column is visible except the numeric one.
 
 // biome-ignore lint/suspicious/noExplicitAny: generic
 export function TableHead<T extends Table<any>>({ table }: TableHeadProps<T>) {
@@ -26,7 +25,7 @@ export function TableHead<T extends Table<any>>({ table }: TableHeadProps<T>) {
 								className={cn(
 									"relative bg-background overflow-hidden font-semibold border-r py-2 flex pl-2",
 									idx === 0
-										? cn(VIRTUALIZED_TABLE_STICKY_CLASSES, NUMERICAL_COLUMN_ID)
+										? cn("sticky left-0 z-10", NUMERICAL_COLUMN_ID)
 										: "", // sticky first cell
 								)}
 							>

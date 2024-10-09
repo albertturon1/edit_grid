@@ -1,6 +1,6 @@
 import type { Row } from "@tanstack/react-table";
 import type { VirtualItem, Virtualizer } from "@tanstack/react-virtual";
-import type { FilePickerRow } from "@/features/home/components/filepicker/file-picker";
+import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 import { cn } from "@/lib/utils";
 import { useTheme, getValueFromSystemTheme } from "@/components/theme-provider";
 import { TableBodyRowCell } from "@/components/virtualized-table/table-body-row-cell";

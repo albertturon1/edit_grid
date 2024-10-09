@@ -1,5 +1,5 @@
 import type { Table } from "@tanstack/react-table";
-import type { FilePickerRow } from "@/features/home/components/filepicker/file-picker";
+import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 
 type SelectedRowsIndicatorProps<T extends Table<FilePickerRow>> = {
 	table: T;

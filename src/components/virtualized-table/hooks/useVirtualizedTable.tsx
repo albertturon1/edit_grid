@@ -10,7 +10,7 @@ import { useMemo, useState, type Dispatch } from "react";
 import { tableDefaultColumn } from "@/components/virtualized-table/default-column";
 import { TableNumericalCell } from "@/components/virtualized-table/table-numerical-cell";
 import { TableNumericalHeader } from "@/components/virtualized-table/table-numerical-header";
-import type { FilePickerRow } from "@/features/home/components/filepicker/file-picker";
+import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 
 const columnHelper = createColumnHelper<FilePickerRow>();
 
