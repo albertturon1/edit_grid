@@ -118,8 +118,14 @@
   @apply bg-background;
 }
 
+/* Default vertical scrollbar */
 ::-webkit-scrollbar-track {
   @apply h-full w-2.5;
-  border: 1.5px solid var(--scrollbar-track);
+  border-left: 1.5px solid var(--scrollbar-track); /* Border only on the left */
 }
 
+/* Horizontal scrollbar */
+::-webkit-scrollbar-track:horizontal {
+  @apply w-full h-2.5;
+  border: 1.5px solid var(--scrollbar-track); /* Border only on the top */
+}
