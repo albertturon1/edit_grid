@@ -35,6 +35,9 @@ export function useVirtualizedTable({
 	const [rowSelectionMode, setRowSelectionMode] = useState(false);
 
 	const columns = useMemo(() => {
+		const headersIds = headers.map((e) => e);
+		const mappedHeaders = getMappedHeaders(headersIds);
+
 		return [
 			columnHelper.accessor(___INTERNAL_ID_COLUMN_NAME, {
 				// rendering 0 to keep the layout stable when no column is visible except the numeric one - should be hidden using CSS
@@ -60,7 +63,7 @@ export function useVirtualizedTable({
 					className: "sticky left-0", //sticky first column
 				},
 			}),
-			...headers.map((header) => {
+			...mappedHeaders.map((header) => {
 				return columnHelper.accessor(header, {
 					header,
 				});
@@ -112,4 +115,31 @@ function getNoCellSize(dataLength: number) {
 	const stringifiedLength = dataLength.toString().length;
 
 	return doublePadding + checkboxWidth + (stringifiedLength + 1) * unitSize;
+}
+
+function getMappedHeaders(headersIds: string[]) {
+	// Move the Map outside of the reduce function to persist counts across iterations
+	const headerCount = new Map<string, number>();
+
+	return headersIds.reduce<string[]>((acc, header, index) => {
+		let newId = header;
+
+		// If the current element is empty, assign it a name
+		if (!newId) {
+			newId = `Column${index + 1}`;
+		}
+
+		// Check if the header already exists in the map
+		if (headerCount.has(newId)) {
+			// biome-ignore lint/style/noNonNullAssertion: checked above
+			const count = headerCount.get(newId)! + 1;
+			headerCount.set(newId, count);
+			newId = `${newId}_${count}`;
+		} else {
+			headerCount.set(newId, 1);
+		}
+
+		acc.push(newId);
+		return acc;
+	}, []);
 }
