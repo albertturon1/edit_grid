@@ -8,7 +8,7 @@ import {
 } from "react";
 import toast from "react-hot-toast";
 import Papa from "papaparse";
-import type { SupportedFormats } from "./file-picker";
+import type { SupportedFormats } from "../features/home/components/headline-file-picker";
 
 const ONE_BYTE = 1048576;
 

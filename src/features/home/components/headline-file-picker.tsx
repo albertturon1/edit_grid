@@ -1,10 +1,10 @@
-import { FileUp } from "lucide-react";
-import type { FilePickerCoreProps } from "./file-picker-core";
 import type { MouseEvent } from "react";
+import { FileUp } from "lucide-react";
+import type { FilePickerCoreProps } from "@/components/file-picker-core";
 import {
-	FilePickerImportSettings,
+	FilePickerImportDialog,
 	type FilePickerImportSettingsProps,
-} from "@/components/file-picker-import-settings";
+} from "@/components/file-picker-import-dialog/file-picker-import-dialog";
 
 export const filePickerAccepts: FilePickerAccept = {
 	".csv": true,
@@ -21,7 +21,7 @@ export type FilePickerProps = FilePickerImportSettingsProps &
 		onClick: (event: MouseEvent<HTMLButtonElement>) => void;
 	};
 
-export function FilePicker({
+export function HeadlineFilePicker({
 	accept,
 	fileSizeLimit,
 	onClick,
@@ -53,7 +53,7 @@ export function FilePicker({
 					</div>
 				</div>
 			</button>
-			<FilePickerImportSettings
+			<FilePickerImportDialog
 				{...props}
 				fileSizeLimit={{ size: 5, unit: "MB" }}
 				accept={filePickerAccepts}

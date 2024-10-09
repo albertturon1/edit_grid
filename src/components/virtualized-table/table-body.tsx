@@ -1,6 +1,6 @@
 import type { RefObject } from "react";
 import type { Row, Table } from "@tanstack/react-table";
-import type { FilePickerRow } from "@/features/home/components/filepicker/file-picker";
+import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { TableBodyRow } from "@/components/virtualized-table/table-body-row";
 

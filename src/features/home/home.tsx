@@ -1,12 +1,12 @@
 import { useState } from "react";
-import type { FilePickerRow } from "@/features/home/components/filepicker/file-picker";
+import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 import { VirtualizedTable } from "@/components/virtualized-table/virtualized-table";
 import { Landing } from "@/features/home/components/landing";
 import { NAVBAR_HEIGHT } from "@/routes/__root";
 import { useWindowDimensions } from "@/lib/useWindowDimensions";
-import type { TableHeaders } from "@/features/home/utils/mapHeadersToRows";
+import type { TableHeaders } from "@/components/file-picker-import-dialog/mapHeadersToRows";
 import type { OnFileImport } from "./components/headline-picker";
-// import { useBlocker } from "@tanstack/react-router";
+import { useBlocker } from "@tanstack/react-router";
 
 export function HomePage() {
 	const [rows, setRows] = useState<FilePickerRow[]>([]);
@@ -14,16 +14,17 @@ export function HomePage() {
 	const [originalFilename, setOriginalFilename] = useState<string>("");
 	const { height } = useWindowDimensions();
 
-	// // display alert before leaving this page
-	// useBlocker({
-	// 	condition: data.length > 0,
-	// });
-
 	function onFileImport({ file, headers, rows }: OnFileImport) {
 		setHeaders(headers);
 		setRows(rows);
 		setOriginalFilename(file.name);
 	}
+
+	// const { proceed, reset, status } = useBlocker({
+	useBlocker({
+		blockerFn: () => "Are you sure you want to leave?",
+		condition: rows.length > 0,
+	});
 
 	return (
 		<div
@@ -35,15 +36,17 @@ export function HomePage() {
 			{!headers ? (
 				<Landing onFileImport={onFileImport} />
 			) : (
-				<div className="w-full h-full px-5">
-					<VirtualizedTable
-						rows={rows}
-						headers={headers}
-						originalFilename={originalFilename}
-						onRowsChange={setRows}
-						onFileImport={onFileImport}
-					/>
-				</div>
+				<>
+					<div className="w-full h-full px-5">
+						<VirtualizedTable
+							rows={rows}
+							headers={headers}
+							originalFilename={originalFilename}
+							onRowsChange={setRows}
+							onFileImport={onFileImport}
+						/>
+					</div>
+				</>
 			)}
 		</div>
 	);

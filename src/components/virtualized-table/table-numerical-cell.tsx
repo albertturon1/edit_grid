@@ -1,8 +1,8 @@
 import type { CellContext, Row } from "@tanstack/react-table";
-import type { FilePickerRow } from "@/features/home/components/filepicker/file-picker";
+import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useOnKeyboardButtonChange } from "@/components/virtualized-table/hooks/useOnKeyboardButtonChange";
+import { useOnKeyboardButtonChange } from "@/lib/useOnKeyboardButtonChange";
 
 type TableNumericalCellProps = CellContext<FilePickerRow, string> & {
 	anchorRow: Row<FilePickerRow> | null;

@@ -6,8 +6,8 @@ import {
 	FilePickerCore,
 	type FilePickerCoreProps,
 	type FilePickerCoreRef,
-} from "@/features/home/components/filepicker/file-picker-core";
-import { mapHeadersToRows } from "@/features/home/utils/mapHeadersToRows";
+} from "@/components/file-picker-core";
+import { mapHeadersToRows } from "@/components/file-picker-import-dialog/mapHeadersToRows";
 import type {
 	OnFileImport,
 	TemporalFileData,
@@ -15,7 +15,7 @@ import type {
 import {
 	ImportSettingsDialog,
 	type ImportSettingsFormSchema,
-} from "@/features/home/components/filepicker/import-settings-dialog";
+} from "@/components/import-settings-dialog";
 
 const dataSchema = z.array(z.array(z.string())).min(1);
 
@@ -27,7 +27,7 @@ export type FilePickerImportSettingsProps = Omit<
 	inputRef: RefObject<FilePickerCoreRef>;
 };
 
-export function FilePickerImportSettings({
+export function FilePickerImportDialog({
 	inputRef,
 	...props
 }: FilePickerImportSettingsProps) {

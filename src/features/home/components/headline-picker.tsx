@@ -2,13 +2,13 @@ import { useRef, type MouseEvent } from "react";
 import { Logo } from "@/components/logo";
 import { cn } from "@/lib/utils";
 import { getValueFromSystemTheme, useTheme } from "@/components/theme-provider";
-import { FilePicker } from "@/features/home/components/filepicker/file-picker";
+import { HeadlineFilePicker } from "@/features/home/components/headline-file-picker";
 import type {
 	TableHeaders,
 	TableRows,
-} from "@/features/home/utils/mapHeadersToRows";
+} from "@/components/file-picker-import-dialog/mapHeadersToRows";
 import type { ParseResult } from "papaparse";
-import type { FilePickerCoreRef } from "./filepicker/file-picker-core";
+import type { FilePickerCoreRef } from "../../../components/file-picker-core";
 
 export type OnFileImport = {
 	file: File;
@@ -50,7 +50,7 @@ export function HeadlineWithPicker({ onFileImport }: HeadlineWithPickerProps) {
 			<div className="absolute z-10 top-0 right-0 left-0 bottom-0 flex flex-1 flex-col justify-center items-center gap-y-10 px-3 sm:px-6 backdrop-blur-3xl pb-[5%]">
 				<Headline />
 				<div className="flex justify-center items-center">
-					<FilePicker
+					<HeadlineFilePicker
 						fileSizeLimit={{ size: 5, unit: "MB" }}
 						inputRef={inputRef}
 						onFileImport={onFileImport}
