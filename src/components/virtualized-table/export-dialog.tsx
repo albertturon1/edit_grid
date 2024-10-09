@@ -35,20 +35,15 @@ const exportTypeSchema = z.enum([EXPORT_TYPE.all, EXPORT_TYPE.selected], {
 	required_error: "The export type must be selected..",
 });
 
-const commonSchema = z.object({
+const formSchema = z.object({
 	filename: z
 		.string({
 			required_error: "Filename cannot be empty.",
 		})
 		.min(1),
 	includeHeaders: z.boolean(),
+	exportType: exportTypeSchema,
 });
-
-function createFormSchema(isPartialData: boolean) {
-	return commonSchema.extend({
-		exportType: isPartialData ? exportTypeSchema : z.undefined(),
-	});
-}
 
 export type ExportDialogProps = {
 	open: boolean;
@@ -60,9 +55,7 @@ export type ExportDialogProps = {
 	headers: TableHeaders;
 };
 
-export type ExportDialogFormSchema = z.infer<
-	ReturnType<typeof createFormSchema>
->;
+export type ExportDialogFormSchema = z.infer<typeof formSchema>;
 
 export function ExportDialog({
 	open,
@@ -70,14 +63,14 @@ export function ExportDialog({
 	onCancel,
 	originalFilename,
 	headers,
-	...props
+	onOpenChange,
+	onSubmit,
 }: ExportDialogProps) {
 	const [originalFilenameExtensionless] = splitOnLastOccurrence(
 		originalFilename,
 		".",
 	);
 
-	const formSchema = createFormSchema(dataStatus === "partial");
 	const form = useForm<ExportDialogFormSchema>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -87,12 +80,12 @@ export function ExportDialog({
 		},
 	});
 
-	function onSubmit(data: ExportDialogFormSchema) {
-		props.onSubmit(data);
+	function handleSubmit(data: ExportDialogFormSchema) {
+		onSubmit(data);
 	}
 
-	function onOpenChange(isOpen: boolean) {
-		props.onOpenChange(isOpen);
+	function handleOpenChange(isOpen: boolean) {
+		onOpenChange(isOpen);
 
 		if (!isOpen) {
 			//clear errors on closing - fields will by validate onSubmit anyway
@@ -101,32 +94,33 @@ export function ExportDialog({
 	}
 
 	return (
-		<Dialog open={open} onOpenChange={onOpenChange}>
+		<Dialog open={open} onOpenChange={handleOpenChange}>
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>{"Export File"}</DialogTitle>
 					<DialogDescription>
-						{
-							"Configure your file export settings. Enter a file name and choose your export preferences."
-						}
+						{"Configure export settings of the file."}
 					</DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+					<form
+						onSubmit={form.handleSubmit(handleSubmit)}
+						className="space-y-6"
+					>
 						<FormField
 							control={form.control}
 							name="filename"
 							render={({ field }) => (
 								<FormItem>
 									<div>
-										<FormLabel>{"Filename"}</FormLabel>
+										<FormLabel>{"File name"}</FormLabel>
 										<FormDescription>
 											{"Enter the name of the file."}
 										</FormDescription>
 										<FormMessage />
 									</div>
 									<FormControl>
-										<Input placeholder="Enter filename" {...field} />
+										<Input placeholder="Enter file name" {...field} />
 									</FormControl>
 								</FormItem>
 							)}

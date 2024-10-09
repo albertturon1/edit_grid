@@ -21,14 +21,24 @@ export function TableNumericalCell({
 	onModifierStateChange,
 	rowSelectionMode,
 }: TableNumericalCellProps) {
+	const noSelectElements = document.querySelector("body");
+
 	useOnKeyboardButtonChange({
 		key: "Shift",
 		os: ["mac", "linux", "windows"],
-		onKeyUp: () => {
-			onModifierStateChange(false);
-		},
 		onKeyDown: () => {
 			onModifierStateChange(true);
+
+			// disable text selection
+			if (noSelectElements) {
+				noSelectElements.style.userSelect = "none";
+			}
+		},
+		onKeyUp: () => {
+			onModifierStateChange(false);
+			if (noSelectElements) {
+				noSelectElements.style.userSelect = "";
+			}
 		},
 	});
 

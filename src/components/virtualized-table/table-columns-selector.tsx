@@ -10,7 +10,7 @@ import {
 	DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Columns3 } from "lucide-react";
+import { ChevronDown, Columns3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type TableManagementProps<T extends Table<FilePickerRow>> = {
@@ -39,10 +39,11 @@ export function TableColumnsSelector<T extends Table<FilePickerRow>>({
 						className={cn("h-4 w-4", columnSelectionMode ? "text-primary" : "")}
 					/>
 					{"Columns"}
+					<ChevronDown className="h-4 w-4" />
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className="w-56">
-				<DropdownMenuLabel>{"Toggle Columns"}</DropdownMenuLabel>
+				<DropdownMenuLabel>{"Toggle columns"}</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownItems table={table} />
 			</DropdownMenuContent>

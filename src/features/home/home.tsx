@@ -5,6 +5,7 @@ import { Landing } from "@/features/home/components/landing";
 import { NAVBAR_HEIGHT } from "@/routes/__root";
 import { useWindowDimensions } from "@/lib/useWindowDimensions";
 import type { TableHeaders } from "@/features/home/utils/mapHeadersToRows";
+import type { OnFileImport } from "./components/headline-picker";
 // import { useBlocker } from "@tanstack/react-router";
 
 export function HomePage() {
@@ -18,6 +19,12 @@ export function HomePage() {
 	// 	condition: data.length > 0,
 	// });
 
+	function onFileImport({ file, headers, rows }: OnFileImport) {
+		setHeaders(headers);
+		setRows(rows);
+		setOriginalFilename(file.name);
+	}
+
 	return (
 		<div
 			className="overflow-hidden flex flex-col gap-y-10"
@@ -26,13 +33,7 @@ export function HomePage() {
 			}}
 		>
 			{!headers ? (
-				<Landing
-					onFileImport={({ file, headers, rows }) => {
-						setHeaders(headers);
-						setRows(rows);
-						setOriginalFilename(file.name);
-					}}
-				/>
+				<Landing onFileImport={onFileImport} />
 			) : (
 				<div className="w-full h-full px-5">
 					<VirtualizedTable
@@ -40,6 +41,7 @@ export function HomePage() {
 						headers={headers}
 						originalFilename={originalFilename}
 						onRowsChange={setRows}
+						onFileImport={onFileImport}
 					/>
 				</div>
 			)}

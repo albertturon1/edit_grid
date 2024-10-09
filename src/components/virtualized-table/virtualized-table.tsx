@@ -10,6 +10,7 @@ import type {
 	TableHeaders,
 	TableRows,
 } from "@/features/home/utils/mapHeadersToRows";
+import type { OnFileImport } from "@/features/home/components/headline-picker";
 
 export const VIRTUALIZED_TABLE_STICKY_CLASSES = "sticky left-0 z-10";
 
@@ -18,13 +19,13 @@ type VirtualizedTableProps = {
 	rows: TableRows;
 	onRowsChange: Dispatch<React.SetStateAction<FilePickerRow[]>>;
 	originalFilename: string;
+	onFileImport: (props: OnFileImport) => void;
 };
 
 export function VirtualizedTable({
 	rows,
-	headers,
 	onRowsChange,
-	originalFilename,
+	...props
 }: VirtualizedTableProps) {
 	//The virtualizer needs to know the scrollable container element
 	const tableContainerRef = useRef<HTMLDivElement>(null);
@@ -32,7 +33,7 @@ export function VirtualizedTable({
 	const { height } = useWindowDimensions();
 	const { table, rowSelectionMode, setRowSelectionMode } = useVirtualizedTable({
 		rows,
-		headers: headers.values,
+		headers: props.headers.values,
 		onRowsChange,
 	});
 
@@ -45,11 +46,10 @@ export function VirtualizedTable({
 			}}
 		>
 			<TableManagement
+				{...props}
 				table={table}
-				originalFilename={originalFilename}
 				rowSelectionMode={rowSelectionMode}
 				onRowSelectionModeChange={setRowSelectionMode}
-				headers={headers}
 			/>
 			{/* 
 				overflow-auto - scrollable table container
