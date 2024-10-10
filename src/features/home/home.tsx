@@ -37,7 +37,7 @@ export function HomePage() {
 				<Landing onFileImport={onFileImport} />
 			) : (
 				<>
-					<div className="w-full h-full px-5">
+					<div className="w-full h-full px-2 sm:px-5">
 						<VirtualizedTable
 							rows={rows}
 							headers={headers}

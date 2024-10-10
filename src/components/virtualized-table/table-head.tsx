@@ -13,7 +13,7 @@ type TableHeadProps<T extends Table<any>> = {
 // biome-ignore lint/suspicious/noExplicitAny: generic
 export function TableHead<T extends Table<any>>({ table }: TableHeadProps<T>) {
 	return (
-		<thead className="bg-background grid sticky top-0 z-10 border-b">
+		<thead className="bg-background grid sticky top-0 z-10 border-b text-xs sm:text-sm">
 			{table.getHeaderGroups().map((headerGroup) => (
 				<tr className="flex" key={headerGroup.id}>
 					{headerGroup.headers.map((header, idx) => {

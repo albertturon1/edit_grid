@@ -79,7 +79,7 @@ export function ImportSettingsDialog({
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent>
+			<DialogContent className="w-11/12 sm:max-w-lg">
 				<DialogHeader>
 					<DialogTitle>{"Import File"}</DialogTitle>
 					<DialogDescription>
@@ -122,7 +122,7 @@ export function ImportSettingsDialog({
 								</FormItem>
 							)}
 						/>
-						<DialogFooter className="w-full">
+						<DialogFooter className="w-full flex flex-col-reverse sm:flex-row gap-y-2">
 							<Button variant="outline" onClick={onCancel}>
 								{"Cancel"}
 							</Button>

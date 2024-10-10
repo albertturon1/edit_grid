@@ -29,6 +29,7 @@ type FileDropdownMenuProps<T extends Table<FilePickerRow>> = {
 	rowSelectionMode: boolean;
 	headers: TableHeaders;
 	onFileImport: (props: OnFileImport) => void;
+	className?: string;
 };
 
 export function FileDropdownMenu<T extends Table<FilePickerRow>>({
@@ -37,6 +38,7 @@ export function FileDropdownMenu<T extends Table<FilePickerRow>>({
 	originalFilename,
 	rowSelectionMode,
 	table,
+	className,
 }: FileDropdownMenuProps<T>) {
 	const [active, setActive] = useState(false);
 	const inputRef = useRef<FilePickerCoreRef>(null);
@@ -153,7 +155,11 @@ export function FileDropdownMenu<T extends Table<FilePickerRow>>({
 			<DropdownMenuTrigger asChild>
 				<Button
 					variant="outline"
-					className={cn("flex gap-x-2 font-medium", active ? "bg-accent" : "")}
+					className={cn(
+						"flex gap-x-2 sm:gap-x-3 sm:w-max justify-between",
+						active ? "bg-accent" : "",
+						className,
+					)}
 				>
 					{"File"}
 					<ChevronDown className="h-4 w-4" />

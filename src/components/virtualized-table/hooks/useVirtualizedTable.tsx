@@ -11,6 +11,7 @@ import { tableDefaultColumn } from "@/components/virtualized-table/default-colum
 import { TableNumericalCell } from "@/components/virtualized-table/table-numerical-cell";
 import { TableNumericalHeader } from "@/components/virtualized-table/table-numerical-header";
 import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
+import { useWindowDimensions } from "@/lib/useWindowDimensions";
 
 const columnHelper = createColumnHelper<FilePickerRow>();
 
@@ -28,6 +29,7 @@ export function useVirtualizedTable({
 }) {
 	const [anchorRow, setAnchorRow] = useState<Row<FilePickerRow> | null>(null);
 	const [isModifierActive, setIsModifierActive] = useState(false);
+	const { width: screenWidth } = useWindowDimensions();
 
 	// rowSelection return an object with selected rows as {indexNumber: true} (only for already selected rows)
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -58,9 +60,9 @@ export function useVirtualizedTable({
 						rowSelectionMode={rowSelectionMode}
 					/>
 				),
-				size: getNoCellSize(rows.length), //starting column size
+				size: getNoCellSize({ dataLength: rows.length, screenWidth }), //starting column size
 				meta: {
-					className: "sticky left-0", //sticky first column
+					className: "sticky left-0 w-10", //sticky first column
 				},
 			}),
 			...mappedHeaders.map((header) => {
@@ -69,7 +71,14 @@ export function useVirtualizedTable({
 				});
 			}),
 		];
-	}, [headers, rows.length, anchorRow, isModifierActive, rowSelectionMode]);
+	}, [
+		headers,
+		rows.length,
+		anchorRow,
+		isModifierActive,
+		rowSelectionMode,
+		screenWidth,
+	]);
 
 	const table = useReactTable({
 		data: rows,
@@ -108,13 +117,21 @@ export function useVirtualizedTable({
 }
 
 // function used to determine width of numeral column
-function getNoCellSize(dataLength: number) {
+function getNoCellSize({
+	dataLength,
+	screenWidth,
+}: { screenWidth: number; dataLength: number }) {
 	const doublePadding = 17; //px-2 + 1
 	const checkboxWidth = 24; // 16 + padding
 	const unitSize = 9;
 	const stringifiedLength = dataLength.toString().length;
 
-	return doublePadding + checkboxWidth + (stringifiedLength + 1) * unitSize;
+	const multi = screenWidth > 640 ? 1 : 0.83; //calculating multiplier for different font sizes. For sm break point
+
+	const baseWidth =
+		doublePadding + checkboxWidth + (stringifiedLength + 1) * unitSize;
+
+	return baseWidth * multi;
 }
 
 function getMappedHeaders(headersIds: string[]) {

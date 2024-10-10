@@ -129,7 +129,7 @@ export function TableNumericalCell({
 				/>
 			) : null}
 
-			<h1 className={"mt-[1px]"}>
+			<h1 className={"mt-[1px] text-xs sm:text-sm"}>
 				{(table
 					.getSortedRowModel()
 					?.flatRows?.findIndex((flatRow) => flatRow.id === row.id) || 0) + 1}

@@ -6,9 +6,9 @@ import {
 	type ChangeEvent,
 	type MouseEvent,
 } from "react";
-import toast from "react-hot-toast";
 import Papa from "papaparse";
 import type { SupportedFormats } from "../features/home/components/headline-file-picker";
+import { useToast } from "@/components/hooks/use-toast";
 
 const ONE_BYTE = 1048576;
 
@@ -31,6 +31,7 @@ export const FilePickerCore = forwardRef<
 	FilePickerCoreRef,
 	FilePickerCoreProps
 >(function MyInput({ accept, onFileImport, fileSizeLimit }, ref) {
+	const { toast } = useToast();
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	useImperativeHandle(
@@ -50,24 +51,19 @@ export const FilePickerCore = forwardRef<
 		const firstFile = event?.target.files?.[0];
 
 		if (!firstFile) {
-			toast.error(
-				"Cannot open provided file!\n\nTry again with a different file.",
-				{
-					className: "text-sm",
-					duration: 5000,
-				},
-			);
+			toast({
+				title: "Cannot open provided file.",
+				description: "Try again with a different file.",
+			});
+
 			return;
 		}
 
 		if (fileSizeLimit && firstFile.size > ONE_BYTE * fileSizeLimit.size) {
-			toast.error(
-				`File "${firstFile.name}" is too big!\n\nTry again with a different file.`,
-				{
-					className: "text-sm",
-					duration: 5000,
-				},
-			);
+			toast({
+				title: `File "${firstFile.name}" is too big.`,
+				description: "Try again with a different file.",
+			});
 
 			return;
 		}
