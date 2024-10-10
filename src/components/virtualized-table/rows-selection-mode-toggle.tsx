@@ -5,11 +5,13 @@ import { cn } from "@/lib/utils";
 type SelectedRowsIndicatorProps = {
 	rowSelectionMode: boolean;
 	onRowSelectionModeChange: (pressed: boolean) => void;
+	className?: string;
 };
 
 export function RowsSelectionModeToggle({
 	rowSelectionMode,
 	onRowSelectionModeChange,
+	className,
 }: SelectedRowsIndicatorProps) {
 	return (
 		<Toggle
@@ -17,15 +19,15 @@ export function RowsSelectionModeToggle({
 			onPressedChange={onRowSelectionModeChange}
 			variant={"outline"}
 			aria-label="Toggle italic"
+			className={cn(
+				"justify-between flex items-center gap-x-2 sm:gap-x-3 transition-text bg-background",
+				className,
+			)}
 		>
-			<div
-				className={cn("flex items-center gap-x-2 font-medium transition-text")}
-			>
-				<Rows3
-					className={cn("h-4 w-4", rowSelectionMode ? "text-primary" : "")}
-				/>
-				{"Rows"}
-			</div>
+			<Rows3
+				className={cn("h-4 w-4", rowSelectionMode ? "text-primary" : "")}
+			/>
+			{"Rows"}
 		</Toggle>
 	);
 }

@@ -38,7 +38,7 @@ const exportTypeSchema = z.enum([EXPORT_TYPE.all, EXPORT_TYPE.selected], {
 const formSchema = z.object({
 	filename: z
 		.string({
-			required_error: "Filename cannot be empty.",
+			required_error: "File name cannot be empty.",
 		})
 		.min(1),
 	includeHeaders: z.boolean(),
@@ -95,11 +95,11 @@ export function ExportDialog({
 
 	return (
 		<Dialog open={open} onOpenChange={handleOpenChange}>
-			<DialogContent>
+			<DialogContent className="w-11/12 sm:max-w-lg">
 				<DialogHeader>
 					<DialogTitle>{"Export File"}</DialogTitle>
 					<DialogDescription>
-						{"Configure export settings of the file."}
+						{"Configure file export settings."}
 					</DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
@@ -114,9 +114,6 @@ export function ExportDialog({
 								<FormItem>
 									<div>
 										<FormLabel>{"File name"}</FormLabel>
-										<FormDescription>
-											{"Enter the name of the file."}
-										</FormDescription>
 										<FormMessage />
 									</div>
 									<FormControl>
@@ -143,7 +140,7 @@ export function ExportDialog({
 						{dataStatus === "partial" ? (
 							<ExportDialogRadioGroup control={form.control} />
 						) : null}
-						<DialogFooter className="w-full">
+						<DialogFooter className="w-full flex flex-col-reverse sm:flex-row gap-y-2">
 							<Button variant="outline" onClick={onCancel}>
 								{"Cancel"}
 							</Button>

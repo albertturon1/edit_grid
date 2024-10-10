@@ -35,9 +35,9 @@ export function HeadlineFilePicker({
 			<button
 				type="button"
 				onClick={onClick}
-				className="flex flex-col bg-picker-secondary p-1 rounded-2xl"
+				className="flex flex-col bg-picker-secondary p-1 rounded-2xl w-full"
 			>
-				<div className="flex flex-col gap-y-4 justify-center items-center max-w-max px-24 py-12 rounded-2xl bg-picker-primary border border-dashed border-gray-400 font-medium text-[0.9rem]">
+				<div className="flex flex-col gap-y-4 justify-center items-center w-full px-2 py-6 sm:py-8 rounded-2xl bg-picker-primary border border-dashed border-gray-400 font-medium text-[0.9rem]">
 					<div className="flex justify-center items-center bg-picker-icon-background p-3 rounded-full">
 						<FileUp size={32} strokeWidth={1.5} className="text-purple-400" />
 					</div>

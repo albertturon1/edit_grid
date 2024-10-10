@@ -15,10 +15,12 @@ import { cn } from "@/lib/utils";
 
 type TableManagementProps<T extends Table<FilePickerRow>> = {
 	table: T;
+	className?: string;
 };
 
 export function TableColumnsSelector<T extends Table<FilePickerRow>>({
 	table,
+	className,
 }: TableManagementProps<T>) {
 	const [columnSelectionMode, setColumnSelectionMode] = useState(false);
 
@@ -31,14 +33,20 @@ export function TableColumnsSelector<T extends Table<FilePickerRow>>({
 				<Button
 					variant="outline"
 					className={cn(
-						"flex gap-x-2 font-medium",
+						"flex gap-x-2 sm:gap-x-3 font-medium justify-between",
 						columnSelectionMode ? "bg-accent" : "",
+						className,
 					)}
 				>
-					<Columns3
-						className={cn("h-4 w-4", columnSelectionMode ? "text-primary" : "")}
-					/>
-					{"Columns"}
+					<div className="flex gap-x-2 sm:gap-x-3 items-center">
+						<Columns3
+							className={cn(
+								"h-4 w-4",
+								columnSelectionMode ? "text-primary" : "",
+							)}
+						/>
+						{"Columns"}
+					</div>
 					<ChevronDown className="h-4 w-4" />
 				</Button>
 			</DropdownMenuTrigger>

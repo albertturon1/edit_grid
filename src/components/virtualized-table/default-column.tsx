@@ -29,7 +29,7 @@ export const tableDefaultColumn: Partial<ColumnDef<FilePickerRow>> = {
 				value={value as string}
 				onChange={(e) => setValue(e.target.value)}
 				onBlur={onBlur}
-				className="bg-inherit rounded-none border-white/0 focus:border-blue-700 px-2 w-full resize-none min-h-0 tabular-nums overflow-hidden hover:overflow-auto focus:overflow-auto" //border-white/0 to avoid double borders and layout shifts in other cells
+				className="bg-inherit rounded-none border-white/0 focus:border-blue-700 px-2 w-full resize-none min-h-0 tabular-nums overflow-hidden hover:overflow-auto focus:overflow-auto text-xs sm:text-sm" //border-white/0 to avoid double borders and layout shifts in other cells
 			/>
 		);
 	},

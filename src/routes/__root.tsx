@@ -20,7 +20,7 @@ export const Route = createRootRoute({
 	notFoundComponent: NotFound,
 });
 
-export const NAVBAR_HEIGHT = 70;
+export const NAVBAR_HEIGHT = 60;
 
 function RootComponent() {
 	return (
