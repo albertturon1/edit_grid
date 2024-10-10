@@ -72,11 +72,11 @@ module.exports = {
 				"accordion-up": "accordion-up 0.2s ease-out",
 			},
 			screens: {
-				'xs': '460px',
+				xs: "460px",
 			},
 			transitionProperty: {
-				'height-opacity': 'height opacity'
-			  }
+				"height-opacity": "height opacity",
+			},
 		},
 	},
 	plugins: [require("tailwindcss-animate")],
