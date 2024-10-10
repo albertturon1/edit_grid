@@ -20,7 +20,7 @@ export function RowsSelectionModeToggle({
 			variant={"outline"}
 			aria-label="Toggle italic"
 			className={cn(
-				"justify-between flex items-center gap-x-2 sm:gap-x-3 transition-text bg-background",
+				"justify-start flex items-center gap-x-2 sm:gap-x-3 transition-text bg-background",
 				className,
 			)}
 		>
