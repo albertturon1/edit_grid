@@ -22,12 +22,13 @@ export type FilePickerProps = FilePickerImportSettingsProps &
 	};
 
 export function HeadlineFilePicker({
-	accept,
 	fileSizeLimit,
 	onClick,
 	...props
 }: FilePickerProps) {
-	const acceptConcat = accept ? Object.keys(accept).join(",") : null;
+	const acceptConcat = filePickerAccepts
+		? Object.keys(filePickerAccepts).join(",")
+		: null;
 
 	return (
 		<>
@@ -36,13 +37,16 @@ export function HeadlineFilePicker({
 				onClick={onClick}
 				className="flex flex-col bg-picker-secondary p-1 rounded-2xl"
 			>
-				<div className="flex flex-col gap-y-4 justify-center items-center max-w-max px-14 py-8 rounded-2xl bg-picker-primary border border-dashed border-gray-400 text-slate-700 font-medium text-[0.9rem]">
+				<div className="flex flex-col gap-y-4 justify-center items-center max-w-max px-24 py-12 rounded-2xl bg-picker-primary border border-dashed border-gray-400 font-medium text-[0.9rem]">
 					<div className="flex justify-center items-center bg-picker-icon-background p-3 rounded-full">
 						<FileUp size={32} strokeWidth={1.5} className="text-purple-400" />
 					</div>
 					<div className="flex flex-col gap-y-2">
-						<div>{"Click here to upload your file or drag and drop"}</div>
-						<div>
+						<h1 className="">
+							{"Click here to upload your file."}
+							{/* {"Click here to upload your file or drag and drop"} */}
+						</h1>
+						<div className="text-muted-foreground">
 							{acceptConcat ? (
 								<div className="text-slate-400 text-sm">{`Supported formats: ${acceptConcat}`}</div>
 							) : null}

@@ -34,7 +34,7 @@ export function FilePickerImportDialog({
 	const [dialogOpen, setDialogOpen] = useState(false);
 	const [imported, setImported] = useState<TemporalFileData | null>(null);
 
-	function onFileImport({
+	function handleOnFileImport({
 		file,
 		result,
 	}: { file: File; result: ParseResult<unknown> }) {
@@ -55,42 +55,31 @@ export function FilePickerImportDialog({
 				data: parsedResult.data,
 			},
 		});
+
 		setDialogOpen(true);
 	}
 
-	function onSubmitSetData(
-		file: File,
-		data: string[][],
-		fromRow: number,
-		firstRowAsHeaders: boolean,
-	) {
-		const { headers, rows } = mapHeadersToRows(
-			data,
-			firstRowAsHeaders,
-			fromRow,
-		);
-
-		props.onFileImport({
-			file,
-			headers,
-			rows,
-		});
-
-		setDialogOpen(false);
-	}
-
-	function handleImportDialogSubmit(importSettings: ImportSettingsFormSchema) {
+	function handleImportDialogSubmit({
+		firstRowAsHeaders,
+		fromRow,
+	}: ImportSettingsFormSchema) {
 		if (imported) {
-			onSubmitSetData(
-				imported.file,
+			const { headers, rows } = mapHeadersToRows(
 				imported.result.data,
-				importSettings.fromRow,
-				importSettings.firstRowAsHeaders,
+				firstRowAsHeaders,
+				fromRow,
 			);
+
+			props.onFileImport({
+				file: imported.file,
+				headers,
+				rows,
+			});
 		}
 	}
 
-	function onCancel() {
+	function handleOnCancel() {
+		setImported(null);
 		setDialogOpen(false);
 	}
 
@@ -98,7 +87,7 @@ export function FilePickerImportDialog({
 		<>
 			<FilePickerCore
 				ref={inputRef}
-				onFileImport={onFileImport}
+				onFileImport={handleOnFileImport}
 				accept={props.accept}
 			/>
 			{imported ? (
@@ -106,7 +95,7 @@ export function FilePickerImportDialog({
 					dataLength={imported.result.data.length}
 					open={dialogOpen}
 					onOpenChange={setDialogOpen}
-					onCancel={onCancel}
+					onCancel={handleOnCancel}
 					onSubmit={handleImportDialogSubmit}
 				/>
 			) : null}

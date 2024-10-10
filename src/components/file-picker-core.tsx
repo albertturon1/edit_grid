@@ -46,7 +46,7 @@ export const FilePickerCore = forwardRef<
 		[],
 	);
 
-	function handleInputChange(event: ChangeEvent<HTMLInputElement> | undefined) {
+	function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
 		const firstFile = event?.target.files?.[0];
 
 		if (!firstFile) {
@@ -81,6 +81,9 @@ export const FilePickerCore = forwardRef<
 				});
 			},
 		});
+
+		// Reset the input value to trigger onChange again for the same file
+		event.target.value = ""; // This will trigger onChange on the next selection
 	}
 
 	const acceptConcat = accept ? Object.keys(accept).join(",") : undefined;

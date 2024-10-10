@@ -9,6 +9,7 @@ import type {
 } from "@/components/file-picker-import-dialog/mapHeadersToRows";
 import type { ParseResult } from "papaparse";
 import type { FilePickerCoreRef } from "../../../components/file-picker-core";
+import { HeadlineCsvExample } from "./headline-csv-example";
 
 export type OnFileImport = {
 	file: File;
@@ -27,7 +28,10 @@ export type TemporalFileData = {
 	};
 };
 
-export function HeadlineWithPicker({ onFileImport }: HeadlineWithPickerProps) {
+export function HeadlineWithPicker({
+	onFileImport,
+	...props
+}: HeadlineWithPickerProps) {
 	const { theme } = useTheme();
 	const currentTheme = theme === "system" ? getValueFromSystemTheme() : theme;
 	const overlayColor =
@@ -46,16 +50,27 @@ export function HeadlineWithPicker({ onFileImport }: HeadlineWithPickerProps) {
 				overlayColor,
 			)}
 		>
-			<div className="flex flex-1 bg-background opacity-50" />
-			<div className="absolute z-10 top-0 right-0 left-0 bottom-0 flex flex-1 flex-col justify-center items-center gap-y-10 px-3 sm:px-6 backdrop-blur-3xl pb-[5%]">
-				<Headline />
-				<div className="flex justify-center items-center">
-					<HeadlineFilePicker
-						fileSizeLimit={{ size: 5, unit: "MB" }}
-						inputRef={inputRef}
+			<div className="flex flex-1 bg-background opacity-30 absolute z-10 top-0 right-0 left-0 bottom-0" />
+			<div className="z-10 flex flex-1 flex-col justify-between items-center backdrop-blur-3xl py-10">
+				<div className="flex flex-col pb-[5%] flex-1 justify-center gap-y-10 px-3 sm:px-6">
+					<Headline />
+					<div className="flex justify-center items-center">
+						<HeadlineFilePicker
+							{...props}
+							fileSizeLimit={{ size: 5, unit: "MB" }}
+							inputRef={inputRef}
+							onFileImport={onFileImport}
+							onClick={handleOpen}
+						/>
+					</div>
+				</div>
+				<div className="flex flex-col gap-y-2 md:flex-row gap-x-5">
+					<HeadlineCsvExample
 						onFileImport={onFileImport}
-						onClick={handleOpen}
-					/>
+						filepath="public/example_big.csv"
+					>
+						{"Open example file"}
+					</HeadlineCsvExample>
 				</div>
 			</div>
 		</div>
