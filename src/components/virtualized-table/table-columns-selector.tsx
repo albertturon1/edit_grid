@@ -50,7 +50,7 @@ export function TableColumnsSelector<T extends Table<FilePickerRow>>({
 					<ChevronDown className="h-4 w-4" />
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-56">
+			<DropdownMenuContent align="end">
 				<DropdownMenuLabel>{"Toggle columns"}</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownItems table={table} />

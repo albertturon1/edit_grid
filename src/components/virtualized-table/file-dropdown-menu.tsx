@@ -165,7 +165,7 @@ export function FileDropdownMenu<T extends Table<FilePickerRow>>({
 					<ChevronDown className="h-4 w-4" />
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="ml-5 flex flex-col">
+			<DropdownMenuContent className="flex flex-col" align="start">
 				<DropdownMenuItem
 					className="gap-x-2 py-2"
 					onClick={handleFileDropdownOpening}
