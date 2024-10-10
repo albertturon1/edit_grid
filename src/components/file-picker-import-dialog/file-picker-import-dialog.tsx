@@ -1,5 +1,4 @@
 import { useState, type RefObject } from "react";
-import toast from "react-hot-toast";
 import { z } from "zod";
 import type { ParseResult } from "papaparse";
 import {
@@ -16,6 +15,7 @@ import {
 	ImportSettingsDialog,
 	type ImportSettingsFormSchema,
 } from "@/components/import-settings-dialog";
+import { useToast } from "@/components/hooks/use-toast";
 
 const dataSchema = z.array(z.array(z.string())).min(1);
 
@@ -31,6 +31,8 @@ export function FilePickerImportDialog({
 	inputRef,
 	...props
 }: FilePickerImportSettingsProps) {
+	const { toast } = useToast();
+
 	const [dialogOpen, setDialogOpen] = useState(false);
 	const [imported, setImported] = useState<TemporalFileData | null>(null);
 
@@ -41,10 +43,11 @@ export function FilePickerImportDialog({
 		const parsedResult = dataSchema.safeParse(result.data);
 
 		if (!parsedResult.success) {
-			toast.error(
-				"Cannot use provided file!\n\nTry again with a different file.",
-				{ className: "text-sm", duration: 5000 },
-			);
+			toast({
+				title: "Cannot use provided file.",
+				description: "Try again with a different file.",
+			});
+
 			return;
 		}
 
