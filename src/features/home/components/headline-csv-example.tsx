@@ -2,14 +2,21 @@ import { mapHeadersToRows } from "@/components/file-picker-import-dialog/mapHead
 import { Button } from "@/components/ui/button";
 import Papa from "papaparse";
 import type { OnFileImport } from "./headline-picker";
+import type { ReactNode } from "react";
 
 type HeadlineCsvExampleProps = {
 	onFileImport: (props: OnFileImport) => void;
+	children: ReactNode;
+	filepath: string;
 };
 
-export function HeadlineCsvExample({ onFileImport }: HeadlineCsvExampleProps) {
+export function HeadlineCsvExample({
+	onFileImport,
+	children,
+	filepath,
+}: HeadlineCsvExampleProps) {
 	async function handleOnClick() {
-		const response: Response = await fetch("public/example.csv");
+		const response: Response = await fetch(filepath);
 
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
@@ -55,7 +62,7 @@ export function HeadlineCsvExample({ onFileImport }: HeadlineCsvExampleProps) {
 
 	return (
 		<Button variant={"outline"} onClick={handleOnClick}>
-			<h1>{"Open example file"}</h1>
+			{children}
 		</Button>
 	);
 }
