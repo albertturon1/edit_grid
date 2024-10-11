@@ -1,4 +1,4 @@
-import { useRef, type Dispatch } from "react";
+import { useRef, useState, type Dispatch } from "react";
 import { TableHead } from "@/components/virtualized-table/table-head";
 import { TableBody } from "@/components/virtualized-table/table-body";
 import { TableManagement } from "@/components/virtualized-table/table-management";
@@ -28,8 +28,12 @@ export function VirtualizedTable({
 	//The virtualizer needs to know the scrollable container element
 	const tableContainerRef = useRef<HTMLDivElement>(null);
 
+	// rowSelectionMode is boolean value that determines if row selection mode is active
+	const [rowSelectionMode, setRowSelectionMode] = useState(false);
+
 	const { height } = useWindowDimensions();
-	const { table, rowSelectionMode, setRowSelectionMode } = useVirtualizedTable({
+	const { table } = useVirtualizedTable({
+		rowSelectionMode,
 		rows,
 		headers: props.headers.values,
 		onRowsChange,
@@ -45,6 +49,10 @@ export function VirtualizedTable({
 		>
 			<TableManagement
 				{...props}
+				onFileImport={(e) => {
+					props.onFileImport(e);
+					setRowSelectionMode(false);
+				}}
 				table={table}
 				rowSelectionMode={rowSelectionMode}
 				onRowSelectionModeChange={setRowSelectionMode}

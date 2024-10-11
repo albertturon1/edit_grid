@@ -1,5 +1,5 @@
-import type { RefObject } from "react";
-import type { Row, Table } from "@tanstack/react-table";
+import { useEffect, useState, type RefObject } from "react";
+import type { Table } from "@tanstack/react-table";
 import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { TableBodyRow } from "@/components/virtualized-table/table-body-row";
@@ -15,11 +15,36 @@ export function TableBody<T extends Table<FilePickerRow>>({
 }: TableBodyProps<T>) {
 	const { rows } = table.getRowModel();
 
-	const rowVirtualizer = useTableVirtualizer({ tableContainerRef, rows });
+	const rowVirtualizer = useVirtualizer({
+		count: rows.length,
+		estimateSize: () => 60, //estimate row height for accurate scrollbar dragging
+		getScrollElement: () => tableContainerRef.current,
+		//measure dynamic row height, except in firefox because it measures table border height incorrectly
+		measureElement:
+			typeof window !== "undefined" &&
+			navigator.userAgent.indexOf("Firefox") === -1
+				? (element) => element?.getBoundingClientRect().height
+				: undefined,
+		overscan: 10,
+	});
+
+	const [isMounted, setIsMounted] = useState(false);
+
+	useEffect(() => {
+		setIsMounted(true);
+
+		return () => {
+			setIsMounted(false);
+		};
+	}, []);
+
+	if (!isMounted) {
+		return null;
+	} // Wait for client-side rendering
 
 	return (
 		<tbody
-			className="relative"
+			className="relative grid"
 			style={{
 				height: `${rowVirtualizer.getTotalSize()}px`, //tells scrollbar how big the table is
 			}}
@@ -35,25 +60,4 @@ export function TableBody<T extends Table<FilePickerRow>>({
 			))}
 		</tbody>
 	);
-}
-
-function useTableVirtualizer({
-	rows,
-	tableContainerRef,
-}: {
-	rows: Row<FilePickerRow>[];
-	tableContainerRef: RefObject<HTMLDivElement>;
-}) {
-	return useVirtualizer({
-		count: rows.length,
-		estimateSize: () => 33, //estimate row height for accurate scrollbar dragging
-		getScrollElement: () => tableContainerRef.current,
-		//measure dynamic row height, except in firefox because it measures table border height incorrectly
-		measureElement:
-			typeof window !== "undefined" &&
-			navigator.userAgent.indexOf("Firefox") === -1
-				? (element) => element?.getBoundingClientRect().height
-				: undefined,
-		overscan: 5,
-	});
 }

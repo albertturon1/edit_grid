@@ -16,6 +16,7 @@ import {
 	FormLabel,
 	FormControl,
 	Form,
+	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -23,7 +24,9 @@ import { useEffect } from "react";
 
 const importFormSchema = z.object({
 	firstRowAsHeaders: z.boolean(),
-	fromRow: z.number(),
+	fromRow: z.coerce.number().min(1, {
+		message: "Value must be over 0.",
+	}),
 });
 
 export type ImportSettingsFormSchema = z.infer<typeof importFormSchema>;
@@ -48,6 +51,7 @@ export function ImportSettingsDialog({
 			fromRow: 1,
 			firstRowAsHeaders: true,
 		},
+		mode: "onTouched",
 	});
 
 	function onSubmit(data: ImportSettingsFormSchema) {
@@ -104,6 +108,7 @@ export function ImportSettingsDialog({
 											max={Math.max(maxInputNumber, 1)}
 										/>
 									</FormControl>
+									<FormMessage />
 								</FormItem>
 							)}
 						/>

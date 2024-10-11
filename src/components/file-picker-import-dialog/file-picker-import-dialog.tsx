@@ -78,6 +78,8 @@ export function FilePickerImportDialog({
 				headers,
 				rows,
 			});
+
+			handleOnCancel();
 		}
 	}
 
@@ -93,15 +95,13 @@ export function FilePickerImportDialog({
 				onFileImport={handleOnFileImport}
 				accept={props.accept}
 			/>
-			{imported ? (
-				<ImportSettingsDialog
-					dataLength={imported.result.data.length}
-					open={dialogOpen}
-					onOpenChange={setDialogOpen}
-					onCancel={handleOnCancel}
-					onSubmit={handleImportDialogSubmit}
-				/>
-			) : null}
+			<ImportSettingsDialog
+				dataLength={imported?.result.data.length ?? 0}
+				open={dialogOpen}
+				onOpenChange={setDialogOpen}
+				onCancel={handleOnCancel}
+				onSubmit={handleImportDialogSubmit}
+			/>
 		</>
 	);
 }

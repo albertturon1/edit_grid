@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import Papa from "papaparse";
 import type { OnFileImport } from "./headline-picker";
 import type { ReactNode } from "react";
+import { toast } from "@/components/hooks/use-toast";
 
 type HeadlineCsvExampleProps = {
 	onFileImport: (props: OnFileImport) => void;
@@ -17,9 +18,13 @@ export function HeadlineCsvExample({
 }: HeadlineCsvExampleProps) {
 	async function handleOnClick() {
 		const response: Response = await fetch(filepath);
-
 		if (!response.ok) {
-			throw new Error("Network response was not ok");
+			toast({
+				title: "Cannot open provided file.",
+				duration: 4000,
+			});
+
+			return;
 		}
 
 		// Read the response as a Blob
