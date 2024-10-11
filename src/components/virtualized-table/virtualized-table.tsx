@@ -49,6 +49,10 @@ export function VirtualizedTable({
 		>
 			<TableManagement
 				{...props}
+				onFileImport={(e) => {
+					props.onFileImport(e);
+					setRowSelectionMode(false);
+				}}
 				table={table}
 				rowSelectionMode={rowSelectionMode}
 				onRowSelectionModeChange={setRowSelectionMode}
