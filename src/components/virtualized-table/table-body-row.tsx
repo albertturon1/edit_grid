@@ -20,7 +20,6 @@ export function TableBodyRow({
 }: TableBodyRowProps) {
 	virtualRow;
 	const row = rows[virtualRow.index] as Row<FilePickerRow>;
-
 	const { theme } = useTheme();
 	const currentTheme = theme === "system" ? getValueFromSystemTheme() : theme;
 

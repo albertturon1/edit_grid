@@ -22,10 +22,12 @@ export function useVirtualizedTable({
 	headers,
 	rows,
 	onRowsChange,
+	rowSelectionMode,
 }: {
 	rows: FilePickerRow[];
 	headers: string[];
 	onRowsChange: Dispatch<React.SetStateAction<FilePickerRow[]>>;
+	rowSelectionMode: boolean;
 }) {
 	const [anchorRow, setAnchorRow] = useState<Row<FilePickerRow> | null>(null);
 	const [isModifierActive, setIsModifierActive] = useState(false);
@@ -33,8 +35,6 @@ export function useVirtualizedTable({
 
 	// rowSelection return an object with selected rows as {indexNumber: true} (only for already selected rows)
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-	// rowSelectionMode is boolean value that determines if row selection mode is active
-	const [rowSelectionMode, setRowSelectionMode] = useState(false);
 
 	const columns = useMemo(() => {
 		const headersIds = headers.map((e) => e);
@@ -113,7 +113,7 @@ export function useVirtualizedTable({
 		},
 	});
 
-	return { table, anchorRow, rowSelectionMode, setRowSelectionMode };
+	return { table, anchorRow };
 }
 
 // function used to determine width of numeral column
