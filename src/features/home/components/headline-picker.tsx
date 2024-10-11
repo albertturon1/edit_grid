@@ -67,7 +67,7 @@ export function HeadlineWithPicker({
 				<div className="flex flex-col gap-y-2 md:flex-row gap-x-5">
 					<HeadlineCsvExample
 						onFileImport={onFileImport}
-						filepath="public/example_big.csv"
+						filepath="/example_big.csv"
 					>
 						{"Open example file"}
 					</HeadlineCsvExample>

@@ -15,7 +15,20 @@ export function TableBody<T extends Table<FilePickerRow>>({
 }: TableBodyProps<T>) {
 	const { rows } = table.getRowModel();
 
-	const rowVirtualizer = useTableVirtualizer({ tableContainerRef, rows });
+	const rowVirtualizer =  useVirtualizer({
+		count: rows.length,
+		estimateSize: () => 40, //estimate row height for accurate scrollbar dragging
+		getScrollElement: () => tableContainerRef.current,
+		//measure dynamic row height, except in firefox because it measures table border height incorrectly
+		measureElement:
+			typeof window !== "undefined" &&
+			navigator.userAgent.indexOf("Firefox") === -1
+				? (element) => element?.getBoundingClientRect().height
+				: undefined,
+		overscan: 5,
+	})
+
+	console.log({ rows, size: rowVirtualizer.getTotalSize() });
 
 	return (
 		<tbody
@@ -35,25 +48,4 @@ export function TableBody<T extends Table<FilePickerRow>>({
 			))}
 		</tbody>
 	);
-}
-
-function useTableVirtualizer({
-	rows,
-	tableContainerRef,
-}: {
-	rows: Row<FilePickerRow>[];
-	tableContainerRef: RefObject<HTMLDivElement>;
-}) {
-	return useVirtualizer({
-		count: rows.length,
-		estimateSize: () => 33, //estimate row height for accurate scrollbar dragging
-		getScrollElement: () => tableContainerRef.current,
-		//measure dynamic row height, except in firefox because it measures table border height incorrectly
-		measureElement:
-			typeof window !== "undefined" &&
-			navigator.userAgent.indexOf("Firefox") === -1
-				? (element) => element?.getBoundingClientRect().height
-				: undefined,
-		overscan: 5,
-	});
 }
