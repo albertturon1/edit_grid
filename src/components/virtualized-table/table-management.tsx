@@ -31,7 +31,12 @@ export function TableManagement<T extends Table<FilePickerRow>>(
 
 	return (
 		<>
-			<div className="flex sm:hidden flex-col gap-y-2 py-2 ">
+			<div
+				className={cn(
+					"flex sm:hidden flex-col py-2.5",
+					props.rowSelectionMode ? "gap-y-2" : "",
+				)}
+			>
 				<div className="flex gap-x-1 sm:gap-x-3 justify-between w-full">
 					<FileDropdownMenu {...props} className="flex-1" />
 					<RowsSelectionModeToggle {...props} className="flex-1" />
@@ -40,7 +45,7 @@ export function TableManagement<T extends Table<FilePickerRow>>(
 				<SelectedRowsIndicatorMobile {...rowProps} />
 			</div>
 			<div className="hidden sm:flex">
-				<div className="flex gap-x-1 sm:gap-x-3 py-2 justify-between w-full">
+				<div className="flex gap-x-1 sm:gap-x-3 py-2.5 justify-between w-full">
 					<div className="flex gap-x-2 sm:gap-x-3 flex-1">
 						<FileDropdownMenu {...props} />
 						<div className="flex items-center gap-x-3">
