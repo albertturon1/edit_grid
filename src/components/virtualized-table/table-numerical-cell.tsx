@@ -2,7 +2,7 @@ import type { CellContext, Row } from "@tanstack/react-table";
 import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useOnKeyboardButtonChange } from "@/lib/useOnKeyboardButtonChange";
+import { useEventListener } from "@/lib/useEventListener";
 
 type TableNumericalCellProps = CellContext<FilePickerRow, string> & {
 	anchorRow: Row<FilePickerRow> | null;
@@ -11,6 +11,8 @@ type TableNumericalCellProps = CellContext<FilePickerRow, string> & {
 	onModifierStateChange: (state: boolean) => void;
 	rowSelectionMode: boolean;
 };
+
+const KEY_SHIFT = "Shift";
 
 export function TableNumericalCell({
 	row,
@@ -21,26 +23,7 @@ export function TableNumericalCell({
 	onModifierStateChange,
 	rowSelectionMode,
 }: TableNumericalCellProps) {
-	const noSelectElements = document.querySelector("body");
-
-	useOnKeyboardButtonChange({
-		key: "Shift",
-		os: ["mac", "linux", "windows"],
-		onKeyDown: () => {
-			onModifierStateChange(true);
-
-			// disable text selection
-			if (noSelectElements) {
-				noSelectElements.style.userSelect = "none";
-			}
-		},
-		onKeyUp: () => {
-			onModifierStateChange(false);
-			if (noSelectElements) {
-				noSelectElements.style.userSelect = "";
-			}
-		},
-	});
+	useAnchorMode(onModifierStateChange);
 
 	function handleSelectionWithModifier() {
 		if (!isModifierActive) {
@@ -60,22 +43,7 @@ export function TableNumericalCell({
 			return;
 		}
 
-		const selectedRowsFirstId = Number(anchorRow.id);
-		const currentRowId = Number(row.id);
-
-		const firstRowId =
-			selectedRowsFirstId < currentRowId
-				? selectedRowsFirstId + 1 // +1 because selectedRowsFirstId has already been toggled
-				: currentRowId + 1; // +1 because next checkbox toggled this action
-
-		const secondRowId =
-			selectedRowsFirstId < currentRowId
-				? currentRowId // without +1 because next checkbox toggled this action
-				: selectedRowsFirstId;
-
-		if (typeof firstRowId !== "number") {
-			return;
-		}
+		const { firstRowId, secondRowId } = calculateRowRange({ anchorRow, row });
 
 		for (let i = firstRowId; i < secondRowId; i++) {
 			const loopedRow = allRows[i];
@@ -96,7 +64,7 @@ export function TableNumericalCell({
 
 	const isCurrentRowAnchor = anchorRow?.id === row.id;
 
-	function onClick() {
+	function handleOnClick() {
 		if (!rowSelectionMode) {
 			return;
 		}
@@ -107,15 +75,15 @@ export function TableNumericalCell({
 
 	return (
 		<div
-			onClick={onClick}
-			onKeyDown={onClick}
+			onClick={handleOnClick}
+			onKeyDown={handleOnClick}
 			className={cn(
-				"w-full flex gap-x-2 px-[7px] pt-[9px] border border-white/0 group hover:cursor-pointer",
-				isModifierActive
+				"w-full flex gap-x-2 px-[7px] pt-[9px] border border-white/0 group",
+				isModifierActive && rowSelectionMode
 					? "hover:border hover:border-primary hover:rounded"
 					: "",
 				isCurrentRowAnchor ? "border border-primary rounded" : "",
-				rowSelectionMode ? "" : "cursor-default",
+				rowSelectionMode ? "hover:cursor-pointer" : "cursor-default",
 				row.getIsSelected() ? "" : "text-slate-500",
 			)}
 		>
@@ -136,4 +104,55 @@ export function TableNumericalCell({
 			</h1>
 		</div>
 	);
+}
+
+function useAnchorMode(
+	onModifierStateChange: TableNumericalCellProps["onModifierStateChange"],
+) {
+	const noSelectElements = document.querySelector("body");
+
+	const handleKeyDown = (event: KeyboardEvent) => {
+		if (event.key !== KEY_SHIFT) {
+			return;
+		}
+
+		onModifierStateChange(true);
+
+		// disable text selection
+		if (noSelectElements) {
+			noSelectElements.style.userSelect = "none";
+		}
+	};
+
+	const handleKeyUp = (event: KeyboardEvent) => {
+		if (event.key !== KEY_SHIFT) {
+			return;
+		}
+
+		onModifierStateChange(false);
+		if (noSelectElements) {
+			noSelectElements.style.userSelect = "";
+		}
+	};
+
+	useEventListener("keydown", handleKeyDown);
+	useEventListener("keyup", handleKeyUp);
+}
+
+function calculateRowRange({
+	anchorRow,
+	row,
+}: { anchorRow: Row<FilePickerRow>; row: Row<FilePickerRow> }) {
+	const selectedRowsFirstId = Number(anchorRow.id);
+	const currentRowId = Number(row.id);
+
+	const firstRowId =
+		selectedRowsFirstId < currentRowId
+			? selectedRowsFirstId + 1
+			: currentRowId + 1;
+
+	const secondRowId =
+		selectedRowsFirstId < currentRowId ? currentRowId : selectedRowsFirstId;
+
+	return { firstRowId, secondRowId };
 }

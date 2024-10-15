@@ -1,7 +1,7 @@
 import { useEventListener } from "@/lib/useEventListener";
 import { useState, useCallback } from "react";
 
-export function useContextMenu() {
+export function useContextMenuPosition() {
 	const [position, setPosition] = useState({ x: 0, y: 0 });
 
 	const openContextMenu = useCallback((event: MouseEvent) => {
