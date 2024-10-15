@@ -7,10 +7,7 @@ export function useDataProperties<T extends Table<FilePickerRow>>(
 	table: T,
 	rowSelectionMode: boolean,
 ) {
-	console.log("table: ", table);
 	const allColumns = table.getAllColumns() ?? [];
-	console.log("allColumns: ", allColumns);
-
 	const visibleColumns: Column<FilePickerRow, unknown>[] = [];
 	const visibleColumnNames: string[] = [];
 	const allColumnNames: string[] = [];

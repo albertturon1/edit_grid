@@ -1,20 +1,18 @@
-import type { Table } from "@tanstack/react-table";
 import { flexRender } from "@tanstack/react-table";
 import { cn } from "@/lib/utils";
+import type { HeaderGroup } from "@tanstack/react-table";
 
 const NUMERICAL_COLUMN_ID =
 	"text-white/0 cursor-default selection:cursor-default"; // properties to hide the “0” from the first cell - it is rendered to keep the layout stable when no column is visible except the numeric one.
 
-// biome-ignore lint/suspicious/noExplicitAny: generic
-type TableHeadProps<T extends Table<any>> = {
-	table: T;
+type TableHeadProps<T> = {
+	headerGroups: HeaderGroup<T>[];
 };
 
-// biome-ignore lint/suspicious/noExplicitAny: generic
-export function TableHead<T extends Table<any>>({ table }: TableHeadProps<T>) {
+export function TableHead<T>({ headerGroups }: TableHeadProps<T>) {
 	return (
 		<thead className="bg-background grid sticky top-0 z-10 border-b text-xs sm:text-sm">
-			{table.getHeaderGroups().map((headerGroup) => (
+			{headerGroups.map((headerGroup) => (
 				<tr className="flex" key={headerGroup.id}>
 					{headerGroup.headers.map((header, idx) => {
 						return (

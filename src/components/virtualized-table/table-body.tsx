@@ -1,19 +1,23 @@
 import { useEffect, useState, type RefObject } from "react";
-import type { Table } from "@tanstack/react-table";
+import type { Row } from "@tanstack/react-table";
 import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { TableBodyRow } from "@/components/virtualized-table/table-body-row";
 
-type TableBodyProps<T extends Table<FilePickerRow>> = {
-	table: T;
+type TableBodyProps = {
+	rows: Row<FilePickerRow>[];
 	tableContainerRef: RefObject<HTMLDivElement>;
 };
 
-export function TableBody<T extends Table<FilePickerRow>>({
-	table,
-	tableContainerRef,
-}: TableBodyProps<T>) {
-	const { rows } = table.getRowModel();
+export function TableBody({ rows, tableContainerRef }: TableBodyProps) {
+	const [isMounted, setIsMounted] = useState(false);
+	useEffect(() => {
+		setIsMounted(true);
+
+		return () => {
+			setIsMounted(false);
+		};
+	}, []);
 
 	const rowVirtualizer = useVirtualizer({
 		count: rows.length,
@@ -27,16 +31,6 @@ export function TableBody<T extends Table<FilePickerRow>>({
 				: undefined,
 		overscan: 10,
 	});
-
-	const [isMounted, setIsMounted] = useState(false);
-
-	useEffect(() => {
-		setIsMounted(true);
-
-		return () => {
-			setIsMounted(false);
-		};
-	}, []);
 
 	if (!isMounted) {
 		return null;
