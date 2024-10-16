@@ -14,6 +14,8 @@ export function HomePage() {
 	const [originalFilename, setOriginalFilename] = useState<string>("");
 	const { height } = useWindowDimensions();
 
+	console.log(height);
+
 	function onFileImport({ file, headers, rows }: OnFileImport) {
 		handleOnDataUpdate({ headers, rows });
 		setOriginalFilename(file.name);

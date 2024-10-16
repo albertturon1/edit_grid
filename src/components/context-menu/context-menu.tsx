@@ -6,12 +6,11 @@ import React, {
 	type ReactNode,
 	type RefObject,
 } from "react";
-import { useOnClickOutside } from "@/lib/useOnClickOutside";
 import * as Portal from "@radix-ui/react-portal";
 import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
 import { useWindowDimensions } from "@/lib/useWindowDimensions";
 import { useElementDimensions } from "@/lib/useElementDimenions";
-import { useEventListener } from "@/lib/useEventListener";
+import { useEventListener, useOnClickOutside } from "usehooks-ts";
 
 const KEY_NAME_ESC = "Escape";
 

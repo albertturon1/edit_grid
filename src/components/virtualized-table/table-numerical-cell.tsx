@@ -2,7 +2,7 @@ import type { CellContext, Row } from "@tanstack/react-table";
 import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useEventListener } from "@/lib/useEventListener";
+import { useEventListener } from "usehooks-ts";
 
 type TableNumericalCellProps = CellContext<FilePickerRow, string> & {
 	anchorRow: Row<FilePickerRow> | null;

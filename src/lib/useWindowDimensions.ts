@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useEventListener } from "./useEventListener";
+import { useCallback, useState } from "react";
+import { useEventListener } from "usehooks-ts";
 
 export function useWindowDimensions() {
 	const [windowDimensions, setWindowDimensions] = useState({
@@ -7,12 +7,12 @@ export function useWindowDimensions() {
 		height: window.innerHeight,
 	});
 
-	function handleResize() {
+	const handleResize = useCallback(() => {
 		setWindowDimensions({
 			width: window.innerWidth,
 			height: window.innerHeight,
 		});
-	}
+	}, []);
 
 	useEventListener("resize", handleResize);
 
