@@ -1,53 +1,23 @@
-import { flexRender } from "@tanstack/react-table";
-import { cn } from "@/lib/utils";
-import type { HeaderGroup } from "@tanstack/react-table";
+import type { HeaderGroup, RowData } from "@tanstack/react-table";
+import type { HandleOnContextMenuProps } from "./virtualized-table";
+import { TableHeadRow } from "./table-head-row";
 
-const NUMERICAL_COLUMN_ID =
-	"text-white/0 cursor-default selection:cursor-default"; // properties to hide the “0” from the first cell - it is rendered to keep the layout stable when no column is visible except the numeric one.
-
-type TableHeadProps<T> = {
-	headerGroups: HeaderGroup<T>[];
+type TableHeadProps = {
+	headerGroups: HeaderGroup<RowData>[];
+	onContextMenu: (props: HandleOnContextMenuProps) => void;
 };
-
-export function TableHead<T>({ headerGroups }: TableHeadProps<T>) {
+export function TableHead({ headerGroups, onContextMenu }: TableHeadProps) {
 	return (
 		<thead className="bg-background grid sticky top-0 z-10 border-b text-xs sm:text-sm">
-			{headerGroups.map((headerGroup) => (
-				<tr className="flex" key={headerGroup.id}>
-					{headerGroup.headers.map((header, idx) => {
-						return (
-							<th
-								key={header.id}
-								colSpan={header.colSpan}
-								style={{ width: header.getSize() }}
-								className={cn(
-									"relative bg-background overflow-hidden font-semibold border-r py-2 flex pl-2",
-									idx === 0
-										? cn("sticky left-0 z-10", NUMERICAL_COLUMN_ID)
-										: "", // sticky first cell
-								)}
-							>
-								{header.isPlaceholder
-									? null
-									: flexRender(
-											header.column.columnDef.header,
-											header.getContext(),
-										)}
-								<div
-									onMouseDown={header.getResizeHandler()}
-									onTouchStart={header.getResizeHandler()}
-									className={cn(
-										"absolute right-0 top-0 h-full w-[5px] cursor-col-resize select-none touch-none",
-										header.column.getIsResizing()
-											? "bg-blue-300 opacity-100"
-											: "",
-									)}
-								/>
-							</th>
-						);
-					})}
-				</tr>
-			))}
+			{headerGroups.map((headerGroup) => {
+				return (
+					<TableHeadRow
+						key={headerGroup.id}
+						headerGroup={headerGroup}
+						onContextMenu={onContextMenu}
+					/>
+				);
+			})}
 		</thead>
 	);
 }

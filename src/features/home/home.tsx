@@ -15,9 +15,16 @@ export function HomePage() {
 	const { height } = useWindowDimensions();
 
 	function onFileImport({ file, headers, rows }: OnFileImport) {
+		handleOnDataUpdate({ headers, rows });
+		setOriginalFilename(file.name);
+	}
+
+	function handleOnDataUpdate({
+		headers,
+		rows,
+	}: Pick<OnFileImport, "headers" | "rows">) {
 		setHeaders(headers);
 		setRows(rows);
-		setOriginalFilename(file.name);
 	}
 
 	// const { proceed, reset, status } = useBlocker({
@@ -44,6 +51,7 @@ export function HomePage() {
 							originalFilename={originalFilename}
 							onRowsChange={setRows}
 							onFileImport={onFileImport}
+							onDataUpdate={handleOnDataUpdate}
 						/>
 					</div>
 				</>

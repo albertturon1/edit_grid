@@ -1,4 +1,4 @@
-import { useRef, useState, type Dispatch, type MouseEvent } from "react";
+import { useRef, useState, type Dispatch } from "react";
 import { TableHead } from "@/components/virtualized-table/table-head";
 import { TableBody } from "@/components/virtualized-table/table-body";
 import { TableManagement } from "@/components/virtualized-table/table-management";
@@ -11,21 +11,38 @@ import type {
 	TableRows,
 } from "@/components/file-picker-import-dialog/mapHeadersToRows";
 import type { OnFileImport } from "@/features/home/components/headline-picker";
-import { useOnClickOutside } from "@/lib/useOnClickOutside";
 import { TableContextMenu } from "@/components/virtualized-table/table-context-menu";
 import type { ContextMenuPosition } from "@/components/context-menu/context-menu";
+import type { Cell, Header, RowData } from "@tanstack/react-table";
+import { useContextMenuMethods } from "./useContextMenuMethods";
 
-type VirtualizedTableProps = {
+export type ActiveCell =
+	| ({ type: "cell" } & Cell<FilePickerRow, unknown>)
+	| ({ type: "header" } & Header<RowData, unknown>);
+
+export type ExtendedContextMenuPosition = ContextMenuPosition & {
+	activeCell: ActiveCell;
+};
+
+export type VirtualizedTableProps = {
 	headers: TableHeaders;
 	rows: TableRows;
 	onRowsChange: Dispatch<React.SetStateAction<FilePickerRow[]>>;
 	originalFilename: string;
 	onFileImport: (props: OnFileImport) => void;
+	onDataUpdate: (props: { headers: TableHeaders; rows: TableRows }) => void;
+};
+
+export type HandleOnContextMenuProps = {
+	mouseEvent: React.MouseEvent<HTMLTableCellElement>;
+	activeCell: ActiveCell;
 };
 
 export function VirtualizedTable({
+	headers,
 	rows,
 	onRowsChange,
+	onDataUpdate,
 	...props
 }: VirtualizedTableProps) {
 	//The virtualizer needs to know the scrollable container element
@@ -38,21 +55,24 @@ export function VirtualizedTable({
 	const { table } = useVirtualizedTable({
 		rowSelectionMode,
 		rows,
-		headers: props.headers.values,
+		headers: headers.values,
 		onRowsChange,
 	});
 
-	useOnClickOutside(tableContainerRef, () => {
-		setPosition(null);
-	});
+	const [position, setPosition] = useState<ExtendedContextMenuPosition | null>(
+		null,
+	);
 
-	const [position, setPosition] = useState<ContextMenuPosition | null>(null);
+	function handleOnContextMenu({
+		mouseEvent,
+		activeCell,
+	}: HandleOnContextMenuProps) {
+		mouseEvent.preventDefault();
 
-	function handleOnContextMenu(e: MouseEvent<HTMLTableElement>) {
-		e.preventDefault();
 		setPosition({
-			x: e.clientX,
-			y: e.clientY,
+			x: mouseEvent.clientX,
+			y: mouseEvent.clientY,
+			activeCell,
 		});
 	}
 
@@ -66,6 +86,20 @@ export function VirtualizedTable({
 		setPosition(null);
 	}
 
+	const {
+		handleAddColumn,
+		handleAddRow,
+		handleRemoveColumn,
+		handleRemoveRow,
+		handleDuplicateRow,
+	} = useContextMenuMethods({
+		headers,
+		tableRows: table.getRowModel().rows,
+		position,
+		onDataUpdate,
+		onClose: handleOnClose,
+	});
+
 	return (
 		<>
 			<div
@@ -77,6 +111,7 @@ export function VirtualizedTable({
 			>
 				<TableManagement
 					{...props}
+					headers={headers}
 					onFileImport={handleOnFileImport}
 					table={table}
 					rowSelectionMode={rowSelectionMode}
@@ -91,18 +126,32 @@ export function VirtualizedTable({
 					ref={tableContainerRef}
 				>
 					<table
-						onContextMenu={handleOnContextMenu}
+						onContextMenu={(e) => {
+							e.preventDefault();
+						}}
 						className="tabular-nums bg-background grid"
 					>
-						<TableHead headerGroups={table.getHeaderGroups()} />
+						<TableHead
+							headerGroups={table.getHeaderGroups()}
+							onContextMenu={handleOnContextMenu}
+						/>
 						<TableBody
 							rows={table.getRowModel().rows}
 							tableContainerRef={tableContainerRef}
+							onContextMenu={handleOnContextMenu}
 						/>
 					</table>
 				</div>
 			</div>
-			<TableContextMenu position={position} onClose={handleOnClose} />
+			<TableContextMenu
+				position={position}
+				onClose={handleOnClose}
+				addColumn={handleAddColumn}
+				addRow={handleAddRow}
+				removeColumn={handleRemoveColumn}
+				removeRow={handleRemoveRow}
+				duplicateRow={handleDuplicateRow}
+			/>
 		</>
 	);
 }

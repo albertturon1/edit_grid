@@ -5,11 +5,11 @@ import {
 	type TableBodyRowProps,
 } from "@/components/virtualized-table/table-body-row";
 
-type TableBodyProps = Pick<TableBodyRowProps, "rows"> & {
+type TableBodyProps = Pick<TableBodyRowProps, "rows" | "onContextMenu"> & {
 	tableContainerRef: RefObject<HTMLDivElement>;
 };
 
-export function TableBody({ rows, tableContainerRef }: TableBodyProps) {
+export function TableBody({ tableContainerRef, ...props }: TableBodyProps) {
 	const [isMounted, setIsMounted] = useState(false);
 	useEffect(() => {
 		setIsMounted(true);
@@ -20,7 +20,7 @@ export function TableBody({ rows, tableContainerRef }: TableBodyProps) {
 	}, []);
 
 	const rowVirtualizer = useVirtualizer({
-		count: rows.length,
+		count: props.rows.length,
 		estimateSize: () => 60, //estimate row height for accurate scrollbar dragging
 		getScrollElement: () => tableContainerRef.current,
 		//measure dynamic row height, except in firefox because it measures table border height incorrectly
@@ -45,9 +45,9 @@ export function TableBody({ rows, tableContainerRef }: TableBodyProps) {
 		>
 			{rowVirtualizer.getVirtualItems().map((virtualRow, rowIdx) => (
 				<TableBodyRow
+					{...props}
 					key={virtualRow.index}
 					virtualRow={virtualRow}
-					rows={rows}
 					rowVirtualizer={rowVirtualizer}
 					rowIdx={rowIdx}
 				/>
