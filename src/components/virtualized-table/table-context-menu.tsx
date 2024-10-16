@@ -14,23 +14,23 @@ export function TableContextMenu({
 	removeColumn,
 	removeRow,
 	duplicateRow,
-	position,
+	...props
 }: {
 	addRow: () => void;
 	addColumn: () => void;
 	removeColumn: () => void;
 	duplicateRow: () => void;
 	removeRow: () => void;
-	onClose?: () => void;
+	onClose: (() => void) | undefined;
 	position: ExtendedContextMenuPosition | null;
 }) {
 	const showColumnOnly =
-		position?.activeCell.column.id !== ___INTERNAL_ID_COLUMN_ID;
+		props.position?.activeCell.column.id !== ___INTERNAL_ID_COLUMN_ID;
 
-	const showRowOnly = position?.activeCell.type !== "header";
+	const showRowOnly = props.position?.activeCell.type !== "header";
 
 	return (
-		<ContextMenu position={position}>
+		<ContextMenu {...props}>
 			<ContextMenuContent className="[&>*]:gap-x-8 z-50">
 				<ContextMenuItem onClick={addRow} className="justify-between">
 					{"Add Row"}
