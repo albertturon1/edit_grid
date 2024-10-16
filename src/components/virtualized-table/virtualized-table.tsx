@@ -13,7 +13,7 @@ import type {
 import type { OnFileImport } from "@/features/home/components/headline-picker";
 import { useOnClickOutside } from "@/lib/useOnClickOutside";
 import { TableContextMenu } from "@/components/virtualized-table/table-context-menu";
-import { useContextMenuPosition } from "../context-menu/useContextMenuPosition";
+import type { ContextMenuPosition } from "@/components/context-menu/context-menu";
 
 type VirtualizedTableProps = {
 	headers: TableHeaders;
@@ -30,7 +30,6 @@ export function VirtualizedTable({
 }: VirtualizedTableProps) {
 	//The virtualizer needs to know the scrollable container element
 	const tableContainerRef = useRef<HTMLDivElement>(null);
-	const [contextOpen, setContextOpen] = useState(false);
 
 	// rowSelectionMode is boolean value that determines if row selection mode is active
 	const [rowSelectionMode, setRowSelectionMode] = useState(false);
@@ -44,20 +43,27 @@ export function VirtualizedTable({
 	});
 
 	useOnClickOutside(tableContainerRef, () => {
-		setContextOpen(false);
+		setPosition(null);
 	});
 
-	const position = useContextMenuPosition();
+	const [position, setPosition] = useState<ContextMenuPosition | null>(null);
 
 	function handleOnContextMenu(e: MouseEvent<HTMLTableElement>) {
 		e.preventDefault();
-		setContextOpen(true);
+		setPosition({
+			x: e.clientX,
+			y: e.clientY,
+		});
 	}
 
 	function handleOnFileImport(e: OnFileImport) {
-		setContextOpen(false);
+		setPosition(null);
 		props.onFileImport(e);
 		setRowSelectionMode(false);
+	}
+
+	function handleOnClose() {
+		setPosition(null);
 	}
 
 	return (
@@ -96,11 +102,7 @@ export function VirtualizedTable({
 					</table>
 				</div>
 			</div>
-			<TableContextMenu
-				open={contextOpen}
-				onOpenChange={setContextOpen}
-				position={position}
-			/>
+			<TableContextMenu position={position} onClose={handleOnClose} />
 		</>
 	);
 }

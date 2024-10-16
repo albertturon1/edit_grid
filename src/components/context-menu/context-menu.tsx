@@ -21,26 +21,24 @@ export type ContextMenuPosition = {
 };
 
 function ContextMenu({
-	open,
-	onOpenChange,
+	onClose,
 	children,
 	position,
 }: {
-	open: boolean;
-	onOpenChange?: (open: boolean) => void;
+	onClose?: () => void;
 	children: ReactNode;
-	position: ContextMenuPosition;
+	position: ContextMenuPosition | null;
 }) {
 	const ref = useRef<HTMLDivElement>(null);
-	const coordinates = useCoordinates(ref, open, position);
+	const coordinates = useCoordinates(ref, position);
 
 	useOnClickOutside(ref, () => {
-		onOpenChange?.(false);
+		onClose?.();
 	});
 
 	function close(event: KeyboardEvent) {
 		if (event.key === KEY_NAME_ESC) {
-			onOpenChange?.(false);
+			onClose?.();
 		}
 	}
 
@@ -55,16 +53,22 @@ function ContextMenu({
 
 function useCoordinates(
 	ref: RefObject<HTMLDivElement>,
-	open: boolean,
-	position: ContextMenuPosition,
+	position: ContextMenuPosition | null,
 ) {
 	const { width: screenWidth, height: screenHeight } = useWindowDimensions();
 	const dimensions = useElementDimensions(ref);
 
+	if (!position) {
+		return {
+			top: -1000,
+			left: -1000,
+		};
+	}
+
 	const leftOutOfScreen =
-		!!dimensions && position.x + dimensions.width > screenWidth * 0.95;
+		!!dimensions && position.x + dimensions.width > screenWidth;
 	const topOutOfScreen =
-		!!dimensions && position.y + dimensions.height > screenHeight * 0.95;
+		!!dimensions && position.y + dimensions.height > screenHeight;
 
 	const visibleLeft = leftOutOfScreen
 		? position.x - dimensions.width
@@ -74,8 +78,8 @@ function useCoordinates(
 		: position.y;
 
 	return {
-		top: open ? visibleTop : -1000,
-		left: open ? visibleLeft : -1000,
+		top: visibleTop,
+		left: visibleLeft,
 	};
 }
 

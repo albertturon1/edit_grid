@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { useTheme, getValueFromSystemTheme } from "@/components/theme-provider";
 import { TableBodyRowCell } from "@/components/virtualized-table/table-body-row-cell";
 
-type TableBodyRowProps = {
+export type TableBodyRowProps = {
 	virtualRow: VirtualItem;
 	rows: Row<FilePickerRow>[];
 	rowVirtualizer: Virtualizer<HTMLDivElement, Element>;

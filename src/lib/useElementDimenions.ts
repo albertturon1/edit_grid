@@ -1,13 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 
 export function useElementDimensions(ref: React.RefObject<HTMLElement>) {
-	const getDimensions = useCallback(
-		() => ({
+	const getDimensions = useCallback(() => {
+		return {
 			width: ref.current?.offsetWidth ?? 0,
 			height: ref.current?.offsetHeight ?? 0,
-		}),
-		[ref],
-	);
+		};
+	}, [ref]);
 
 	const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 

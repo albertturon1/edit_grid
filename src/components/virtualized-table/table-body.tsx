@@ -1,11 +1,11 @@
 import { useEffect, useState, type RefObject } from "react";
-import type { Row } from "@tanstack/react-table";
-import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { TableBodyRow } from "@/components/virtualized-table/table-body-row";
+import {
+	TableBodyRow,
+	type TableBodyRowProps,
+} from "@/components/virtualized-table/table-body-row";
 
-type TableBodyProps = {
-	rows: Row<FilePickerRow>[];
+type TableBodyProps = Pick<TableBodyRowProps, "rows"> & {
 	tableContainerRef: RefObject<HTMLDivElement>;
 };
 
@@ -45,8 +45,8 @@ export function TableBody({ rows, tableContainerRef }: TableBodyProps) {
 		>
 			{rowVirtualizer.getVirtualItems().map((virtualRow, rowIdx) => (
 				<TableBodyRow
-					virtualRow={virtualRow}
 					key={virtualRow.index}
+					virtualRow={virtualRow}
 					rows={rows}
 					rowVirtualizer={rowVirtualizer}
 					rowIdx={rowIdx}
