@@ -3,7 +3,6 @@ import { TableHead } from "@/components/virtualized-table/table-head";
 import { TableBody } from "@/components/virtualized-table/table-body";
 import { TableManagement } from "@/components/virtualized-table/table-management";
 import { NAVBAR_HEIGHT } from "@/routes/__root";
-import { useWindowDimensions } from "@/lib/useWindowDimensions";
 import { useVirtualizedTable } from "@/components/virtualized-table/hooks/useVirtualizedTable";
 import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 import type {
@@ -15,6 +14,7 @@ import { TableContextMenu } from "@/components/virtualized-table/table-context-m
 import type { ContextMenuPosition } from "@/components/context-menu/context-menu";
 import type { Cell, Header, RowData } from "@tanstack/react-table";
 import { useContextMenuMethods } from "./useContextMenuMethods";
+import { useWindowSize } from "usehooks-ts";
 
 export type ActiveCell =
 	| ({ type: "cell" } & Cell<FilePickerRow, unknown>)
@@ -45,13 +45,14 @@ export function VirtualizedTable({
 	onDataUpdate,
 	...props
 }: VirtualizedTableProps) {
+	const { height } = useWindowSize();
+
 	//The virtualizer needs to know the scrollable container element
 	const tableContainerRef = useRef<HTMLDivElement>(null);
 
 	// rowSelectionMode is boolean value that determines if row selection mode is active
 	const [rowSelectionMode, setRowSelectionMode] = useState(false);
 
-	const { height } = useWindowDimensions();
 	const { table } = useVirtualizedTable({
 		rowSelectionMode,
 		rows,

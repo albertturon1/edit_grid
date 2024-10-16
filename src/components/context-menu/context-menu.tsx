@@ -8,9 +8,12 @@ import React, {
 } from "react";
 import * as Portal from "@radix-ui/react-portal";
 import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
-import { useWindowDimensions } from "@/lib/useWindowDimensions";
 import { useElementDimensions } from "@/lib/useElementDimenions";
-import { useEventListener, useOnClickOutside } from "usehooks-ts";
+import {
+	useEventListener,
+	useOnClickOutside,
+	useWindowSize,
+} from "usehooks-ts";
 
 const KEY_NAME_ESC = "Escape";
 
@@ -54,7 +57,7 @@ function useCoordinates(
 	ref: RefObject<HTMLDivElement>,
 	position: ContextMenuPosition | null,
 ) {
-	const { width: screenWidth, height: screenHeight } = useWindowDimensions();
+	const { width: screenWidth, height: screenHeight } = useWindowSize();
 	const dimensions = useElementDimensions(ref);
 
 	if (!position) {
