@@ -5,8 +5,8 @@ import {
 	ContextMenuSeparator,
 } from "@/components/context-menu/context-menu";
 import { ArrowBigDown, ArrowBigRight, ChevronsDown, Trash } from "lucide-react";
-import type { ExtendedContextMenuPosition } from "./virtualized-table";
-import { ___INTERNAL_ID_COLUMN_ID } from "./hooks/useVirtualizedTable";
+import type { ExtendedContextMenuPosition } from "@/components/virtualized-table/virtualized-table";
+import { ___INTERNAL_ID_COLUMN_ID } from "@/components/virtualized-table/hooks/useVirtualizedTable";
 
 export function TableContextMenu({
 	addRow,

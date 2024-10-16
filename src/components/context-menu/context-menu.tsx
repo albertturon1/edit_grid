@@ -66,9 +66,9 @@ function useCoordinates(
 	}
 
 	const leftOutOfScreen =
-		!!dimensions && position.x + dimensions.width > screenWidth;
+		!!dimensions && position.x + dimensions.width > screenWidth * 0.97;
 	const topOutOfScreen =
-		!!dimensions && position.y + dimensions.height > screenHeight;
+		!!dimensions && position.y + dimensions.height > screenHeight * 0.97;
 
 	const visibleLeft = leftOutOfScreen
 		? position.x - dimensions.width

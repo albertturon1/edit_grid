@@ -105,7 +105,7 @@ export function BouncingBoxes({ size, speed, color, gap }: BouncingBoxesProps) {
 	}, []);
 
 	return (
-		<div ref={ref} className="flex flex-1">
+		<div ref={ref} className="h-full w-full">
 			{boxes.map((box) => (
 				<Box key={box.id} {...box} color={color} />
 			))}

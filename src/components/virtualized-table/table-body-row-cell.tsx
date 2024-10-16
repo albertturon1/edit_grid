@@ -1,8 +1,8 @@
+import type { MouseEvent } from "react";
 import { flexRender, type Cell } from "@tanstack/react-table";
 import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 import { cn } from "@/lib/utils";
-import type { MouseEvent } from "react";
-import type { HandleOnContextMenuProps } from "./virtualized-table";
+import type { HandleOnContextMenuProps } from "@/components/virtualized-table/virtualized-table";
 
 export type TableBodyRowCellProps = {
 	cell: Cell<FilePickerRow, unknown>;

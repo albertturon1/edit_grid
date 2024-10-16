@@ -1,6 +1,6 @@
 import type { HeaderGroup } from "@tanstack/react-table";
-import type { HandleOnContextMenuProps } from "./virtualized-table";
-import { TableHeadRowCell } from "./table-head-row-cell";
+import type { HandleOnContextMenuProps } from "@/components/virtualized-table/virtualized-table";
+import { TableHeadRowCell } from "@/components/virtualized-table/table-head-row-cell";
 
 export type TableHeadRowProps = {
 	onContextMenu: (props: HandleOnContextMenuProps) => void;

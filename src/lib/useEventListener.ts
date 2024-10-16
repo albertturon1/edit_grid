@@ -6,9 +6,9 @@ export function useEventListener<T extends keyof DocumentEventMap>(
 	options?: AddEventListenerOptions,
 ) {
 	useEffect(() => {
-		const handler = (event: DocumentEventMap[T]) => {
+		function handler(event: DocumentEventMap[T]) {
 			callback(event);
-		};
+		}
 
 		document.addEventListener(eventType, handler, options);
 

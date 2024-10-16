@@ -1,8 +1,8 @@
+import type { MouseEvent } from "react";
 import { flexRender } from "@tanstack/react-table";
 import { cn } from "@/lib/utils";
 import type { Header } from "@tanstack/react-table";
-import type { MouseEvent } from "react";
-import type { HandleOnContextMenuProps } from "./virtualized-table";
+import type { HandleOnContextMenuProps } from "@/components/virtualized-table/virtualized-table";
 
 const NUMERICAL_COLUMN_ID =
 	"text-white/0 cursor-default selection:cursor-default"; // properties to hide the “0” from the first cell - it is rendered to keep the layout stable when no column is visible except the numeric one.
