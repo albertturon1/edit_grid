@@ -1,13 +1,30 @@
+import type { MouseEvent } from "react";
 import { flexRender, type Cell } from "@tanstack/react-table";
 import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 import { cn } from "@/lib/utils";
+import type { HandleOnContextMenuProps } from "@/components/virtualized-table/virtualized-table";
 
-type TableBodyRowCellProps = {
+export type TableBodyRowCellProps = {
 	cell: Cell<FilePickerRow, unknown>;
 	className?: string;
+	onContextMenu: (props: HandleOnContextMenuProps) => void;
 };
 
-export function TableBodyRowCell({ cell, className }: TableBodyRowCellProps) {
+export function TableBodyRowCell({
+	cell,
+	className,
+	onContextMenu,
+}: TableBodyRowCellProps) {
+	function handleOnContextMenu(mouseEvent: MouseEvent<HTMLTableCellElement>) {
+		onContextMenu({
+			activeCell: {
+				type: "cell",
+				...cell,
+			},
+			mouseEvent,
+		});
+	}
+
 	return (
 		<td
 			className={cn(
@@ -15,6 +32,7 @@ export function TableBodyRowCell({ cell, className }: TableBodyRowCellProps) {
 				cell.column.columnDef.meta?.className ?? "",
 				className,
 			)}
+			onContextMenu={handleOnContextMenu}
 			style={{
 				width: cell.column.getSize(),
 			}}

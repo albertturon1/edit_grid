@@ -3,9 +3,12 @@ import type { VirtualItem, Virtualizer } from "@tanstack/react-virtual";
 import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 import { cn } from "@/lib/utils";
 import { useTheme, getValueFromSystemTheme } from "@/components/theme-provider";
-import { TableBodyRowCell } from "@/components/virtualized-table/table-body-row-cell";
+import {
+	TableBodyRowCell,
+	type TableBodyRowCellProps,
+} from "@/components/virtualized-table/table-body-row-cell";
 
-type TableBodyRowProps = {
+export type TableBodyRowProps = Pick<TableBodyRowCellProps, "onContextMenu"> & {
 	virtualRow: VirtualItem;
 	rows: Row<FilePickerRow>[];
 	rowVirtualizer: Virtualizer<HTMLDivElement, Element>;
@@ -17,6 +20,7 @@ export function TableBodyRow({
 	rowVirtualizer,
 	virtualRow,
 	rowIdx,
+	onContextMenu,
 }: TableBodyRowProps) {
 	virtualRow;
 	const row = rows[virtualRow.index] as Row<FilePickerRow>;
@@ -44,7 +48,12 @@ export function TableBodyRow({
 		>
 			{row.getVisibleCells().map((cell) => {
 				return (
-					<TableBodyRowCell key={cell.id} cell={cell} className={background} />
+					<TableBodyRowCell
+						key={cell.id}
+						cell={cell}
+						className={background}
+						onContextMenu={onContextMenu}
+					/>
 				);
 			})}
 		</tr>

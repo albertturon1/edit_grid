@@ -7,9 +7,8 @@ import type {
 	TableHeaders,
 	TableRows,
 } from "@/components/file-picker-import-dialog/mapHeadersToRows";
-import type { ParseResult } from "papaparse";
-import type { FilePickerCoreRef } from "../../../components/file-picker-core";
-import { HeadlineCsvExample } from "./headline-csv-example";
+import type { FilePickerCoreRef } from "@/components/file-picker-core";
+import { HeadlineCsvExample } from "@/features/home/components/headline-csv-example";
 
 export type OnFileImport = {
 	file: File;
@@ -21,17 +20,7 @@ export type HeadlineWithPickerProps = {
 	onFileImport: (props: OnFileImport) => void;
 };
 
-export type TemporalFileData = {
-	file: File;
-	result: Pick<ParseResult<unknown>, "errors" | "meta"> & {
-		data: string[][];
-	};
-};
-
-export function HeadlineWithPicker({
-	onFileImport,
-	...props
-}: HeadlineWithPickerProps) {
+export function HeadlineWithPicker({ onFileImport }: HeadlineWithPickerProps) {
 	const { theme } = useTheme();
 	const currentTheme = theme === "system" ? getValueFromSystemTheme() : theme;
 	const overlayColor =
@@ -56,8 +45,9 @@ export function HeadlineWithPicker({
 					<Headline />
 					<div className="flex justify-center items-center">
 						<HeadlineFilePicker
-							{...props}
-							fileSizeLimit={{ size: 5, unit: "MB" }}
+							filePickerOptions={{
+								fileSizeLimit: { size: 5, unit: "MB" },
+							}}
 							inputRef={inputRef}
 							onFileImport={onFileImport}
 							onClick={handleOpen}

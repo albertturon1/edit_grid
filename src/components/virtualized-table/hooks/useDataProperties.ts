@@ -1,16 +1,11 @@
 import type { Column, Row, Table } from "@tanstack/react-table";
 import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 
-export type TableDataStatus = "partial" | "full";
-
-export function useDataProperties<T extends Table<FilePickerRow>>(
-	table: T,
+export function useDataProperties(
+	table: Table<FilePickerRow>,
 	rowSelectionMode: boolean,
 ) {
-	console.log("table: ", table);
 	const allColumns = table.getAllColumns() ?? [];
-	console.log("allColumns: ", allColumns);
-
 	const visibleColumns: Column<FilePickerRow, unknown>[] = [];
 	const visibleColumnNames: string[] = [];
 	const allColumnNames: string[] = [];
@@ -59,14 +54,7 @@ export function useDataProperties<T extends Table<FilePickerRow>>(
 				return acc;
 			}, []);
 
-	const dataStatus: TableDataStatus =
-		visibleColumnNames.length === allColumnNames.length &&
-		allRows.length === selectedRows.length
-			? "full"
-			: "partial";
-
 	return {
-		dataStatus,
 		selectedRows,
 		allRows,
 		allColumns,

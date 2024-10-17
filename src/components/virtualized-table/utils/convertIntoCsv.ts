@@ -63,13 +63,6 @@ if (import.meta.vitest) {
 				["FirstName", "LastName", "Street"],
 				[['Joan "the bone", Anne', '"Tester,2"', "9th, at Terrace plc"]],
 			],
-			// input: [
-			// 	{
-			// 		FirstName: 'Joan "the bone", Anne',
-			// 		LastName: '"Tester,2"',
-			// 		Street: "9th, at Terrace plc",
-			// 	},
-			// ],
 			expected:
 				'FirstName,LastName,Street\n"Joan ""the bone"", Anne","""Tester,2""","9th, at Terrace plc"',
 		},

@@ -1,3 +1,4 @@
+import { useMemo, useState, type Dispatch } from "react";
 import {
 	createColumnHelper,
 	getCoreRowModel,
@@ -6,12 +7,11 @@ import {
 	type Row,
 	type RowSelectionState,
 } from "@tanstack/react-table";
-import { useMemo, useState, type Dispatch } from "react";
 import { tableDefaultColumn } from "@/components/virtualized-table/default-column";
 import { TableNumericalCell } from "@/components/virtualized-table/table-numerical-cell";
 import { TableNumericalHeader } from "@/components/virtualized-table/table-numerical-header";
 import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
-import { useWindowDimensions } from "@/lib/useWindowDimensions";
+import { useWindowSize } from "usehooks-ts";
 
 const columnHelper = createColumnHelper<FilePickerRow>();
 
@@ -31,7 +31,7 @@ export function useVirtualizedTable({
 }) {
 	const [anchorRow, setAnchorRow] = useState<Row<FilePickerRow> | null>(null);
 	const [isModifierActive, setIsModifierActive] = useState(false);
-	const { width: screenWidth } = useWindowDimensions();
+	const { width: screenWidth } = useWindowSize();
 
 	// rowSelection return an object with selected rows as {indexNumber: true} (only for already selected rows)
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -94,6 +94,7 @@ export function useVirtualizedTable({
 		onRowSelectionChange: setRowSelection, //hoist up the row selection state to your own scope
 		state: {
 			rowSelection, //pass the row selection state back to the table instance
+			columnOrder: [___INTERNAL_ID_COLUMN_ID, ...headers],
 		},
 		// Provide our updateData function to our table meta
 		meta: {

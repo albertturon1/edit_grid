@@ -1,4 +1,3 @@
-import type { ParseResult } from "papaparse";
 import {
 	forwardRef,
 	useImperativeHandle,
@@ -6,21 +5,19 @@ import {
 	type ChangeEvent,
 	type MouseEvent,
 } from "react";
+import type { ParseResult } from "papaparse";
 import Papa from "papaparse";
-import type { SupportedFormats } from "../features/home/components/headline-file-picker";
+import type { SupportedFormats } from "@/features/home/components/headline-file-picker";
 import { useToast } from "@/components/hooks/use-toast";
 
 const ONE_BYTE = 1048576;
 
-export type OnFileImportProps = {
-	file: File;
-	result: ParseResult<unknown>;
-};
-
 export type FilePickerCoreProps = {
-	onFileImport: (props: OnFileImportProps) => void;
-	fileSizeLimit?: { size: number; unit: "MB" };
-	accept?: Partial<Record<SupportedFormats, boolean>>;
+	onFileImport: (file: File, result: ParseResult<unknown>) => void;
+	options?: {
+		fileSizeLimit?: { size: number; unit: "MB" };
+		accept?: Partial<Record<SupportedFormats, boolean>>;
+	};
 };
 
 export type FilePickerCoreRef = {
@@ -30,7 +27,8 @@ export type FilePickerCoreRef = {
 export const FilePickerCore = forwardRef<
 	FilePickerCoreRef,
 	FilePickerCoreProps
->(function MyInput({ accept, onFileImport, fileSizeLimit }, ref) {
+>(function MyInput({ onFileImport, options }, ref) {
+	const { accept, fileSizeLimit } = options ?? {};
 	const { toast } = useToast();
 	const inputRef = useRef<HTMLInputElement>(null);
 
@@ -71,10 +69,7 @@ export const FilePickerCore = forwardRef<
 		Papa.parse(firstFile, {
 			skipEmptyLines: true,
 			complete: (props) => {
-				onFileImport({
-					file: firstFile,
-					result: props,
-				});
+				onFileImport(firstFile, props);
 			},
 		});
 

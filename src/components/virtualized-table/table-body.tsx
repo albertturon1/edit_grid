@@ -1,22 +1,26 @@
 import { useEffect, useState, type RefObject } from "react";
-import type { Table } from "@tanstack/react-table";
-import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { TableBodyRow } from "@/components/virtualized-table/table-body-row";
+import {
+	TableBodyRow,
+	type TableBodyRowProps,
+} from "@/components/virtualized-table/table-body-row";
 
-type TableBodyProps<T extends Table<FilePickerRow>> = {
-	table: T;
+type TableBodyProps = Pick<TableBodyRowProps, "rows" | "onContextMenu"> & {
 	tableContainerRef: RefObject<HTMLDivElement>;
 };
 
-export function TableBody<T extends Table<FilePickerRow>>({
-	table,
-	tableContainerRef,
-}: TableBodyProps<T>) {
-	const { rows } = table.getRowModel();
+export function TableBody({ tableContainerRef, ...props }: TableBodyProps) {
+	const [isMounted, setIsMounted] = useState(false);
+	useEffect(() => {
+		setIsMounted(true);
+
+		return () => {
+			setIsMounted(false);
+		};
+	}, []);
 
 	const rowVirtualizer = useVirtualizer({
-		count: rows.length,
+		count: props.rows.length,
 		estimateSize: () => 60, //estimate row height for accurate scrollbar dragging
 		getScrollElement: () => tableContainerRef.current,
 		//measure dynamic row height, except in firefox because it measures table border height incorrectly
@@ -27,16 +31,6 @@ export function TableBody<T extends Table<FilePickerRow>>({
 				: undefined,
 		overscan: 10,
 	});
-
-	const [isMounted, setIsMounted] = useState(false);
-
-	useEffect(() => {
-		setIsMounted(true);
-
-		return () => {
-			setIsMounted(false);
-		};
-	}, []);
 
 	if (!isMounted) {
 		return null;
@@ -51,9 +45,9 @@ export function TableBody<T extends Table<FilePickerRow>>({
 		>
 			{rowVirtualizer.getVirtualItems().map((virtualRow, rowIdx) => (
 				<TableBodyRow
-					virtualRow={virtualRow}
+					{...props}
 					key={virtualRow.index}
-					rows={rows}
+					virtualRow={virtualRow}
 					rowVirtualizer={rowVirtualizer}
 					rowIdx={rowIdx}
 				/>

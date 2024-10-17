@@ -14,13 +14,11 @@ import { z } from "zod";
 import {
 	Form,
 	FormControl,
-	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
-import type { TableDataStatus } from "@/components/virtualized-table/hooks/useDataProperties";
 import { ExportDialogRadioGroup } from "@/components/virtualized-table/export-dialog-radio-group";
 import { splitOnLastOccurrence } from "@/lib/utils";
 import type { TableHeaders } from "@/components/file-picker-import-dialog/mapHeadersToRows";
@@ -48,7 +46,7 @@ const formSchema = z.object({
 export type ExportDialogProps = {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
-	dataStatus: TableDataStatus;
+	rowSelectionMode: boolean;
 	onSubmit: (data: ExportDialogFormSchema) => void;
 	onCancel: () => void;
 	originalFilename: string;
@@ -59,7 +57,7 @@ export type ExportDialogFormSchema = z.infer<typeof formSchema>;
 
 export function ExportDialog({
 	open,
-	dataStatus,
+	rowSelectionMode,
 	onCancel,
 	originalFilename,
 	headers,
@@ -137,7 +135,7 @@ export function ExportDialog({
 								</FormItem>
 							)}
 						/>
-						{dataStatus === "partial" ? (
+						{rowSelectionMode ? (
 							<ExportDialogRadioGroup control={form.control} />
 						) : null}
 						<DialogFooter className="w-full flex flex-col-reverse sm:flex-row gap-y-2">
