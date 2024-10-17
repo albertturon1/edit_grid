@@ -1,4 +1,3 @@
-import type { ParseResult } from "papaparse";
 import {
 	forwardRef,
 	useImperativeHandle,
@@ -6,8 +5,9 @@ import {
 	type ChangeEvent,
 	type MouseEvent,
 } from "react";
+import type { ParseResult } from "papaparse";
 import Papa from "papaparse";
-import type { SupportedFormats } from "../features/home/components/headline-file-picker";
+import type { SupportedFormats } from "@/features/home/components/headline-file-picker";
 import { useToast } from "@/components/hooks/use-toast";
 
 const ONE_BYTE = 1048576;

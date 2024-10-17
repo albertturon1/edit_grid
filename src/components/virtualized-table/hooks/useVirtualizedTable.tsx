@@ -94,6 +94,7 @@ export function useVirtualizedTable({
 		onRowSelectionChange: setRowSelection, //hoist up the row selection state to your own scope
 		state: {
 			rowSelection, //pass the row selection state back to the table instance
+			columnOrder: [___INTERNAL_ID_COLUMN_ID, ...headers],
 		},
 		// Provide our updateData function to our table meta
 		meta: {
