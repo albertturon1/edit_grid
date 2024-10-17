@@ -1,8 +1,8 @@
 import { useRef, useState, type Dispatch } from "react";
+import { NAVBAR_HEIGHT } from "@/routes/__root";
 import { TableHead } from "@/components/virtualized-table/table-head";
 import { TableBody } from "@/components/virtualized-table/table-body";
 import { TableManagement } from "@/components/virtualized-table/table-management";
-import { NAVBAR_HEIGHT } from "@/routes/__root";
 import { useVirtualizedTable } from "@/components/virtualized-table/hooks/useVirtualizedTable";
 import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 import type {
@@ -13,7 +13,7 @@ import type { OnFileImport } from "@/features/home/components/headline-picker";
 import { TableContextMenu } from "@/components/virtualized-table/table-context-menu";
 import type { ContextMenuPosition } from "@/components/context-menu/context-menu";
 import type { Cell, Header, RowData } from "@tanstack/react-table";
-import { useContextMenuMethods } from "./useContextMenuMethods";
+import { useContextMenuMethods } from "@/components/virtualized-table/hooks/useContextMenuMethods";
 import { useWindowSize } from "usehooks-ts";
 
 export type ActiveCell =

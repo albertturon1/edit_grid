@@ -15,15 +15,15 @@ export type FilePickerRow = Record<string, string>;
 export type SupportedFormats = ".csv" | ".json";
 export type FilePickerAccept = Partial<Record<SupportedFormats, boolean>>;
 
-export type FilePickerProps = FilePickerImportSettingsProps &
-	Omit<FilePickerCoreProps, "onFileImport"> & {
-		className?: string;
-		onClick: (event: MouseEvent<HTMLButtonElement>) => void;
-	};
+export type FilePickerProps = Omit<FilePickerImportSettingsProps, "options"> & {
+	className?: string;
+	onClick: (event: MouseEvent<HTMLButtonElement>) => void;
+	filePickerOptions?: FilePickerCoreProps["options"];
+};
 
 export function HeadlineFilePicker({
-	fileSizeLimit,
 	onClick,
+	filePickerOptions,
 	...props
 }: FilePickerProps) {
 	const acceptConcat = filePickerAccepts
@@ -50,8 +50,8 @@ export function HeadlineFilePicker({
 							{acceptConcat ? (
 								<div className="text-slate-400 text-sm">{`Supported formats: ${acceptConcat}`}</div>
 							) : null}
-							{fileSizeLimit ? (
-								<div className="text-slate-400 text-sm">{`File size limit: ${fileSizeLimit.size}${fileSizeLimit.unit}`}</div>
+							{filePickerOptions?.fileSizeLimit ? (
+								<div className="text-slate-400 text-sm">{`File size limit: ${filePickerOptions.fileSizeLimit.size}${filePickerOptions.fileSizeLimit.unit}`}</div>
 							) : null}
 						</div>
 					</div>
@@ -59,8 +59,10 @@ export function HeadlineFilePicker({
 			</button>
 			<FilePickerImportDialog
 				{...props}
-				fileSizeLimit={{ size: 5, unit: "MB" }}
-				accept={filePickerAccepts}
+				options={{
+					fileSizeLimit: filePickerOptions?.fileSizeLimit,
+					accept: filePickerAccepts,
+				}}
 			/>
 		</>
 	);

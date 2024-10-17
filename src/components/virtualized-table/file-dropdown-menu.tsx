@@ -163,8 +163,10 @@ export function FileDropdownMenu({
 			<FilePickerImportDialog
 				inputRef={inputRef}
 				onFileImport={handleOnFileImport}
-				fileSizeLimit={{ size: 5, unit: "MB" }}
-				accept={filePickerAccepts}
+				options={{
+					fileSizeLimit: { size: 5, unit: "MB" },
+					accept: filePickerAccepts,
+				}}
 			/>
 			<ExportDialog
 				originalFilename={originalFilename}

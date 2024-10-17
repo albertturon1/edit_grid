@@ -4,7 +4,7 @@ import { VirtualizedTable } from "@/components/virtualized-table/virtualized-tab
 import { Landing } from "@/features/home/components/landing";
 import { NAVBAR_HEIGHT } from "@/routes/__root";
 import type { TableHeaders } from "@/components/file-picker-import-dialog/mapHeadersToRows";
-import type { OnFileImport } from "./components/headline-picker";
+import type { OnFileImport } from "@/features/home/components/headline-picker";
 import { useBlocker } from "@tanstack/react-router";
 import { useWindowSize } from "usehooks-ts";
 

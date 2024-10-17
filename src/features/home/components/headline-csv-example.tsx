@@ -1,8 +1,8 @@
+import type { ReactNode } from "react";
+import Papa from "papaparse";
 import { mapHeadersToRows } from "@/components/file-picker-import-dialog/mapHeadersToRows";
 import { Button } from "@/components/ui/button";
-import Papa from "papaparse";
-import type { OnFileImport } from "./headline-picker";
-import type { ReactNode } from "react";
+import type { OnFileImport } from "@/features/home/components/headline-picker";
 import { toast } from "@/components/hooks/use-toast";
 
 type HeadlineCsvExampleProps = {

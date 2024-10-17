@@ -7,10 +7,7 @@ import {
 	type FilePickerCoreRef,
 } from "@/components/file-picker-core";
 import { mapHeadersToRows } from "@/components/file-picker-import-dialog/mapHeadersToRows";
-import type {
-	OnFileImport,
-	TemporalFileData,
-} from "@/features/home/components/headline-picker";
+import type { OnFileImport } from "@/features/home/components/headline-picker";
 import {
 	ImportSettingsDialog,
 	type ImportSettingsFormSchema,
@@ -18,6 +15,13 @@ import {
 import { useToast } from "@/components/hooks/use-toast";
 
 const dataSchema = z.array(z.array(z.string())).min(1);
+
+type Imported = {
+	file: File;
+	result: Pick<ParseResult<unknown>, "errors" | "meta"> & {
+		data: string[][];
+	};
+};
 
 export type FilePickerImportSettingsProps = Omit<
 	FilePickerCoreProps,
@@ -29,17 +33,17 @@ export type FilePickerImportSettingsProps = Omit<
 
 export function FilePickerImportDialog({
 	inputRef,
+	onFileImport,
 	...props
 }: FilePickerImportSettingsProps) {
 	const { toast } = useToast();
 
 	const [dialogOpen, setDialogOpen] = useState(false);
-	const [imported, setImported] = useState<TemporalFileData | null>(null);
+	const [imported, setImported] = useState<Imported | null>(null);
 
-	function handleOnFileImport({
-		file,
-		result,
-	}: { file: File; result: ParseResult<unknown> }) {
+	function handleOnFileImport(
+		...[file, result]: Parameters<FilePickerCoreProps["onFileImport"]>
+	) {
 		const parsedResult = dataSchema.safeParse(result.data);
 
 		if (!parsedResult.success) {
@@ -73,7 +77,7 @@ export function FilePickerImportDialog({
 				fromRow,
 			);
 
-			props.onFileImport({
+			onFileImport({
 				file: imported.file,
 				headers,
 				rows,
@@ -91,9 +95,9 @@ export function FilePickerImportDialog({
 	return (
 		<>
 			<FilePickerCore
+				{...props}
 				ref={inputRef}
 				onFileImport={handleOnFileImport}
-				accept={props.accept}
 			/>
 			<ImportSettingsDialog
 				dataLength={imported?.result.data.length ?? 0}
