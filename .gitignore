@@ -1,0 +1,13 @@
+frontend/node_modules
+.DS_Store
+frontend/dist
+
+# backend
+backend/bin/
+backend/pkg/
+backend/vendor/
+backend/*.exe
+backend/*.log
+backend/*.out
+
+tmp
