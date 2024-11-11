@@ -21,7 +21,7 @@ type Main struct {
 }
 
 func main() {
-	port := "4000"
+	port := "8080"
 
 	ctx, cancel := context.WithCancel(context.Background())
 	c := make(chan os.Signal, 1)

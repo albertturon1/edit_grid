@@ -4,8 +4,8 @@ tmp_dir = "tmp"
 
 [build]
   args_bin = []
-  bin = "./tmp/main"
-  cmd = "go build -o ./tmp/main ./cmd/edit_grid"
+  bin = "./tmp/main"  # This is where your compiled binary will go
+  cmd = "go build -o ./tmp/main ./cmd/edit_grid"  # Adjust to the correct path of your main Go file
   delay = 1000
   exclude_dir = ["assets", "tmp", "vendor", "testdata"]
   exclude_file = []
