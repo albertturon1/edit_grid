@@ -9,22 +9,38 @@ import (
 )
 
 func (s *Server) registerRoomRoutes(r *mux.Router) {
-	r.HandleFunc("/new-room", s.handlerNewRoom).Methods("POST")
-
+	r.HandleFunc("/room", s.handlerCreateRoom).Methods("POST", "OPTIONS")
+	r.HandleFunc("/room", s.handlerGetRoom).Methods("GET", "OPTIONS")
 }
 
-func (s *Server) handlerNewRoom(w http.ResponseWriter, r *http.Request) {
-	var table edit_grid.Table
+func (s *Server) handlerCreateRoom(w http.ResponseWriter, r *http.Request) {
+	var roomBody edit_grid.CreateRoom
 
-	if err := json.NewDecoder(r.Body).Decode(&table); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&roomBody); err != nil {
 		Error(w, r, edit_grid.Errorf(edit_grid.EINVALID, "Invalid JSON body"))
 		return
 	}
 
-	if table.Rows == nil || table.Headers == nil {
+	if roomBody.Rows == nil || roomBody.Headers == nil || roomBody.FileName == "" {
 		Error(w, r, edit_grid.Errorf(edit_grid.EINVALID, "Failed schema validation"))
 		return
 	}
 
-	Success(w, r, "", table)
+	room, err := s.RoomService.CreateRoom(r.Context(), &roomBody)
+	if err != nil {
+		Error(w, r, edit_grid.Errorf(edit_grid.EINVALID, err.Error()))
+		return
+	}
+
+	Success(w, r, room)
+}
+
+func (s *Server) handlerGetRoom(w http.ResponseWriter, r *http.Request) {
+	room, err := s.RoomService.GetRoomById(r.Context(), 1)
+	if err != nil {
+		Error(w, r, edit_grid.Errorf(edit_grid.EINVALID, err.Error()))
+		return
+	}
+
+	Success(w, r, room)
 }

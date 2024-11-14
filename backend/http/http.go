@@ -132,7 +132,7 @@ type SuccessResponse struct {
 	Data    interface{} `json:"data,omitempty"`    // Optional data
 }
 
-func Success(w http.ResponseWriter, r *http.Request, message string, data any) {
+func Success(w http.ResponseWriter, r *http.Request, data any, message ...string) {
 	switch r.Header.Get("Accept") {
 	case "application/json":
 	default:
@@ -141,8 +141,8 @@ func Success(w http.ResponseWriter, r *http.Request, message string, data any) {
 		}
 
 		// Set the message if it's provided
-		if message != "" {
-			successResponse.Message = message
+		if message != nil && message[0] != "" {
+			successResponse.Message = message[0]
 		}
 
 		// Set the data if it's provided
