@@ -1,4 +1,4 @@
-import { useRef, useState, type Dispatch } from "react";
+import { useEffect, useRef, useState, type Dispatch } from "react";
 import { NAVBAR_HEIGHT } from "@/routes/__root";
 import { TableHead } from "@/components/virtualized-table/table-head";
 import { TableBody } from "@/components/virtualized-table/table-body";
@@ -15,6 +15,7 @@ import type { ContextMenuPosition } from "@/components/context-menu/context-menu
 import type { Cell, Header, RowData } from "@tanstack/react-table";
 import { useContextMenuMethods } from "@/components/virtualized-table/hooks/useContextMenuMethods";
 import { useWindowSize } from "usehooks-ts";
+import { useWebSocket, WEBSOCKET_URL } from "@/websockets/sockets";
 
 export type ActiveCell =
 	| ({ type: "cell" } & Cell<FilePickerRow, unknown>)

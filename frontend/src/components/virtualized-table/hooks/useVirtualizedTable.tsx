@@ -88,9 +88,9 @@ export function useVirtualizedTable({
 		getSortedRowModel: getSortedRowModel(),
 		columnResizeMode: "onChange",
 		enableColumnResizing: true,
-		debugTable: true,
-		debugHeaders: true,
-		debugColumns: true,
+		// debugTable: true,
+		// debugHeaders: true,
+		// debugColumns: true,
 		onRowSelectionChange: setRowSelection, //hoist up the row selection state to your own scope
 		state: {
 			rowSelection, //pass the row selection state back to the table instance
@@ -121,7 +121,10 @@ export function useVirtualizedTable({
 function getNoCellSize({
 	dataLength,
 	screenWidth,
-}: { screenWidth: number; dataLength: number }) {
+}: {
+	screenWidth: number;
+	dataLength: number;
+}) {
 	const doublePadding = 17; //px-2 + 1
 	const checkboxWidth = 24; // 16 + padding
 	const unitSize = 9;
