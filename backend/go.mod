@@ -34,6 +34,9 @@ require (
 	github.com/fatih/color v1.17.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.5 // indirect
 	github.com/ganigeorgiev/fexpr v0.4.1 // indirect
+	github.com/go-kit/kit v0.13.0 // indirect
+	github.com/go-kit/log v0.2.1 // indirect
+	github.com/go-logfmt/logfmt v0.5.1 // indirect
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0 // indirect
 	github.com/goccy/go-json v0.10.3 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect

@@ -1,9 +1,9 @@
 import {
-	forwardRef,
-	useImperativeHandle,
-	useRef,
-	type ChangeEvent,
-	type MouseEvent,
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  type ChangeEvent,
+  type MouseEvent,
 } from "react";
 import type { ParseResult } from "papaparse";
 import Papa from "papaparse";
@@ -13,79 +13,79 @@ import { useToast } from "@/components/hooks/use-toast";
 const ONE_BYTE = 1048576;
 
 export type FilePickerCoreProps = {
-	onFileImport: (file: File, result: ParseResult<unknown>) => void;
-	options?: {
-		fileSizeLimit?: { size: number; unit: "MB" };
-		accept?: Partial<Record<SupportedFormats, boolean>>;
-	};
+  onFileImport: (file: File, result: ParseResult<unknown>) => void;
+  options?: {
+    fileSizeLimit?: { size: number; unit: "MB" };
+    accept?: Partial<Record<SupportedFormats, boolean>>;
+  };
 };
 
 export type FilePickerCoreRef = {
-	showFilePicker: (event: MouseEvent<HTMLButtonElement>) => void;
+  showFilePicker: <E extends HTMLDivElement | HTMLButtonElement>(
+    event: MouseEvent<E>,
+  ) => void;
 };
 
 export const FilePickerCore = forwardRef<
-	FilePickerCoreRef,
-	FilePickerCoreProps
+  FilePickerCoreRef,
+  FilePickerCoreProps
 >(function MyInput({ onFileImport, options }, ref) {
-	const { accept, fileSizeLimit } = options ?? {};
-	const { toast } = useToast();
-	const inputRef = useRef<HTMLInputElement>(null);
+  const { accept, fileSizeLimit } = options ?? {};
+  const { toast } = useToast();
+  const inputRef = useRef<HTMLInputElement>(null);
 
-	useImperativeHandle(
-		ref,
-		() => {
-			return {
-				showFilePicker: (e: MouseEvent<HTMLButtonElement>) => {
-					e.preventDefault();
-					inputRef.current?.click();
-				},
-			};
-		},
-		[],
-	);
+  useImperativeHandle(ref, () => {
+    return {
+      showFilePicker: <E extends HTMLDivElement | HTMLButtonElement>(
+        e: MouseEvent<E>,
+      ) => {
+        e.preventDefault();
+        inputRef.current?.click();
+      },
+    };
+  }, []);
 
-	function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
-		const firstFile = event?.target.files?.[0];
+  function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
+    const firstFile = event?.target.files?.[0];
 
-		if (!firstFile) {
-			toast({
-				title: "Cannot open provided file.",
-				description: "Try again with a different file.",
-			});
+    if (!firstFile) {
+      toast({
+        title: "Cannot open provided file.",
+        description: "Try again with a different file.",
+      });
 
-			return;
-		}
+      return;
+    }
 
-		if (fileSizeLimit && firstFile.size > ONE_BYTE * fileSizeLimit.size) {
-			toast({
-				title: `File "${firstFile.name}" is too big.`,
-				description: "Try again with a different file.",
-			});
+    if (fileSizeLimit && firstFile.size > ONE_BYTE * fileSizeLimit.size) {
+      toast({
+        title: `File "${firstFile.name}" is too big.`,
+        description: "Try again with a different file.",
+      });
 
-			return;
-		}
+      return;
+    }
 
-		Papa.parse(firstFile, {
-			skipEmptyLines: true,
-			complete: (props) => {
-				onFileImport(firstFile, props);
-			},
-		});
+    Papa.parse(firstFile, {
+      skipEmptyLines: true,
+      complete: (props) => {
+        onFileImport(firstFile, props);
+      },
+    });
 
-		// Reset the input value to trigger onChange again for the same file
-		event.target.value = ""; // This will trigger onChange on the next selection
-	}
+    // Reset the input value to trigger onChange again for the same file
+    event.target.value = ""; // This will trigger onChange on the next selection
+  }
 
-	const acceptConcat = accept ? Object.keys(accept).join(",") : undefined;
+  const acceptConcat = accept ? Object.keys(accept).join(",") : undefined;
 
-	return (
-		<input
-			ref={inputRef}
-			type="file"
-			accept={acceptConcat}
-			hidden
-			onChange={handleInputChange}
-		/>
-	);
+  return (
+    <input
+      ref={inputRef}
+      type="file"
+      accept={acceptConcat}
+      hidden
+      onChange={handleInputChange}
+    />
+  );
 });

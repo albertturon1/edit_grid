@@ -2,6 +2,7 @@ package http
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/albertturon1/edit_grid"
@@ -10,7 +11,7 @@ import (
 
 func (s *Server) registerRoomRoutes(r *mux.Router) {
 	r.HandleFunc("/room", s.handlerCreateRoom).Methods("POST", "OPTIONS")
-	r.HandleFunc("/room", s.handlerGetRoom).Methods("GET", "OPTIONS")
+	r.HandleFunc("/join-room", s.handlerJoinRoom).Methods("GET", "OPTIONS")
 }
 
 func (s *Server) handlerCreateRoom(w http.ResponseWriter, r *http.Request) {
@@ -26,21 +27,32 @@ func (s *Server) handlerCreateRoom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	room, err := s.RoomService.CreateRoom(r.Context(), &roomBody)
-	if err != nil {
-		Error(w, r, edit_grid.Errorf(edit_grid.EINVALID, err.Error()))
-		return
-	}
+	// room, err := s.RoomService.CreateRoom(r.Context(), &roomBody)
+	// if err != nil {
+	// 	Error(w, r, edit_grid.Errorf(edit_grid.EINVALID, err.Error()))
+	// 	return
+	// }
+	room := s.rooms.CreateRoom(roomBody.Headers, roomBody.Rows)
 
-	Success(w, r, room)
+	Success(w, r, &room.ID)
 }
 
-func (s *Server) handlerGetRoom(w http.ResponseWriter, r *http.Request) {
-	room, err := s.RoomService.GetRoomById(r.Context(), 1)
-	if err != nil {
-		Error(w, r, edit_grid.Errorf(edit_grid.EINVALID, err.Error()))
+func (s *Server) handlerJoinRoom(w http.ResponseWriter, r *http.Request) {
+	// room, err := s.RoomService.GetRoomById(r.Context(), 1)
+	// if err != nil {
+	// 	Error(w, r, edit_grid.Errorf(edit_grid.EINVALID, err.Error()))
+	// 	return
+	// }
+	//
+
+	roomID := r.URL.Query().Get("room_id")
+	log.Fatal("Room id: %s", roomID)
+	room, exists := s.rooms.GetRoom(roomID)
+	if exists != nil {
+		http.Error(w, "Room not found", http.StatusNotFound)
+		log.Printf("Attempt to join non-existent room: %s\n", roomID)
 		return
 	}
 
-	Success(w, r, room)
+	room.ServeWebSocket(w, r)
 }

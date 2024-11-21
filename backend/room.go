@@ -21,7 +21,7 @@ type Room struct {
 
 type RoomService interface {
 	GetRoomById(ctx context.Context, id int) (*Room, error)
-	CreateRoom(ctx context.Context, table *CreateRoom) (*Room, error)
+	CreateRoom(ctx context.Context, table *CreateRoom) error
 	// GetRooms(ctx context.Context, id int) ([]*Room, error)
 	// UpdateRoom(ctx context.Context, id int, table *Table) (*Room, error)
 }

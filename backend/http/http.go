@@ -3,7 +3,6 @@ package http
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -63,7 +62,7 @@ func Error(w http.ResponseWriter, r *http.Request, err error) {
 		errorResponse := &ErrorResponse{Error: message, Success: false}
 		w.Header().Set("Content-type", "application/json")
 		w.WriteHeader(ErrorStatusCode(code))
-		EncodeResponse(w, errorResponse)
+		EncodeResponse(w, r, errorResponse)
 	}
 }
 
@@ -152,15 +151,17 @@ func Success(w http.ResponseWriter, r *http.Request, data any, message ...string
 
 		// Set Content-Type and Status Code
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
 
 		// Encode the response as JSON
-		EncodeResponse(w, successResponse)
+		EncodeResponse(w, r, successResponse)
 	}
 }
 
-func EncodeResponse(w http.ResponseWriter, response any) {
-	if err := json.NewEncoder(w).Encode(response); err != nil {
-		http.Error(w, fmt.Sprintf("Error encoding JSON: %v", err), http.StatusInternalServerError)
+func EncodeResponse(w http.ResponseWriter, r *http.Request, response any) {
+	err := json.NewEncoder(w).Encode(response)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		Error(w, r, err)
 	}
 }

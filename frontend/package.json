@@ -34,9 +34,11 @@
 		"react-dom": "^18.3.1",
 		"react-hook-form": "^7.53.0",
 		"react-hot-toast": "^2.4.1",
+		"react-use-websocket": "^4.10.0",
 		"tailwind-merge": "^2.4.0",
 		"tailwindcss-animate": "^1.0.7",
 		"usehooks-ts": "^3.1.0",
+		"uuid": "^11.0.2",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
