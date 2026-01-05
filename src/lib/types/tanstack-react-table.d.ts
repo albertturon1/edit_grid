@@ -10,5 +10,5 @@ declare module "@tanstack/react-table" {
 	interface ColumnMeta {
 		// used to apply in cell.column.columnDef.meta?.className
 		className?: string;
-	  }
+	}
 }

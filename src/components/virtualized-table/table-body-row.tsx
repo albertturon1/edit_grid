@@ -22,7 +22,6 @@ export function TableBodyRow({
 	rowIdx,
 	onContextMenu,
 }: TableBodyRowProps) {
-	virtualRow;
 	const row = rows[virtualRow.index] as Row<FilePickerRow>;
 	const { theme } = useTheme();
 	const currentTheme = theme === "system" ? getValueFromSystemTheme() : theme;

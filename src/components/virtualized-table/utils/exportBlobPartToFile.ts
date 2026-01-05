@@ -1,7 +1,10 @@
 export function exportBlobPartToFile({
 	content,
 	filename,
-}: { content: string; filename: string }) {
+}: {
+	content: string;
+	filename: string;
+}) {
 	const blob = new Blob([content], { type: "text/csv" });
 
 	const a = document.createElement("a");

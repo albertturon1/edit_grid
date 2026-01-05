@@ -32,18 +32,14 @@ export const FilePickerCore = forwardRef<
 	const { toast } = useToast();
 	const inputRef = useRef<HTMLInputElement>(null);
 
-	useImperativeHandle(
-		ref,
-		() => {
-			return {
-				showFilePicker: (e: MouseEvent<HTMLButtonElement>) => {
-					e.preventDefault();
-					inputRef.current?.click();
-				},
-			};
-		},
-		[],
-	);
+	useImperativeHandle(ref, () => {
+		return {
+			showFilePicker: (e: MouseEvent<HTMLButtonElement>) => {
+				e.preventDefault();
+				inputRef.current?.click();
+			},
+		};
+	}, []);
 
 	function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
 		const firstFile = event?.target.files?.[0];

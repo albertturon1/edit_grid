@@ -142,7 +142,10 @@ function useAnchorMode(
 function calculateRowRange({
 	anchorRow,
 	row,
-}: { anchorRow: Row<FilePickerRow>; row: Row<FilePickerRow> }) {
+}: {
+	anchorRow: Row<FilePickerRow>;
+	row: Row<FilePickerRow>;
+}) {
 	const selectedRowsFirstId = Number(anchorRow.id);
 	const currentRowId = Number(row.id);
 

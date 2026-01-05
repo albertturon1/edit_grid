@@ -118,7 +118,7 @@ export function VirtualizedTable({
 					rowSelectionMode={rowSelectionMode}
 					onRowSelectionModeChange={setRowSelectionMode}
 				/>
-				{/* 
+				{/*
 				overflow-auto - scrollable table container
 				relative - needed for sticky header
 				*/}

@@ -1,25 +1,8 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
-	"organizeImports": {
-		"enabled": true
-	},
-	"linter": {
-		"enabled": true,
-		"rules": {
-			"recommended": true,
-			"suspicious": {
-				"noConsoleLog": "warn"
-			},
-			"correctness": {
-				"noUnusedImports": "error",
-				"noUnusedVariables": "error"
-			},
-			"complexity": {
-				"useArrowFunction": "off"
-			}
+	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
 		}
-	},
-	"files": {
-		"ignore": ["src/routeTree.gen.ts", "src/lib/types/**"]
 	}
 }

@@ -26,7 +26,7 @@ customizable export options.
 - **Styling:** Tailwind CSS, shadcn/ui
 - **Form Management:** React Hook Form, Zod
 - **CSV Parsing:** PapaParse
-- **Code Quality:** Biome (linting & formatting)
+- **Code Quality:** Oxlint & Oxformat (linting & formatting)
 - **Testing:** Vitest
 - **Deployment:** Vercel (inferred)
 
@@ -40,17 +40,20 @@ customizable export options.
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone <repository-url>
 cd edit_grid
 ```
 
 2. Install dependencies:
+
 ```bash
 pnpm install
 ```
 
 3. Start the development server:
+
 ```bash
 pnpm dev
 ```
@@ -58,6 +61,7 @@ pnpm dev
 4. Open [http://localhost:3001](http://localhost:3001) in your browser.
 
 ### Build for Production
+
 ```bash
 pnpm build
 ```

@@ -91,7 +91,10 @@ const ContextMenuContentContext = createContext<boolean | null>(null);
 const ContextMenuContent = ({
 	className,
 	children,
-}: { className?: string; children?: ReactNode }) => {
+}: {
+	className?: string;
+	children?: ReactNode;
+}) => {
 	return (
 		<ContextMenuContentContext.Provider value={true}>
 			<div

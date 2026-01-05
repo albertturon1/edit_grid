@@ -121,7 +121,10 @@ export function useVirtualizedTable({
 function getNoCellSize({
 	dataLength,
 	screenWidth,
-}: { screenWidth: number; dataLength: number }) {
+}: {
+	screenWidth: number;
+	dataLength: number;
+}) {
 	const doublePadding = 17; //px-2 + 1
 	const checkboxWidth = 24; // 16 + padding
 	const unitSize = 9;
@@ -149,7 +152,6 @@ function getMappedHeaders(headersIds: string[]) {
 
 		// Check if the header already exists in the map
 		if (headerCount.has(newId)) {
-			// biome-ignore lint/style/noNonNullAssertion: checked above
 			const count = headerCount.get(newId)! + 1;
 			headerCount.set(newId, count);
 			newId = `${newId}_${count}`;

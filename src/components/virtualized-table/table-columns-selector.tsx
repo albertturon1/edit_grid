@@ -61,7 +61,9 @@ export function TableColumnsSelector<T extends Table<FilePickerRow>>({
 
 function DropdownItems<T extends Table<FilePickerRow>>({
 	table,
-}: { table: T }) {
+}: {
+	table: T;
+}) {
 	return table.getAllColumns().map((column) => {
 		// not displaying numerical column
 		if (typeof column.columnDef.header !== "string") {
