@@ -1,7 +1,7 @@
 import { NotFound } from "@/components/not-found";
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 import { Navbar } from "@/components/navbar";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 
 export const Route = createRootRoute({
 	component: RootComponent,

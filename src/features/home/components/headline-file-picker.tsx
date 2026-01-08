@@ -6,14 +6,7 @@ import {
 	type FilePickerImportSettingsProps,
 } from "@/components/file-picker-import-dialog/file-picker-import-dialog";
 
-export const filePickerAccepts: FilePickerAccept = {
-	".csv": true,
-};
-
 export type FilePickerRow = Record<string, string>;
-
-export type SupportedFormats = ".csv" | ".json";
-export type FilePickerAccept = Partial<Record<SupportedFormats, boolean>>;
 
 export type FilePickerProps = Omit<FilePickerImportSettingsProps, "options"> & {
 	className?: string;
@@ -26,10 +19,6 @@ export function HeadlineFilePicker({
 	filePickerOptions,
 	...props
 }: FilePickerProps) {
-	const acceptConcat = filePickerAccepts
-		? Object.keys(filePickerAccepts).join(",")
-		: null;
-
 	return (
 		<>
 			<button
@@ -42,14 +31,8 @@ export function HeadlineFilePicker({
 						<FileUp size={32} strokeWidth={1.5} className="text-purple-400" />
 					</div>
 					<div className="flex flex-col gap-y-2">
-						<h1 className="">
-							{"Click here to upload your file."}
-							{/* {"Click here to upload your file or drag and drop"} */}
-						</h1>
+						<h1 className="">{"Click here to upload your file."}</h1>
 						<div className="text-muted-foreground">
-							{acceptConcat ? (
-								<div className="text-slate-400 text-sm">{`Supported formats: ${acceptConcat}`}</div>
-							) : null}
 							{filePickerOptions?.fileSizeLimit ? (
 								<div className="text-slate-400 text-sm">{`File size limit: ${filePickerOptions.fileSizeLimit.size}${filePickerOptions.fileSizeLimit.unit}`}</div>
 							) : null}
@@ -61,7 +44,6 @@ export function HeadlineFilePicker({
 				{...props}
 				options={{
 					fileSizeLimit: filePickerOptions?.fileSizeLimit,
-					accept: filePickerAccepts,
 				}}
 			/>
 		</>

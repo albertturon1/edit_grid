@@ -1,6 +1,6 @@
 import { useState, type RefObject } from "react";
 import { z } from "zod";
-import type { ParseResult } from "papaparse";
+import type { ParsedData } from "@/lib/file-parsers";
 import {
 	FilePickerCore,
 	type FilePickerCoreProps,
@@ -14,13 +14,9 @@ import {
 } from "@/components/import-settings-dialog";
 import { useToast } from "@/components/hooks/use-toast";
 
-const dataSchema = z.array(z.array(z.string())).min(1);
-
 type Imported = {
 	file: File;
-	result: Pick<ParseResult<unknown>, "errors" | "meta"> & {
-		data: string[][];
-	};
+	result: ParsedData;
 };
 
 export type FilePickerImportSettingsProps = Omit<
@@ -44,22 +40,11 @@ export function FilePickerImportDialog({
 	function handleOnFileImport(
 		...[file, result]: Parameters<FilePickerCoreProps["onFileImport"]>
 	) {
-		const parsedResult = dataSchema.safeParse(result.data);
-
-		if (!parsedResult.success) {
-			toast({
-				title: "Cannot use provided file.",
-				description: "Try again with a different file.",
-			});
-
-			return;
-		}
-
 		setImported({
 			file,
 			result: {
 				...result,
-				data: parsedResult.data,
+				rows: result.rows,
 			},
 		});
 
@@ -72,7 +57,7 @@ export function FilePickerImportDialog({
 	}: ImportSettingsFormSchema) {
 		if (imported) {
 			const { headers, rows } = mapHeadersToRows(
-				imported.result.data,
+				imported.result.rows,
 				firstRowAsHeaders,
 				fromRow,
 			);
@@ -100,7 +85,7 @@ export function FilePickerImportDialog({
 				onFileImport={handleOnFileImport}
 			/>
 			<ImportSettingsDialog
-				dataLength={imported?.result.data.length ?? 0}
+				dataLength={imported?.result.rows.length ?? 0}
 				open={dialogOpen}
 				onOpenChange={setDialogOpen}
 				onCancel={handleOnCancel}

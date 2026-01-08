@@ -8,10 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useRef, useState } from "react";
 import type { Row, Table } from "@tanstack/react-table";
-import {
-	filePickerAccepts,
-	type FilePickerRow,
-} from "@/features/home/components/headline-file-picker";
+import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
 import type { TableHeaders } from "@/components/file-picker-import-dialog/mapHeadersToRows";
 import { cn } from "@/lib/utils";
 import type { FilePickerCoreRef } from "@/components/file-picker-core";
@@ -165,7 +162,6 @@ export function FileDropdownMenu({
 				onFileImport={handleOnFileImport}
 				options={{
 					fileSizeLimit: { size: 5, unit: "MB" },
-					accept: filePickerAccepts,
 				}}
 			/>
 			<ExportDialog
