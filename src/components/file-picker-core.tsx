@@ -5,18 +5,16 @@ import {
 	type ChangeEvent,
 	type MouseEvent,
 } from "react";
-import type { ParseResult } from "papaparse";
-import Papa from "papaparse";
-import type { SupportedFormats } from "@/features/home/components/headline-file-picker";
+import type { ParsedData } from "@/lib/file-parsers";
+import { getParser } from "@/lib/file-parsers";
 import { useToast } from "@/components/hooks/use-toast";
 
 const ONE_BYTE = 1048576;
 
 export type FilePickerCoreProps = {
-	onFileImport: (file: File, result: ParseResult<unknown>) => void;
+	onFileImport: (file: File, result: ParsedData) => void;
 	options?: {
 		fileSizeLimit?: { size: number; unit: "MB" };
-		accept?: Partial<Record<SupportedFormats, boolean>>;
 	};
 };
 
@@ -28,7 +26,7 @@ export const FilePickerCore = forwardRef<
 	FilePickerCoreRef,
 	FilePickerCoreProps
 >(function MyInput({ onFileImport, options }, ref) {
-	const { accept, fileSizeLimit } = options ?? {};
+	const { fileSizeLimit } = options ?? {};
 	const { toast } = useToast();
 	const inputRef = useRef<HTMLInputElement>(null);
 
@@ -41,7 +39,7 @@ export const FilePickerCore = forwardRef<
 		};
 	}, []);
 
-	function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
+	async function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
 		const firstFile = event?.target.files?.[0];
 
 		if (!firstFile) {
@@ -62,26 +60,29 @@ export const FilePickerCore = forwardRef<
 			return;
 		}
 
-		Papa.parse(firstFile, {
-			skipEmptyLines: true,
-			complete: (props) => {
-				onFileImport(firstFile, props);
-			},
-		});
+		const parser = getParser(firstFile);
 
-		// Reset the input value to trigger onChange again for the same file
-		event.target.value = ""; // This will trigger onChange on the next selection
+		if (!parser) {
+			toast({
+				title: `Unsupported file format: ${firstFile.name}`,
+				description: "Try again with a supported format.",
+			});
+			return;
+		}
+
+		try {
+			const result = await parser.parse(firstFile);
+			onFileImport(firstFile, result);
+			event.target.value = "";
+		} catch {
+			toast({
+				title: "Failed to parse file.",
+				description: "Try again with a different file.",
+			});
+		}
 	}
 
-	const acceptConcat = accept ? Object.keys(accept).join(",") : undefined;
-
 	return (
-		<input
-			ref={inputRef}
-			type="file"
-			accept={acceptConcat}
-			hidden
-			onChange={handleInputChange}
-		/>
+		<input ref={inputRef} type="file" hidden onChange={handleInputChange} />
 	);
 });
