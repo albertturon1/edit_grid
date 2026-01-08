@@ -35,7 +35,7 @@ customizable export options.
 ### Prerequisites
 
 - Node.js 18+
-- pnpm
+- Bun
 
 ### Installation
 
@@ -49,13 +49,13 @@ cd edit_grid
 2. Install dependencies:
 
 ```bash
-pnpm install
+bun install
 ```
 
 3. Start the development server:
 
 ```bash
-pnpm dev
+bun dev
 ```
 
 4. Open [http://localhost:3001](http://localhost:3001) in your browser.
@@ -63,15 +63,15 @@ pnpm dev
 ### Build for Production
 
 ```bash
-pnpm build
+bun build
 ```
 
 ### Code Quality
 
 ```bash
-pnpm lint        # Lint and format code
-pnpm tsc         # Type check
-pnpm precommit   # Run all checks
+bun lint        # Lint and format code
+bun typescheck  # Type check
+bun precommit   # Run all checks
 ```
 
 ## 📄 License
