@@ -1,3 +1,4 @@
+import { useRef, useState } from "react";
 import {
 	FilePickerCore,
 	type FilePickerCoreRef,
@@ -8,10 +9,9 @@ import {
 	type ImportSettingsFormSchema,
 } from "@/components/import-settings-dialog";
 import { parseFile } from "@/lib/imports";
-import { normalizeRawTableData } from "@/lib/imports/transformers/normalizeRawTableData";
 import type { RawTableData } from "@/lib/imports/parsers/types";
+import { normalizeRawTableData } from "@/lib/imports/transformers/normalizeRawTableData";
 import type { FileImportResult } from "@/lib/imports/types/import";
-import { useRef, useState } from "react";
 
 interface RoomImportFormProps {
 	onFileImport: (props: FileImportResult) => void;
@@ -48,7 +48,7 @@ export function RoomImportForm({ onFileImport, height }: RoomImportFormProps) {
 	function commitImport(
 		pending: PendingImport,
 		options: ImportSettingsFormSchema,
-	): FileImportResult | void {
+	): FileImportResult | undefined {
 		const normalized = normalizeRawTableData(pending.rawData, {
 			firstRowAsHeaders: options.firstRowAsHeaders,
 		});

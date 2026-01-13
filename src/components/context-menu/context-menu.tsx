@@ -1,19 +1,19 @@
-import { cn } from "@/lib/utils";
+import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
+import * as Portal from "@radix-ui/react-portal";
 import React, {
 	createContext,
-	useContext,
-	useRef,
 	type ReactNode,
 	type RefObject,
+	useContext,
+	useRef,
 } from "react";
-import * as Portal from "@radix-ui/react-portal";
-import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
-import { useElementDimensions } from "@/lib/useElementDimenions";
 import {
 	useEventListener,
 	useOnClickOutside,
 	useWindowSize,
 } from "usehooks-ts";
+import { useElementDimensions } from "@/hooks/useElementDimensions";
+import { cn } from "@/lib/utils";
 
 const KEY_NAME_ESC = "Escape";
 
@@ -22,15 +22,13 @@ export type ContextMenuPosition = {
 	y: number;
 };
 
-function ContextMenu({
-	onClose,
-	children,
-	position,
-}: {
+interface ContextMenuProps {
 	onClose?: () => void;
 	children: ReactNode;
 	position: ContextMenuPosition | null;
-}) {
+}
+
+function ContextMenu({ onClose, children, position }: ContextMenuProps) {
 	const ref = useRef<HTMLDivElement>(null);
 	const coordinates = useCoordinates(ref, position);
 
@@ -135,7 +133,7 @@ function ContextMenuItem({
 			onClick={onClick}
 			type="button"
 			className={cn(
-				"relative flex cursor-default select-none items-center rounded-sm px-3 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 w-full",
+				"relative flex cursor-default select-none items-center rounded-sm px-3 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 w-full justify-between",
 				inset && "pl-8",
 				className,
 			)}

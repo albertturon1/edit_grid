@@ -1,15 +1,15 @@
 import {
+	type ChangeEvent,
 	forwardRef,
+	type MouseEvent,
 	useImperativeHandle,
 	useRef,
-	type ChangeEvent,
-	type MouseEvent,
 } from "react";
 import { useToast } from "@/components/hooks/use-toast";
 import { parseFile } from "@/lib/imports";
 import type { RawTableData } from "@/lib/imports/parsers/types";
 
-const ONE_BYTE = 1048576;
+const MB_IN_BYTES = 1024 * 1024;
 
 export type FilePickerCoreProps = {
 	onFileImport: (file: File, result: RawTableData) => void;
@@ -18,8 +18,15 @@ export type FilePickerCoreProps = {
 	};
 };
 
+function validateFile(file: File, limit?: { size: number }): string | null {
+	if (limit && file.size > MB_IN_BYTES * limit.size) {
+		return `File "${file.name}" is too big. Max size is ${limit.size}MB.`;
+	}
+	return null;
+}
+
 export type FilePickerCoreRef = {
-	showFilePicker: (event: MouseEvent<HTMLButtonElement>) => void;
+	showFilePicker: (event: MouseEvent<HTMLElement>) => void;
 };
 
 export const FilePickerCore = forwardRef<
@@ -32,7 +39,7 @@ export const FilePickerCore = forwardRef<
 
 	useImperativeHandle(ref, () => {
 		return {
-			showFilePicker: (e: MouseEvent<HTMLButtonElement>) => {
+			showFilePicker: (e: MouseEvent<HTMLElement>) => {
 				e.preventDefault();
 				inputRef.current?.click();
 			},
@@ -47,16 +54,15 @@ export const FilePickerCore = forwardRef<
 				title: "Cannot open provided file.",
 				description: "Try again with a different file.",
 			});
-
 			return;
 		}
 
-		if (fileSizeLimit && firstFile.size > ONE_BYTE * fileSizeLimit.size) {
+		const validationError = validateFile(firstFile, fileSizeLimit);
+		if (validationError) {
 			toast({
-				title: `File "${firstFile.name}" is too big.`,
+				title: validationError,
 				description: "Try again with a different file.",
 			});
-
 			return;
 		}
 

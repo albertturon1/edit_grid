@@ -1,14 +1,13 @@
-//home.tsx
-
-import { BouncingBoxes } from "@/components/bouncing-boxes/bouncing-boxes";
-import { NAVBAR_HEIGHT } from "@/routes/__root";
-import { cn } from "@/lib/utils";
-import { Logo } from "@/components/logo";
-import { HeadlineFilePicker } from "./components/headline-file-picker";
-import { useRef } from "react";
-import type { FilePickerCoreRef } from "@/components/file-picker-core";
-import { getValueFromSystemTheme, useTheme } from "@/components/theme-provider";
 import { useNavigate } from "@tanstack/react-router";
+import { useRef } from "react";
+import { BouncingBoxes } from "@/components/bouncing-boxes/bouncing-boxes";
+import type { FilePickerCoreRef } from "@/components/file-picker-core";
+import { Logo } from "@/components/logo";
+import { getValueFromSystemTheme, useTheme } from "@/components/theme-provider";
+import { cn } from "@/lib/utils";
+import { NAVBAR_HEIGHT } from "@/routes/__root";
+import { HeadlineFilePicker } from "./components/headline-file-picker";
+import { HeadlineCsvExample } from "./components/headline-csv-example";
 
 export function HomePage() {
 	const navigate = useNavigate();
@@ -20,11 +19,9 @@ export function HomePage() {
 		currentTheme === "light" ? "bg-slate-100/10" : "bg-black/60";
 
 	function onFileImport() {
-		const newRoomId = crypto.randomUUID();
-		// navigate({
-		// 	to: "/room",
-		// 	search: { id: newRoomId },
-		// });
+		navigate({
+			to: "/room",
+		});
 	}
 
 	return (
@@ -66,6 +63,14 @@ export function HomePage() {
 								/>
 							</div>
 						</div>
+						<div className="flex flex-col gap-y-2 md:flex-row gap-x-5">
+					<HeadlineCsvExample
+						onFileImport={onFileImport}
+						filepath="/example_big.csv"
+					>
+						{"Open example file"}
+					</HeadlineCsvExample>
+				</div>
 					</div>
 				</div>
 			</div>

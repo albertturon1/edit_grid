@@ -1,5 +1,5 @@
-import type { MouseEvent } from "react";
 import { FileUp } from "lucide-react";
+import type { MouseEvent } from "react";
 import type { FilePickerCoreProps } from "@/components/file-picker-core";
 import {
 	FilePickerImportDialog,

@@ -2,22 +2,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
-	DialogHeader,
-	DialogFooter,
 	Dialog,
 	DialogContent,
 	DialogDescription,
+	DialogFooter,
+	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
 import {
+	Form,
+	FormControl,
 	FormField,
 	FormItem,
 	FormLabel,
-	FormControl,
-	Form,
 } from "@/components/ui/form";
-import { Checkbox } from "@/components/ui/checkbox";
 
 const importFormSchema = z.object({
 	firstRowAsHeaders: z.boolean(),
@@ -59,10 +59,6 @@ export function ImportSettingsDialog({
 			form.clearErrors();
 		}
 	}
-
-	const firstRowAsHeaders = form.watch("firstRowAsHeaders");
-
-	const maxInputNumber = firstRowAsHeaders ? dataLength - 1 : dataLength;
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>

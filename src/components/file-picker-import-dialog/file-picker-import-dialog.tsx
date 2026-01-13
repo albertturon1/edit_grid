@@ -1,4 +1,4 @@
-import { useState, type RefObject } from "react";
+import { type RefObject, useState } from "react";
 import {
 	FilePickerCore,
 	type FilePickerCoreProps,
@@ -8,9 +8,9 @@ import {
 	ImportSettingsDialog,
 	type ImportSettingsFormSchema,
 } from "@/components/import-settings-dialog";
-import type { FileImportResult } from "@/lib/imports/types/import";
-import { normalizeRawTableData } from "@/lib/imports/transformers/normalizeRawTableData";
 import type { RawTableData } from "@/lib/imports/parsers/types";
+import { normalizeRawTableData } from "@/lib/imports/transformers/normalizeRawTableData";
+import type { FileImportResult } from "@/lib/imports/types/import";
 
 type Imported = {
 	file: File;

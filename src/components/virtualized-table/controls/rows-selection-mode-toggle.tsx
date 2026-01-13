@@ -1,18 +1,17 @@
-import { Toggle } from "@/components/ui/toggle";
 import { Rows3 } from "lucide-react";
+import { Toggle } from "@/components/ui/toggle";
+import { useTableData } from "@/components/virtualized-table/virtualized-table-context";
 import { cn } from "@/lib/utils";
 
-type SelectedRowsIndicatorProps = {
-	rowSelectionMode: boolean;
-	onRowSelectionModeChange: (pressed: boolean) => void;
+type RowsSelectionModeToggleProps = {
 	className?: string;
 };
 
 export function RowsSelectionModeToggle({
-	rowSelectionMode,
-	onRowSelectionModeChange,
 	className,
-}: SelectedRowsIndicatorProps) {
+}: RowsSelectionModeToggleProps) {
+	const { rowSelectionMode, onRowSelectionModeChange } = useTableData();
+
 	return (
 		<Toggle
 			pressed={rowSelectionMode}

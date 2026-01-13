@@ -1,28 +1,27 @@
-import type { Row } from "@tanstack/react-table";
 import type { VirtualItem, Virtualizer } from "@tanstack/react-virtual";
-import type { TableRow } from "@/lib/imports/types/table";
+import { getValueFromSystemTheme, useTheme } from "@/components/theme-provider";
+import { TableBodyRowCell } from "@/components/virtualized-table/table-body-row-cell";
+import { useCollaborationSession } from "@/features/room/components/collaborative-provider";
+import type { RemoteUser } from "@/lib/collaboration/types";
 import { cn } from "@/lib/utils";
-import { useTheme, getValueFromSystemTheme } from "@/components/theme-provider";
-import {
-	TableBodyRowCell,
-	type TableBodyRowCellProps,
-} from "@/components/virtualized-table/table-body-row-cell";
+import { useTableData } from "./virtualized-table-context";
 
-export type TableBodyRowProps = Pick<TableBodyRowCellProps, "onContextMenu"> & {
+export type TableBodyRowProps = {
 	virtualRow: VirtualItem;
-	rows: Row<TableRow>[];
 	rowVirtualizer: Virtualizer<HTMLDivElement, Element>;
 	rowIdx: number;
 };
 
 export function TableBodyRow({
-	rows,
 	rowVirtualizer,
 	virtualRow,
 	rowIdx,
-	onContextMenu,
 }: TableBodyRowProps) {
-	const row = rows[virtualRow.index] as Row<TableRow>;
+	const collaborative = useCollaborationSession();
+	const remote = collaborative?.users.remote ?? [];
+	const { table } = useTableData();
+	const rows = table.getRowModel().rows;
+	const row = rows[virtualRow.index];
 	const { theme } = useTheme();
 	const currentTheme = theme === "system" ? getValueFromSystemTheme() : theme;
 
@@ -32,10 +31,22 @@ export function TableBodyRow({
 
 	const background = rowIdx % 2 === 0 ? oddCellBgColor : "bg-background"; // from the first row, every second row has a backgroundColor to make the table easier to read
 
+	if (!row) {
+		return null;
+	}
+
+	const getRemoteUsersForCell = (colId: string): RemoteUser[] => {
+		return remote.filter(
+			(u) =>
+				u.selectedCell?.rowIndex === virtualRow.index &&
+				u.selectedCell?.colId === colId,
+		);
+	};
+
 	return (
 		<tr
-			data-index={virtualRow.index} //needed for dynamic row height measurement
-			ref={(node) => rowVirtualizer.measureElement(node)} //measure dynamic row height
+			data-index={virtualRow.index}
+			ref={(node) => rowVirtualizer.measureElement(node)}
 			key={row.id}
 			className={cn(
 				"flex absolute w-full border-b",
@@ -46,12 +57,15 @@ export function TableBodyRow({
 			}}
 		>
 			{row.getVisibleCells().map((cell) => {
+				const remoteUsersForCell = getRemoteUsersForCell(cell.column.id);
 				return (
 					<TableBodyRowCell
 						key={cell.id}
 						cell={cell}
+						rowIndex={virtualRow.index}
 						className={background}
-						onContextMenu={onContextMenu}
+						remote={remoteUsersForCell}
+						maxAvatars={3}
 					/>
 				);
 			})}

@@ -6,9 +6,9 @@ customizable export options.
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-editgrid.vercel.app-blue)](https://editgrid.vercel.app/)
 
-## ✨ Features
+## Features
 
-- **CSV Import:** Easily import CSV files with options to treat the first row as headers and specify starting rows.
+- **CSV Import:** Import CSV files with options for headers and starting rows.
 - **Virtualized Table:** Efficiently display and interact with large datasets using a high-performance virtualized table.
 - **Data Editing:** Directly edit cell values within the table.
 - **Row/Column Management:** Add, remove, and duplicate rows and columns via a context menu.
@@ -17,7 +17,7 @@ customizable export options.
 - **Responsive Design:** Works across different screen sizes.
 - **Modern UI:** Clean and accessible interface built with shadcn/ui components.
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend:** React 18, TypeScript
 - **Build Tool:** Vite
@@ -30,7 +30,7 @@ customizable export options.
 - **Testing:** Vitest
 - **Deployment:** Vercel (inferred)
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -73,7 +73,3 @@ bun lint        # Lint and format code
 bun typescheck  # Type check
 bun precommit   # Run all checks
 ```
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).

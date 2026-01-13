@@ -1,54 +1,39 @@
-import { useMemo, useState } from "react";
 import {
 	createColumnHelper,
 	getCoreRowModel,
 	getSortedRowModel,
-	useReactTable,
 	type Row,
 	type RowSelectionState,
+	type TableMeta,
+	useReactTable,
 } from "@tanstack/react-table";
+import { useMemo, useState } from "react";
+import { useWindowSize } from "usehooks-ts";
 import { tableDefaultColumn } from "@/components/virtualized-table/default-column";
 import { TableNumericalCell } from "@/components/virtualized-table/table-numerical-cell";
 import { TableNumericalHeader } from "@/components/virtualized-table/table-numerical-header";
 import type { TableData, TableRow } from "@/lib/imports/types/table";
-import type { ExtendedContextMenuPosition } from "@/components/virtualized-table/virtualized-table";
-import { useWindowSize } from "usehooks-ts";
 
 const columnHelper = createColumnHelper<TableRow>();
 
 export const ___INTERNAL_ID_COLUMN_ID = "___INTERNAL_ID___000";
 export const ___INTERNAL_ID_COLUMN_NAME = "___000___";
 
-export interface Callbacks {
-	updateCell?: (rowIndex: number, columnId: string, value: string) => void;
-	addRow?: (afterIndex: number) => void;
-	addColumn?: (afterColumnId: string) => void;
-	removeRow?: (index: number) => void;
-	removeColumn?: (columnId: string) => void;
-	duplicateRow?: (index: number) => void;
-}
-
-interface UseVirtualizedTableProps extends Callbacks {
-	data: TableData;
-	rowSelectionMode: boolean;
+interface UseVirtualizedTableProps {
+	tabledata: TableData;
+	meta: TableMeta;
 }
 
 export function useVirtualizedTable({
-	data,
-	rowSelectionMode,
-	updateCell,
-	addRow,
-	addColumn,
-	removeRow,
-	removeColumn,
-	duplicateRow,
+	tabledata,
+	meta,
 }: UseVirtualizedTableProps) {
 	const [anchorRow, setAnchorRow] = useState<Row<TableRow> | null>(null);
 	const [isModifierActive, setIsModifierActive] = useState(false);
-	const { width: screenWidth } = useWindowSize();
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+	const { width: screenWidth } = useWindowSize();
 
-	const { headers, rows } = data;
+	const { headers, rows } = tabledata;
 
 	const columns = useMemo(() => {
 		const headersIds = headers.map((e) => e);
@@ -57,12 +42,7 @@ export function useVirtualizedTable({
 		return [
 			columnHelper.accessor(___INTERNAL_ID_COLUMN_NAME, {
 				id: ___INTERNAL_ID_COLUMN_ID,
-				header: (props) => (
-					<TableNumericalHeader
-						{...props}
-						rowSelectionMode={rowSelectionMode}
-					/>
-				),
+				header: () => <TableNumericalHeader />,
 				cell: (props) => (
 					<TableNumericalCell
 						{...props}
@@ -70,7 +50,6 @@ export function useVirtualizedTable({
 						onAnchorRowChange={setAnchorRow}
 						isModifierActive={isModifierActive}
 						onModifierStateChange={setIsModifierActive}
-						rowSelectionMode={rowSelectionMode}
 					/>
 				),
 				size: getNoCellSize({ dataLength: rows.length, screenWidth }),
@@ -84,14 +63,7 @@ export function useVirtualizedTable({
 				});
 			}),
 		];
-	}, [
-		headers,
-		rows.length,
-		anchorRow,
-		isModifierActive,
-		rowSelectionMode,
-		screenWidth,
-	]);
+	}, [headers, rows.length, anchorRow, isModifierActive, screenWidth]);
 
 	const reactTable = useReactTable<TableRow>({
 		data: rows,
@@ -109,53 +81,10 @@ export function useVirtualizedTable({
 			rowSelection,
 			columnOrder: [___INTERNAL_ID_COLUMN_ID, ...headers],
 		},
-		meta: {
-			updateCell,
-			addRow: (position: ExtendedContextMenuPosition | null) => {
-				if (!position || !addRow) {
-					return;
-				}
-				const index =
-					position.activeCell.type === "cell"
-						? position.activeCell.row.index
-						: -1;
-
-				addRow(index);
-			},
-			addColumn: (position: ExtendedContextMenuPosition | null) => {
-				if (!position || !addColumn) {
-					return;
-				}
-				const columnId = position.activeCell.column.id;
-				addColumn(columnId);
-			},
-			removeRow: (position: ExtendedContextMenuPosition | null) => {
-				if (position?.activeCell.type !== "cell" || !removeRow) {
-					return;
-				}
-
-				const index = position.activeCell.row.index;
-				removeRow(index);
-			},
-			removeColumn: (position: ExtendedContextMenuPosition | null) => {
-				if (!position || !removeColumn) {
-					return;
-				}
-				const columnId = position.activeCell.column.id;
-				removeColumn(columnId);
-			},
-			duplicateRow: (position: ExtendedContextMenuPosition | null) => {
-				if (position?.activeCell.type !== "cell" || !duplicateRow) {
-					return;
-				}
-
-				const index = position.activeCell.row.index;
-				duplicateRow(index);
-			},
-		},
+		meta,
 	});
 
-	return { table: reactTable, anchorRow };
+	return reactTable;
 }
 
 function getNoCellSize({
@@ -187,11 +116,11 @@ function getMappedHeaders(headersIds: string[]) {
 		if (!newId) {
 			newId = `Column${index + 1}`;
 		}
-
-		if (headerCount.has(newId)) {
-			const count = headerCount.get(newId)! + 1;
-			headerCount.set(newId, count);
-			newId = `${newId}_${count}`;
+		const count = headerCount.get(newId);
+		if (count !== undefined) {
+			const newCount = count + 1;
+			headerCount.set(newId, newCount);
+			newId = `${newId}_${newCount}`;
 		} else {
 			headerCount.set(newId, 1);
 		}

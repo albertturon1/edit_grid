@@ -1,7 +1,21 @@
 {
 	"$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "off"
+			}
+		}
+	},
 	"linter": {
 		"rules": {
+			"suspicious": {
+				"noConsole": { "level": "warn", "options": { "allow": ["log"] } }
+			},
+			"correctness": {
+				"noUnusedImports": "error",
+				"noUnusedVariables": "error"
+			},
 			"style": {
 				"noParameterAssign": "error",
 				"useAsConstAssertion": "error",
@@ -15,5 +29,8 @@
 				"noUselessElse": "error"
 			}
 		}
+	},
+	"files": {
+		"includes": ["**", "!**/src/routeTree.gen.ts", "!**/src/lib/types/**"]
 	}
 }

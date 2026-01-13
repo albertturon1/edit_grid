@@ -1,17 +1,10 @@
-import type { HeaderContext } from "@tanstack/react-table";
-import type { TableRow } from "@/lib/imports/types/table";
-import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
-import type { CellValue } from "@/lib/imports/parsers/types";
+import { cn } from "@/lib/utils";
+import { useTableData } from "./virtualized-table-context";
 
-type TableNumericalHeaderProps = HeaderContext<TableRow, CellValue> & {
-	rowSelectionMode: boolean;
-};
+export function TableNumericalHeader() {
+	const { table, rowSelectionMode } = useTableData();
 
-export function TableNumericalHeader({
-	table,
-	rowSelectionMode,
-}: TableNumericalHeaderProps) {
 	function onClick() {
 		table.toggleAllPageRowsSelected();
 	}

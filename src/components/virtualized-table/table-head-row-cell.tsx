@@ -1,25 +1,23 @@
-import type { MouseEvent } from "react";
-import { flexRender } from "@tanstack/react-table";
-import { cn } from "@/lib/utils";
 import type { Header } from "@tanstack/react-table";
-import type { HandleOnContextMenuProps } from "@/components/virtualized-table/virtualized-table";
+import { flexRender } from "@tanstack/react-table";
+import type { MouseEvent } from "react";
+import type { TableRow } from "@/lib/imports/types/table";
+import { cn } from "@/lib/utils";
+import { useTableData } from "./virtualized-table-context";
 
 const NUMERICAL_COLUMN_ID =
 	"text-white/0 cursor-default selection:cursor-default"; // properties to hide the “0” from the first cell - it is rendered to keep the layout stable when no column is visible except the numeric one.
 
 export type TableHeadRowCellProps = {
-	header: Header<unknown, unknown>;
-	onContextMenu: (props: HandleOnContextMenuProps) => void;
+	header: Header<TableRow, unknown>;
 	idx: number;
 };
 
-export function TableHeadRowCell({
-	header,
-	idx,
-	onContextMenu,
-}: TableHeadRowCellProps) {
+export function TableHeadRowCell({ header, idx }: TableHeadRowCellProps) {
+	const { onContextMenu } = useTableData();
 	function handleOnContextMenu(mouseEvent: MouseEvent<HTMLTableCellElement>) {
 		onContextMenu({
+			//@ts-expect-error unknown vs TableRow
 			activeCell: {
 				type: "header",
 				...header,
@@ -43,6 +41,9 @@ export function TableHeadRowCell({
 				? null
 				: flexRender(header.column.columnDef.header, header.getContext())}
 			<div
+				tabIndex={0}
+				role="button"
+				aria-label="Resize column"
 				onMouseDown={header.getResizeHandler()}
 				onTouchStart={header.getResizeHandler()}
 				className={cn(

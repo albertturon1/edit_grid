@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
-import { Button } from "@/components/ui/button";
 import { toast } from "@/components/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 import { EXAMPLE_CONFIGS } from "@/config/example-configs";
-import type { FileImportResult } from "@/lib/imports/types/import";
 import { parseFile } from "@/lib/imports";
 import { normalizeRawTableData } from "@/lib/imports/transformers/normalizeRawTableData";
+import type { FileImportResult } from "@/lib/imports/types/import";
 
 type HeadlineCsvExampleProps = {
 	onFileImport: (data: FileImportResult) => void;

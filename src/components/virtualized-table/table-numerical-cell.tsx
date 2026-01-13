@@ -1,29 +1,29 @@
-import type { CellContext, Row } from "@tanstack/react-table";
+import type { Row } from "@tanstack/react-table";
+import { useEventListener } from "usehooks-ts";
+import { Checkbox } from "@/components/ui/checkbox";
 import type { TableRow } from "@/lib/imports/types/table";
 import { cn } from "@/lib/utils";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useEventListener } from "usehooks-ts";
-import type { CellValue } from "@/lib/imports/parsers/types";
+import { useTableData } from "./virtualized-table-context";
 
-type TableNumericalCellProps = CellContext<TableRow, CellValue> & {
+type TableNumericalCellProps = {
+	row: Row<TableRow>;
 	anchorRow: Row<TableRow> | null;
 	onAnchorRowChange: (row: Row<TableRow> | null) => void;
 	isModifierActive: boolean;
 	onModifierStateChange: (state: boolean) => void;
-	rowSelectionMode: boolean;
 };
 
 const KEY_SHIFT = "Shift";
 
 export function TableNumericalCell({
 	row,
-	table,
 	anchorRow,
 	onAnchorRowChange,
 	isModifierActive,
 	onModifierStateChange,
-	rowSelectionMode,
 }: TableNumericalCellProps) {
+	const { table, rowSelectionMode } = useTableData();
+
 	useAnchorMode(onModifierStateChange);
 
 	function handleSelectionWithModifier() {
@@ -38,7 +38,6 @@ export function TableNumericalCell({
 			return;
 		}
 
-		// same row selected - uncheck and reset state
 		if (row.id === anchorRow.id) {
 			onAnchorRowChange(null);
 			return;
@@ -49,7 +48,6 @@ export function TableNumericalCell({
 		for (let i = firstRowId; i < secondRowId; i++) {
 			const loopedRow = allRows[i];
 
-			// comparison if loopedRow is in opposite state that current row - it means this row should NOT be toggled as they will end up in the same state at the end
 			const isLoopedRowInOpposition =
 				loopedRow?.getIsSelected() !== row.getIsSelected();
 
@@ -76,10 +74,11 @@ export function TableNumericalCell({
 
 	return (
 		<div
+			tabIndex={0}
 			onClick={handleOnClick}
 			onKeyDown={handleOnClick}
 			className={cn(
-				"w-full flex gap-x-2 px-[7px] pt-[9px] border border-white/0 group",
+				"w-full h-full flex gap-x-2 px-[7px] pt-[9px] border border-white/0 group",
 				isModifierActive && rowSelectionMode
 					? "hover:border hover:border-primary hover:rounded"
 					: "",
@@ -107,9 +106,7 @@ export function TableNumericalCell({
 	);
 }
 
-function useAnchorMode(
-	onModifierStateChange: TableNumericalCellProps["onModifierStateChange"],
-) {
+function useAnchorMode(onModifierStateChange: (state: boolean) => void) {
 	const noSelectElements = document.querySelector("body");
 
 	const handleKeyDown = (event: KeyboardEvent) => {
@@ -119,7 +116,6 @@ function useAnchorMode(
 
 		onModifierStateChange(true);
 
-		// disable text selection
 		if (noSelectElements) {
 			noSelectElements.style.userSelect = "none";
 		}
