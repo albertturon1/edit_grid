@@ -1,11 +1,11 @@
 import type { MouseEvent } from "react";
 import { flexRender, type Cell } from "@tanstack/react-table";
-import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
+import type { TableRow } from "@/lib/imports/types/table";
 import { cn } from "@/lib/utils";
 import type { HandleOnContextMenuProps } from "@/components/virtualized-table/virtualized-table";
 
 export type TableBodyRowCellProps = {
-	cell: Cell<FilePickerRow, unknown>;
+	cell: Cell<TableRow, unknown>;
 	className?: string;
 	onContextMenu: (props: HandleOnContextMenuProps) => void;
 };

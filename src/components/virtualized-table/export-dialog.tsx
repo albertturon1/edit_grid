@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/form";
 import { ExportDialogRadioGroup } from "@/components/virtualized-table/export-dialog-radio-group";
 import { splitOnLastOccurrence } from "@/lib/utils";
-import type { TableHeaders } from "@/components/file-picker-import-dialog/mapHeadersToRows";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export const EXPORT_TYPE = {
@@ -50,7 +49,7 @@ export type ExportDialogProps = {
 	onSubmit: (data: ExportDialogFormSchema) => void;
 	onCancel: () => void;
 	originalFilename: string;
-	headers: TableHeaders;
+	headersAreOriginal: boolean;
 };
 
 export type ExportDialogFormSchema = z.infer<typeof formSchema>;
@@ -60,7 +59,7 @@ export function ExportDialog({
 	rowSelectionMode,
 	onCancel,
 	originalFilename,
-	headers,
+	headersAreOriginal,
 	onOpenChange,
 	onSubmit,
 }: ExportDialogProps) {
@@ -73,7 +72,7 @@ export function ExportDialog({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			filename: originalFilenameExtensionless,
-			includeHeaders: headers.isOriginal, // based on user's selection of `firstRowAsHeaders`
+			includeHeaders: headersAreOriginal,
 			exportType: EXPORT_TYPE.selected,
 		},
 	});

@@ -1,9 +1,10 @@
 import type { HeaderContext } from "@tanstack/react-table";
-import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
+import type { TableRow } from "@/lib/imports/types/table";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
+import type { CellValue } from "@/lib/imports/parsers/types";
 
-type TableNumericalHeaderProps = HeaderContext<FilePickerRow, string> & {
+type TableNumericalHeaderProps = HeaderContext<TableRow, CellValue> & {
 	rowSelectionMode: boolean;
 };
 

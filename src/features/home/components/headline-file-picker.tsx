@@ -6,8 +6,6 @@ import {
 	type FilePickerImportSettingsProps,
 } from "@/components/file-picker-import-dialog/file-picker-import-dialog";
 
-export type FilePickerRow = Record<string, string>;
-
 export type FilePickerProps = Omit<FilePickerImportSettingsProps, "options"> & {
 	className?: string;
 	onClick: (event: MouseEvent<HTMLButtonElement>) => void;

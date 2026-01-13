@@ -1,61 +1,74 @@
-import { useState } from "react";
-import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
-import { VirtualizedTable } from "@/components/virtualized-table/virtualized-table";
-import { Landing } from "@/features/home/components/landing";
+//home.tsx
+
+import { BouncingBoxes } from "@/components/bouncing-boxes/bouncing-boxes";
 import { NAVBAR_HEIGHT } from "@/routes/__root";
-import type { TableHeaders } from "@/components/file-picker-import-dialog/mapHeadersToRows";
-import type { OnFileImport } from "@/features/home/components/headline-picker";
-import { useBlocker } from "@tanstack/react-router";
-import { useWindowSize } from "usehooks-ts";
+import { cn } from "@/lib/utils";
+import { Logo } from "@/components/logo";
+import { HeadlineFilePicker } from "./components/headline-file-picker";
+import { useRef } from "react";
+import type { FilePickerCoreRef } from "@/components/file-picker-core";
+import { getValueFromSystemTheme, useTheme } from "@/components/theme-provider";
+import { useNavigate } from "@tanstack/react-router";
 
 export function HomePage() {
-	const [rows, setRows] = useState<FilePickerRow[]>([]);
-	const [headers, setHeaders] = useState<TableHeaders | null>(null);
-	const [originalFilename, setOriginalFilename] = useState<string>("");
-	const { height } = useWindowSize();
+	const navigate = useNavigate();
+	const inputRef = useRef<FilePickerCoreRef>(null);
+	const { theme } = useTheme();
 
-	function onFileImport({ file, headers, rows }: OnFileImport) {
-		handleOnDataUpdate({ headers, rows });
-		setOriginalFilename(file.name);
+	const currentTheme = theme === "system" ? getValueFromSystemTheme() : theme;
+	const overlayColor =
+		currentTheme === "light" ? "bg-slate-100/10" : "bg-black/60";
+
+	function onFileImport() {
+		const newRoomId = crypto.randomUUID();
+		// navigate({
+		// 	to: "/room",
+		// 	search: { id: newRoomId },
+		// });
 	}
-
-	function handleOnDataUpdate({
-		headers,
-		rows,
-	}: Pick<OnFileImport, "headers" | "rows">) {
-		setHeaders(headers);
-		setRows(rows);
-	}
-
-	// const { proceed, reset, status } = useBlocker({
-	useBlocker({
-		blockerFn: () => "Are you sure you want to leave?",
-		condition: rows.length > 0,
-	});
 
 	return (
 		<div
 			className="overflow-hidden flex flex-col gap-y-10"
-			style={{
-				height: height - NAVBAR_HEIGHT,
-			}}
+			style={{ height: `calc(100vh - ${NAVBAR_HEIGHT}px)` }}
 		>
-			{!headers ? (
-				<Landing onFileImport={onFileImport} />
-			) : (
-				<>
-					<div className="w-full h-full px-2 sm:px-5">
-						<VirtualizedTable
-							rows={rows}
-							headers={headers}
-							originalFilename={originalFilename}
-							onRowsChange={setRows}
-							onFileImport={onFileImport}
-							onDataUpdate={handleOnDataUpdate}
-						/>
+			<div className="flex flex-1 relative">
+				<BouncingBoxes size={50} speed={1} gap={25} />
+				<div
+					className={cn(
+						"absolute z-10 top-0 right-0 left-0 bottom-0 flex flex-1 flex-col",
+						overlayColor,
+					)}
+				>
+					<div className="flex flex-1 bg-background opacity-30 absolute z-10 top-0 right-0 left-0 bottom-0" />
+					<div className="z-10 flex flex-1 flex-col justify-between items-center backdrop-blur-3xl py-10">
+						<div className="flex flex-col pb-[5%] flex-1 justify-center gap-y-10 px-3 sm:px-6">
+							<div className="text-center flex flex-col justify-center items-center gap-y-1">
+								<div className="flex justify-center items-center font-bold text-3xl flex-wrap">
+									<h1>{"Welcome to"}&nbsp;</h1>
+									<Logo className="text-3xl" />
+								</div>
+								<h1 className="font-medium text-xl">
+									{"Your Ultimate Online Worksheet Editor"}
+								</h1>
+							</div>
+
+							<div className="flex justify-center items-center">
+								<HeadlineFilePicker
+									filePickerOptions={{
+										fileSizeLimit: { size: 5, unit: "MB" },
+									}}
+									inputRef={inputRef}
+									onFileImport={onFileImport}
+									onClick={(e) => {
+										inputRef.current?.showFilePicker(e);
+									}}
+								/>
+							</div>
+						</div>
 					</div>
-				</>
-			)}
+				</div>
+			</div>
 		</div>
 	);
 }

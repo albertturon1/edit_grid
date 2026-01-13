@@ -1,29 +1,27 @@
 import { useState, type RefObject } from "react";
-import { z } from "zod";
-import type { ParsedData } from "@/lib/file-parsers";
 import {
 	FilePickerCore,
 	type FilePickerCoreProps,
 	type FilePickerCoreRef,
 } from "@/components/file-picker-core";
-import { mapHeadersToRows } from "@/components/file-picker-import-dialog/mapHeadersToRows";
-import type { OnFileImport } from "@/features/home/components/headline-picker";
 import {
 	ImportSettingsDialog,
 	type ImportSettingsFormSchema,
 } from "@/components/import-settings-dialog";
-import { useToast } from "@/components/hooks/use-toast";
+import type { FileImportResult } from "@/lib/imports/types/import";
+import { normalizeRawTableData } from "@/lib/imports/transformers/normalizeRawTableData";
+import type { RawTableData } from "@/lib/imports/parsers/types";
 
 type Imported = {
 	file: File;
-	result: ParsedData;
+	rawData: RawTableData;
 };
 
 export type FilePickerImportSettingsProps = Omit<
 	FilePickerCoreProps,
 	"onFileImport"
 > & {
-	onFileImport: (props: OnFileImport) => void;
+	onFileImport: (data: FileImportResult) => void;
 	inputRef: RefObject<FilePickerCoreRef>;
 };
 
@@ -32,20 +30,15 @@ export function FilePickerImportDialog({
 	onFileImport,
 	...props
 }: FilePickerImportSettingsProps) {
-	const { toast } = useToast();
-
 	const [dialogOpen, setDialogOpen] = useState(false);
 	const [imported, setImported] = useState<Imported | null>(null);
 
 	function handleOnFileImport(
-		...[file, result]: Parameters<FilePickerCoreProps["onFileImport"]>
+		...[file, rawData]: Parameters<FilePickerCoreProps["onFileImport"]>
 	) {
 		setImported({
 			file,
-			result: {
-				...result,
-				rows: result.rows,
-			},
+			rawData,
 		});
 
 		setDialogOpen(true);
@@ -53,23 +46,26 @@ export function FilePickerImportDialog({
 
 	function handleImportDialogSubmit({
 		firstRowAsHeaders,
-		fromRow,
 	}: ImportSettingsFormSchema) {
-		if (imported) {
-			const { headers, rows } = mapHeadersToRows(
-				imported.result.rows,
-				firstRowAsHeaders,
-				fromRow,
-			);
+		if (!imported) {
+			return;
+		}
+		const data = normalizeRawTableData(imported.rawData, {
+			firstRowAsHeaders,
+		});
 
+		if (data) {
 			onFileImport({
 				file: imported.file,
-				headers,
-				rows,
+				table: data.table,
+				metadata: {
+					filename: imported.file.name,
+					firstRowValues: data.firstRowValues,
+				},
 			});
-
-			handleOnCancel();
 		}
+
+		handleOnCancel();
 	}
 
 	function handleOnCancel() {
@@ -85,7 +81,7 @@ export function FilePickerImportDialog({
 				onFileImport={handleOnFileImport}
 			/>
 			<ImportSettingsDialog
-				dataLength={imported?.result.rows.length ?? 0}
+				dataLength={imported?.rawData.length ?? 0}
 				open={dialogOpen}
 				onOpenChange={setDialogOpen}
 				onCancel={handleOnCancel}

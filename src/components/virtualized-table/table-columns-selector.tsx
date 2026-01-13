@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
+import type { TableRow } from "@/lib/imports/types/table";
 import type { Table } from "@tanstack/react-table";
 import {
 	DropdownMenu,
@@ -13,12 +13,12 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown, Columns3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type TableManagementProps<T extends Table<FilePickerRow>> = {
+type TableManagementProps<T extends Table<TableRow>> = {
 	table: T;
 	className?: string;
 };
 
-export function TableColumnsSelector<T extends Table<FilePickerRow>>({
+export function TableColumnsSelector<T extends Table<TableRow>>({
 	table,
 	className,
 }: TableManagementProps<T>) {
@@ -59,11 +59,7 @@ export function TableColumnsSelector<T extends Table<FilePickerRow>>({
 	);
 }
 
-function DropdownItems<T extends Table<FilePickerRow>>({
-	table,
-}: {
-	table: T;
-}) {
+function DropdownItems<T extends Table<TableRow>>({ table }: { table: T }) {
 	return table.getAllColumns().map((column) => {
 		// not displaying numerical column
 		if (typeof column.columnDef.header !== "string") {

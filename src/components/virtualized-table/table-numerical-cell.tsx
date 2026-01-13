@@ -1,12 +1,13 @@
 import type { CellContext, Row } from "@tanstack/react-table";
-import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
+import type { TableRow } from "@/lib/imports/types/table";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useEventListener } from "usehooks-ts";
+import type { CellValue } from "@/lib/imports/parsers/types";
 
-type TableNumericalCellProps = CellContext<FilePickerRow, string> & {
-	anchorRow: Row<FilePickerRow> | null;
-	onAnchorRowChange: (row: Row<FilePickerRow> | null) => void;
+type TableNumericalCellProps = CellContext<TableRow, CellValue> & {
+	anchorRow: Row<TableRow> | null;
+	onAnchorRowChange: (row: Row<TableRow> | null) => void;
 	isModifierActive: boolean;
 	onModifierStateChange: (state: boolean) => void;
 	rowSelectionMode: boolean;
@@ -143,8 +144,8 @@ function calculateRowRange({
 	anchorRow,
 	row,
 }: {
-	anchorRow: Row<FilePickerRow>;
-	row: Row<FilePickerRow>;
+	anchorRow: Row<TableRow>;
+	row: Row<TableRow>;
 }) {
 	const selectedRowsFirstId = Number(anchorRow.id);
 	const currentRowId = Number(row.id);

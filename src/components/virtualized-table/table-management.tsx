@@ -1,24 +1,23 @@
-import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
+import type { TableHeaders, TableRow } from "@/lib/imports/types/table";
 import type { Table } from "@tanstack/react-table";
 import { TableColumnsSelector } from "@/components/virtualized-table/table-columns-selector";
 import { RowsSelectionModeToggle } from "@/components/virtualized-table/rows-selection-mode-toggle";
-import type { TableHeaders } from "@/components/file-picker-import-dialog/mapHeadersToRows";
 import { FileDropdownMenu } from "@/components/virtualized-table/file-dropdown-menu";
-import type { OnFileImport } from "@/features/home/components/headline-picker";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { FileImportResult } from "@/lib/imports/types/import";
 
-type TableManagementProps<T extends Table<FilePickerRow>> = {
+type TableManagementProps<T extends Table<TableRow>> = {
 	table: T;
 	originalFilename: string;
 	rowSelectionMode: boolean;
 	onRowSelectionModeChange: (pressed: boolean) => void;
 	headers: TableHeaders;
-	onFileImport: (props: OnFileImport) => void;
+	onFileImport: (props: FileImportResult) => void;
 };
 
-export function TableManagement<T extends Table<FilePickerRow>>(
+export function TableManagement<T extends Table<TableRow>>(
 	props: TableManagementProps<T>,
 ) {
 	const rowsSelectedNum = props.table.getFilteredSelectedRowModel().rows.length;

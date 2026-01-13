@@ -1,12 +1,12 @@
 import type { Column, Row, Table } from "@tanstack/react-table";
-import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
+import type { TableRow } from "@/lib/imports/types/table";
 
 export function useDataProperties(
-	table: Table<FilePickerRow>,
+	table: Table<TableRow>,
 	rowSelectionMode: boolean,
 ) {
 	const allColumns = table.getAllColumns() ?? [];
-	const visibleColumns: Column<FilePickerRow, unknown>[] = [];
+	const visibleColumns: Column<TableRow, unknown>[] = [];
 	const visibleColumnNames: string[] = [];
 	const allColumnNames: string[] = [];
 
@@ -29,7 +29,7 @@ export function useDataProperties(
 
 	const allRows = table.getRowModel().flatRows;
 
-	function filterAndPushRow(row: Row<FilePickerRow>) {
+	function filterAndPushRow(row: Row<TableRow>) {
 		if (someColumnsToggled) {
 			const filteredOriginalRow = filterRowByColumns({
 				row,
@@ -43,7 +43,7 @@ export function useDataProperties(
 
 	const selectedRows = noModeActive
 		? allRows
-		: allRows.reduce<Row<FilePickerRow>[]>((acc, row) => {
+		: allRows.reduce<Row<TableRow>[]>((acc, row) => {
 				if (rowSelectionMode && !row.getIsSelected()) {
 					return acc; // Skip unselected rows if row selection is active
 				}
@@ -69,9 +69,9 @@ function filterRowByColumns({
 	row,
 }: {
 	visibleColumnNames: string[];
-	row: Row<FilePickerRow>;
-}): Row<FilePickerRow> {
-	const filteredOriginal: FilePickerRow = {};
+	row: Row<TableRow>;
+}): Row<TableRow> {
+	const filteredOriginal: TableRow = {};
 
 	for (const key of visibleColumnNames) {
 		if (key in row.original && typeof row.original[key] === "string") {

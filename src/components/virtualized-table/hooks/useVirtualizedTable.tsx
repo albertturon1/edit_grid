@@ -1,4 +1,4 @@
-import { useMemo, useState, type Dispatch } from "react";
+import { useMemo, useState } from "react";
 import {
 	createColumnHelper,
 	getCoreRowModel,
@@ -10,31 +10,45 @@ import {
 import { tableDefaultColumn } from "@/components/virtualized-table/default-column";
 import { TableNumericalCell } from "@/components/virtualized-table/table-numerical-cell";
 import { TableNumericalHeader } from "@/components/virtualized-table/table-numerical-header";
-import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
+import type { TableData, TableRow } from "@/lib/imports/types/table";
+import type { ExtendedContextMenuPosition } from "@/components/virtualized-table/virtualized-table";
 import { useWindowSize } from "usehooks-ts";
 
-const columnHelper = createColumnHelper<FilePickerRow>();
+const columnHelper = createColumnHelper<TableRow>();
 
 export const ___INTERNAL_ID_COLUMN_ID = "___INTERNAL_ID___000";
 export const ___INTERNAL_ID_COLUMN_NAME = "___000___";
 
-export function useVirtualizedTable({
-	headers,
-	rows,
-	onRowsChange,
-	rowSelectionMode,
-}: {
-	rows: FilePickerRow[];
-	headers: string[];
-	onRowsChange: Dispatch<React.SetStateAction<FilePickerRow[]>>;
+export interface Callbacks {
+	updateCell?: (rowIndex: number, columnId: string, value: string) => void;
+	addRow?: (afterIndex: number) => void;
+	addColumn?: (afterColumnId: string) => void;
+	removeRow?: (index: number) => void;
+	removeColumn?: (columnId: string) => void;
+	duplicateRow?: (index: number) => void;
+}
+
+interface UseVirtualizedTableProps extends Callbacks {
+	data: TableData;
 	rowSelectionMode: boolean;
-}) {
-	const [anchorRow, setAnchorRow] = useState<Row<FilePickerRow> | null>(null);
+}
+
+export function useVirtualizedTable({
+	data,
+	rowSelectionMode,
+	updateCell,
+	addRow,
+	addColumn,
+	removeRow,
+	removeColumn,
+	duplicateRow,
+}: UseVirtualizedTableProps) {
+	const [anchorRow, setAnchorRow] = useState<Row<TableRow> | null>(null);
 	const [isModifierActive, setIsModifierActive] = useState(false);
 	const { width: screenWidth } = useWindowSize();
-
-	// rowSelection return an object with selected rows as {indexNumber: true} (only for already selected rows)
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+
+	const { headers, rows } = data;
 
 	const columns = useMemo(() => {
 		const headersIds = headers.map((e) => e);
@@ -42,7 +56,6 @@ export function useVirtualizedTable({
 
 		return [
 			columnHelper.accessor(___INTERNAL_ID_COLUMN_NAME, {
-				// rendering 0 to keep the layout stable when no column is visible except the numeric one - should be hidden using CSS
 				id: ___INTERNAL_ID_COLUMN_ID,
 				header: (props) => (
 					<TableNumericalHeader
@@ -60,9 +73,9 @@ export function useVirtualizedTable({
 						rowSelectionMode={rowSelectionMode}
 					/>
 				),
-				size: getNoCellSize({ dataLength: rows.length, screenWidth }), //starting column size
+				size: getNoCellSize({ dataLength: rows.length, screenWidth }),
 				meta: {
-					className: "sticky left-0 w-10", //sticky first column
+					className: "sticky left-0 w-10",
 				},
 			}),
 			...mappedHeaders.map((header) => {
@@ -80,7 +93,7 @@ export function useVirtualizedTable({
 		screenWidth,
 	]);
 
-	const table = useReactTable({
+	const reactTable = useReactTable<TableRow>({
 		data: rows,
 		columns,
 		defaultColumn: tableDefaultColumn,
@@ -88,36 +101,63 @@ export function useVirtualizedTable({
 		getSortedRowModel: getSortedRowModel(),
 		columnResizeMode: "onChange",
 		enableColumnResizing: true,
-		debugTable: true,
-		debugHeaders: true,
-		debugColumns: true,
-		onRowSelectionChange: setRowSelection, //hoist up the row selection state to your own scope
+		debugTable: false,
+		debugHeaders: false,
+		debugColumns: false,
+		onRowSelectionChange: setRowSelection,
 		state: {
-			rowSelection, //pass the row selection state back to the table instance
+			rowSelection,
 			columnOrder: [___INTERNAL_ID_COLUMN_ID, ...headers],
 		},
-		// Provide our updateData function to our table meta
 		meta: {
-			updateData: (rowIndex, columnId, value) => {
-				onRowsChange((old) => {
-					return old.map((row, index) => {
-						if (index === rowIndex && typeof value === "string") {
-							return {
-								...old[rowIndex],
-								[columnId]: value,
-							};
-						}
-						return row;
-					});
-				});
+			updateCell,
+			addRow: (position: ExtendedContextMenuPosition | null) => {
+				if (!position || !addRow) {
+					return;
+				}
+				const index =
+					position.activeCell.type === "cell"
+						? position.activeCell.row.index
+						: -1;
+
+				addRow(index);
+			},
+			addColumn: (position: ExtendedContextMenuPosition | null) => {
+				if (!position || !addColumn) {
+					return;
+				}
+				const columnId = position.activeCell.column.id;
+				addColumn(columnId);
+			},
+			removeRow: (position: ExtendedContextMenuPosition | null) => {
+				if (position?.activeCell.type !== "cell" || !removeRow) {
+					return;
+				}
+
+				const index = position.activeCell.row.index;
+				removeRow(index);
+			},
+			removeColumn: (position: ExtendedContextMenuPosition | null) => {
+				if (!position || !removeColumn) {
+					return;
+				}
+				const columnId = position.activeCell.column.id;
+				removeColumn(columnId);
+			},
+			duplicateRow: (position: ExtendedContextMenuPosition | null) => {
+				if (position?.activeCell.type !== "cell" || !duplicateRow) {
+					return;
+				}
+
+				const index = position.activeCell.row.index;
+				duplicateRow(index);
 			},
 		},
 	});
 
-	return { table, anchorRow };
+	return { table: reactTable, anchorRow };
 }
 
-// function used to determine width of numeral column
 function getNoCellSize({
 	dataLength,
 	screenWidth,
@@ -125,12 +165,12 @@ function getNoCellSize({
 	screenWidth: number;
 	dataLength: number;
 }) {
-	const doublePadding = 17; //px-2 + 1
-	const checkboxWidth = 24; // 16 + padding
+	const doublePadding = 17;
+	const checkboxWidth = 24;
 	const unitSize = 9;
 	const stringifiedLength = dataLength.toString().length;
 
-	const multi = screenWidth > 640 ? 1 : 0.83; //calculating multiplier for different font sizes. For sm break point
+	const multi = screenWidth > 640 ? 1 : 0.83;
 
 	const baseWidth =
 		doublePadding + checkboxWidth + (stringifiedLength + 1) * unitSize;
@@ -139,18 +179,15 @@ function getNoCellSize({
 }
 
 function getMappedHeaders(headersIds: string[]) {
-	// Move the Map outside of the reduce function to persist counts across iterations
 	const headerCount = new Map<string, number>();
 
 	return headersIds.reduce<string[]>((acc, header, index) => {
 		let newId = header;
 
-		// If the current element is empty, assign it a name
 		if (!newId) {
 			newId = `Column${index + 1}`;
 		}
 
-		// Check if the header already exists in the map
 		if (headerCount.has(newId)) {
 			const count = headerCount.get(newId)! + 1;
 			headerCount.set(newId, count);

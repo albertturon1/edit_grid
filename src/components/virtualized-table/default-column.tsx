@@ -1,10 +1,10 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
+import type { TableRow } from "@/lib/imports/types/table";
 import { useEffect, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 
 // Give our default column cell renderer editing superpowers!
-export const tableDefaultColumn: Partial<ColumnDef<FilePickerRow>> = {
+export const tableDefaultColumn: Partial<ColumnDef<TableRow>> = {
 	cell: ({ row, column, table }) => {
 		const initialValue =
 			typeof column.columnDef.header === "string"
@@ -16,7 +16,7 @@ export const tableDefaultColumn: Partial<ColumnDef<FilePickerRow>> = {
 
 		// When the input is blurred, we'll call our table meta's updateData function
 		const onBlur = () => {
-			table.options.meta?.updateData(row.index, column.id, value);
+			// table.options.meta?.updateData(row.index, column.id, value);
 		};
 
 		// If the initialValue is changed external, sync it up with our state

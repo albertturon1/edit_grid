@@ -4,20 +4,15 @@ import { TableHead } from "@/components/virtualized-table/table-head";
 import { TableBody } from "@/components/virtualized-table/table-body";
 import { TableManagement } from "@/components/virtualized-table/table-management";
 import { useVirtualizedTable } from "@/components/virtualized-table/hooks/useVirtualizedTable";
-import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
-import type {
-	TableHeaders,
-	TableRows,
-} from "@/components/file-picker-import-dialog/mapHeadersToRows";
-import type { OnFileImport } from "@/features/home/components/headline-picker";
 import { TableContextMenu } from "@/components/virtualized-table/table-context-menu";
 import type { ContextMenuPosition } from "@/components/context-menu/context-menu";
 import type { Cell, Header, RowData } from "@tanstack/react-table";
-import { useContextMenuMethods } from "@/components/virtualized-table/hooks/useContextMenuMethods";
 import { useWindowSize } from "usehooks-ts";
+import type { TableHeaders, TableRow } from "@/lib/imports/types/table";
+import type { FileImportResult } from "@/lib/imports/types/import";
 
 export type ActiveCell =
-	| ({ type: "cell" } & Cell<FilePickerRow, unknown>)
+	| ({ type: "cell" } & Cell<TableRow, unknown>)
 	| ({ type: "header" } & Header<RowData, unknown>);
 
 export type ExtendedContextMenuPosition = ContextMenuPosition & {
@@ -26,11 +21,11 @@ export type ExtendedContextMenuPosition = ContextMenuPosition & {
 
 export type VirtualizedTableProps = {
 	headers: TableHeaders;
-	rows: TableRows;
-	onRowsChange: Dispatch<React.SetStateAction<FilePickerRow[]>>;
+	rows: TableRow[];
+	onRowsChange: Dispatch<React.SetStateAction<TableRow[]>>;
 	originalFilename: string;
-	onFileImport: (props: OnFileImport) => void;
-	onDataUpdate: (props: { headers: TableHeaders; rows: TableRows }) => void;
+	onFileImport: (props: FileImportResult) => void;
+	onDataUpdate: (props: { headers: TableHeaders; rows: TableRow[] }) => void;
 };
 
 export type HandleOnContextMenuProps = {
@@ -55,9 +50,10 @@ export function VirtualizedTable({
 
 	const { table } = useVirtualizedTable({
 		rowSelectionMode,
-		rows,
-		headers: headers.values,
-		onRowsChange,
+		data: {
+			headers,
+			rows,
+		},
 	});
 
 	const [position, setPosition] = useState<ExtendedContextMenuPosition | null>(
@@ -77,7 +73,7 @@ export function VirtualizedTable({
 		});
 	}
 
-	function handleOnFileImport(e: OnFileImport) {
+	function handleOnFileImport(e: FileImportResult) {
 		setPosition(null);
 		props.onFileImport(e);
 		setRowSelectionMode(false);
@@ -86,20 +82,6 @@ export function VirtualizedTable({
 	function handleOnClose() {
 		setPosition(null);
 	}
-
-	const {
-		handleAddColumn,
-		handleAddRow,
-		handleRemoveColumn,
-		handleRemoveRow,
-		handleDuplicateRow,
-	} = useContextMenuMethods({
-		headers,
-		tableRows: table.getRowModel().rows,
-		position,
-		onDataUpdate,
-		onClose: handleOnClose,
-	});
 
 	return (
 		<>
@@ -144,15 +126,7 @@ export function VirtualizedTable({
 					</table>
 				</div>
 			</div>
-			<TableContextMenu
-				position={position}
-				onClose={handleOnClose}
-				addColumn={handleAddColumn}
-				addRow={handleAddRow}
-				removeColumn={handleRemoveColumn}
-				removeRow={handleRemoveRow}
-				duplicateRow={handleDuplicateRow}
-			/>
+			<TableContextMenu position={position} onClose={handleOnClose} />
 		</>
 	);
 }

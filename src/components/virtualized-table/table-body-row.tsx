@@ -1,6 +1,6 @@
 import type { Row } from "@tanstack/react-table";
 import type { VirtualItem, Virtualizer } from "@tanstack/react-virtual";
-import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
+import type { TableRow } from "@/lib/imports/types/table";
 import { cn } from "@/lib/utils";
 import { useTheme, getValueFromSystemTheme } from "@/components/theme-provider";
 import {
@@ -10,7 +10,7 @@ import {
 
 export type TableBodyRowProps = Pick<TableBodyRowCellProps, "onContextMenu"> & {
 	virtualRow: VirtualItem;
-	rows: Row<FilePickerRow>[];
+	rows: Row<TableRow>[];
 	rowVirtualizer: Virtualizer<HTMLDivElement, Element>;
 	rowIdx: number;
 };
@@ -22,7 +22,7 @@ export function TableBodyRow({
 	rowIdx,
 	onContextMenu,
 }: TableBodyRowProps) {
-	const row = rows[virtualRow.index] as Row<FilePickerRow>;
+	const row = rows[virtualRow.index] as Row<TableRow>;
 	const { theme } = useTheme();
 	const currentTheme = theme === "system" ? getValueFromSystemTheme() : theme;
 

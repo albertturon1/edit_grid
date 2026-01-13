@@ -3,21 +3,13 @@ import { Logo } from "@/components/logo";
 import { cn } from "@/lib/utils";
 import { getValueFromSystemTheme, useTheme } from "@/components/theme-provider";
 import { HeadlineFilePicker } from "@/features/home/components/headline-file-picker";
-import type {
-	TableHeaders,
-	TableRows,
-} from "@/components/file-picker-import-dialog/mapHeadersToRows";
 import type { FilePickerCoreRef } from "@/components/file-picker-core";
-import { HeadlineCsvExample } from "@/features/home/components/headline-csv-example";
 
-export type OnFileImport = {
-	file: File;
-	headers: TableHeaders;
-	rows: TableRows;
-};
+import type { FileImportResult } from "@/lib/imports/types/import";
+import { HeadlineCsvExample } from "./headline-csv-example";
 
 export type HeadlineWithPickerProps = {
-	onFileImport: (props: OnFileImport) => void;
+	onFileImport: (data: FileImportResult) => void;
 };
 
 export function HeadlineWithPicker({ onFileImport }: HeadlineWithPickerProps) {
@@ -57,7 +49,7 @@ export function HeadlineWithPicker({ onFileImport }: HeadlineWithPickerProps) {
 				<div className="flex flex-col gap-y-2 md:flex-row gap-x-5">
 					<HeadlineCsvExample
 						onFileImport={onFileImport}
-						filepath="/example_big.csv"
+						filepath="/example_mid.csv"
 					>
 						{"Open example file"}
 					</HeadlineCsvExample>

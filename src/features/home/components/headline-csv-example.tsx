@@ -1,12 +1,13 @@
 import type { ReactNode } from "react";
-import Papa from "papaparse";
-import { mapHeadersToRows } from "@/components/file-picker-import-dialog/mapHeadersToRows";
 import { Button } from "@/components/ui/button";
-import type { OnFileImport } from "@/features/home/components/headline-picker";
 import { toast } from "@/components/hooks/use-toast";
+import { EXAMPLE_CONFIGS } from "@/config/example-configs";
+import type { FileImportResult } from "@/lib/imports/types/import";
+import { parseFile } from "@/lib/imports";
+import { normalizeRawTableData } from "@/lib/imports/transformers/normalizeRawTableData";
 
 type HeadlineCsvExampleProps = {
-	onFileImport: (props: OnFileImport) => void;
+	onFileImport: (data: FileImportResult) => void;
 	children: ReactNode;
 	filepath: string;
 };
@@ -17,6 +18,12 @@ export function HeadlineCsvExample({
 	filepath,
 }: HeadlineCsvExampleProps) {
 	async function handleOnClick() {
+		const config = EXAMPLE_CONFIGS.find((c) => c.filepath === filepath);
+
+		if (config) {
+			return;
+		}
+
 		const response: Response = await fetch(filepath);
 		if (!response.ok) {
 			toast({
@@ -27,42 +34,43 @@ export function HeadlineCsvExample({
 			return;
 		}
 
-		// Read the response as a Blob
 		const blob: Blob = await response.blob();
 
-		// Create a File from the Blob
-		const file: File = new File([blob], "example.csv", { type: "text/csv" });
+		const file: File = new File([blob], filepath.split("/").pop() || filepath, {
+			type: "text/csv",
+		});
 
-		Papa.parse(file, {
-			skipEmptyLines: true,
-			complete: (result) => {
-				onSubmitSetData({
-					file,
-					data: result.data as string[][],
-					fromRow: 1,
-					firstRowAsHeaders: true,
-				});
+		const parsedFile = await parseFile(file);
+		if (!parsedFile.success) {
+			toast({
+				title: `Unsupported file format: ${file.name}`,
+				description: "Try again with a supported format.",
+			});
+			return;
+		}
+
+		const normalized = normalizeRawTableData(parsedFile.data, {
+			firstRowAsHeaders: true,
+		});
+
+		if (!normalized) {
+			toast({
+				title: "Invalid file content.",
+				duration: 4000,
+			});
+			return;
+		}
+
+		const result: FileImportResult = {
+			file,
+			table: normalized.table,
+			metadata: {
+				filename: file.name,
+				firstRowValues: normalized.firstRowValues,
 			},
-		});
-	}
+		};
 
-	function onSubmitSetData(props: {
-		file: File;
-		data: string[][];
-		fromRow: number;
-		firstRowAsHeaders: boolean;
-	}) {
-		const { headers, rows } = mapHeadersToRows(
-			props.data,
-			props.firstRowAsHeaders,
-			props.fromRow,
-		);
-
-		onFileImport({
-			file: props.file,
-			headers,
-			rows,
-		});
+		onFileImport(result);
 	}
 
 	return (

@@ -1,3 +1,5 @@
+//file-dropdown-menu.tsx
+
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import {
@@ -8,11 +10,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useRef, useState } from "react";
 import type { Row, Table } from "@tanstack/react-table";
-import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
-import type { TableHeaders } from "@/components/file-picker-import-dialog/mapHeadersToRows";
+import type { TableHeaders, TableRow } from "@/lib/imports/types/table";
 import { cn } from "@/lib/utils";
 import type { FilePickerCoreRef } from "@/components/file-picker-core";
-import type { OnFileImport } from "@/features/home/components/headline-picker";
 import { Separator } from "@/components/ui/separator";
 import { FilePickerImportDialog } from "@/components/file-picker-import-dialog/file-picker-import-dialog";
 import { useDataProperties } from "@/components/virtualized-table/hooks/useDataProperties";
@@ -22,15 +22,18 @@ import {
 } from "@/components/virtualized-table/export-dialog";
 import { exportBlobPartToFile } from "@/components/virtualized-table/utils/exportBlobPartToFile";
 import { convertIntoCsv } from "@/components/virtualized-table/utils/convertIntoCsv";
+import type { FileImportResult } from "@/lib/imports/types/import";
 
 export type FileDropdownMenuProps = {
-	table: Table<FilePickerRow>;
+	table: Table<TableRow>;
 	originalFilename: string;
 	rowSelectionMode: boolean;
 	headers: TableHeaders;
-	onFileImport: (props: OnFileImport) => void;
+	onFileImport: (props: FileImportResult) => void;
 	className?: string;
 };
+
+// TEMPORAL true for headersAreOriginal - to be dropped in the next commit
 
 export function FileDropdownMenu({
 	headers,
@@ -63,13 +66,13 @@ export function FileDropdownMenu({
 		inputRef.current?.showFilePicker(e);
 	}
 
-	function handleOnFileImport(e: OnFileImport) {
+	function handleOnFileImport(e: FileImportResult) {
 		onFileImport(e);
 		setActive(false);
 	}
 
 	function exportData(
-		rows: Row<FilePickerRow>[],
+		rows: Row<TableRow>[],
 		filename: string,
 		includeHeaders: boolean,
 	) {
@@ -93,7 +96,7 @@ export function FileDropdownMenu({
 		const rows = {
 			selected: selectedRows,
 			all: table.getRowModel().flatRows,
-		} as const satisfies Record<typeof exportType, Row<FilePickerRow>[]>;
+		} as const satisfies Record<typeof exportType, Row<TableRow>[]>;
 
 		exportData(rows[exportType], filename, includeHeaders);
 	};
@@ -108,11 +111,11 @@ export function FileDropdownMenu({
 	}
 
 	function handleExportAll() {
-		handleExport(originalFilename, headers.isOriginal, "all");
+		handleExport(originalFilename, true, "all");
 	}
 
 	function handleExportSelected() {
-		handleExport(originalFilename, headers.isOriginal, "selected");
+		handleExport(originalFilename, true, "selected");
 	}
 
 	return (
@@ -171,7 +174,7 @@ export function FileDropdownMenu({
 				onOpenChange={setIsExportAsDialogOpen}
 				onCancel={handleExportDialogCancel}
 				onSubmit={handleExportDialogSubmit}
-				headers={headers}
+				headersAreOriginal={true}
 			/>
 		</DropdownMenu>
 	);
@@ -184,7 +187,7 @@ function getDataIntoCsv({
 }: {
 	includeHeaders: boolean;
 	visibleColumnNames: string[];
-	rows: Row<FilePickerRow>[];
+	rows: Row<TableRow>[];
 }) {
 	const mappedRows = mapRowsIntoStringArrays(rows);
 	const headers = includeHeaders ? visibleColumnNames : [];
@@ -192,7 +195,7 @@ function getDataIntoCsv({
 	return convertIntoCsv(headers, mappedRows);
 }
 
-function mapRowsIntoStringArrays(rows: Row<FilePickerRow>[]) {
+function mapRowsIntoStringArrays(rows: Row<TableRow>[]) {
 	return rows.map((row) => {
 		return row.getAllCells().reduce<string[]>((acc, e) => {
 			const value = e.getValue();
