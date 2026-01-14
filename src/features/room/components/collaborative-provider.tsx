@@ -56,7 +56,6 @@ export const CollaborationSessionProvider = ({
 	// Get active document from global store
 	const activeDoc = documentStore.getActiveDoc(roomId);
 
-	// const data = useTableData(activeDoc);
 	const collaboration = useCollaboration(roomId, activeDoc);
 
 	// Migration function from local to collaborative
@@ -67,7 +66,6 @@ export const CollaborationSessionProvider = ({
 		setIsSharing(true);
 
 		try {
-			// Generate new room ID
 			const newRoomId = crypto.randomUUID();
 
 			// Migrate local data to collaborative document using document store
@@ -89,7 +87,6 @@ export const CollaborationSessionProvider = ({
 
 	const contextValue = useMemo<CollaborativeContextValue>(
 		() => ({
-			// ...data,
 			users: {
 				local: collaboration?.local,
 				remote: collaboration?.remote || [],
@@ -97,7 +94,6 @@ export const CollaborationSessionProvider = ({
 			onShare,
 			isSharing,
 			roomId,
-			// tabledata: data.table,
 			connectionStatus: collaboration?.connectionStatus || "idle",
 			setSelectedCell: collaboration?.setSelectedCell,
 			roomError: collaboration?.roomError ?? null,

@@ -2,7 +2,7 @@ import type { Row, Table } from "@tanstack/react-table";
 import { useMemo } from "react";
 import type { ExportDialogFormSchema } from "@/components/virtualized-table/export-dialog";
 import type { ExportMode } from "@/components/virtualized-table/types/export";
-import { downloadBlob } from "@/components/virtualized-table/utils/downloadFile";
+import { exportBlobPartToFile } from "@/components/virtualized-table/utils/exportBlobPartToFile";
 import { convertRowsToCsv } from "@/components/virtualized-table/utils/exportToCsv";
 import { useTableData } from "@/components/virtualized-table/virtualized-table-context";
 import type { TableRow } from "@/lib/imports/types/table";
@@ -54,7 +54,7 @@ export function useExport() {
 			visibleColumnNames,
 			includeHeaders,
 		);
-		downloadBlob(csv, filename);
+		exportBlobPartToFile({ content: csv, filename });
 	}
 
 	function exportSubmit(formData: ExportDialogFormSchema) {

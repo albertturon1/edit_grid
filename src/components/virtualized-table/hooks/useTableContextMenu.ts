@@ -13,10 +13,9 @@ export function useTableContextMenu(yjsDoc: Y.Doc) {
 			}
 
 			const afterIndex = position.activeCell.row.index;
-
 			const yArray = yjsDoc.getArray<TableRow>("rows");
-			const yMetadataMap = yjsDoc.getMap("metadata");
-			const headers = (yMetadataMap.get("headers") as TableHeaders) ?? [];
+			const yMetadataMap = yjsDoc.getMap<TableHeaders>("metadata");
+			const headers = yMetadataMap.get("headers") ?? [];
 
 			const newRow = headers.reduce<TableRow>((acc, header) => {
 				acc[header] = "";
@@ -36,8 +35,8 @@ export function useTableContextMenu(yjsDoc: Y.Doc) {
 
 			const afterColumnId = position.activeCell.column.id;
 			const yArray = yjsDoc.getArray<TableRow>("rows");
-			const yMetadataMap = yjsDoc.getMap("metadata");
-			const headers = (yMetadataMap.get("headers") as TableHeaders) ?? [];
+			const yMetadataMap = yjsDoc.getMap<TableHeaders>("metadata");
+			const headers = yMetadataMap.get("headers") ?? [];
 
 			// Generate new column name
 			let newColumnName = "Column1";
@@ -91,8 +90,8 @@ export function useTableContextMenu(yjsDoc: Y.Doc) {
 			}
 			const columnId = position.activeCell.column.id;
 			const yArray = yjsDoc.getArray<TableRow>("rows");
-			const yMetadataMap = yjsDoc.getMap("metadata");
-			const headers = (yMetadataMap.get("headers") as TableHeaders) ?? [];
+			const yMetadataMap = yjsDoc.getMap<TableHeaders>("metadata");
+			const headers = yMetadataMap.get("headers") ?? [];
 
 			// Update headers
 			const newHeaders = headers.filter((h) => h !== columnId);

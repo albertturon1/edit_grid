@@ -94,12 +94,12 @@ function getNoCellSize({
 	screenWidth: number;
 	dataLength: number;
 }) {
-	const doublePadding = 17;
-	const checkboxWidth = 24;
+	const doublePadding = 17; //px-2 + 1
+	const checkboxWidth = 24; // 16 + padding
 	const unitSize = 9;
 	const stringifiedLength = dataLength.toString().length;
 
-	const multi = screenWidth > 640 ? 1 : 0.83;
+	const multi = screenWidth > 640 ? 1 : 0.83; //calculating multiplier for different font sizes. For sm break point
 
 	const baseWidth =
 		doublePadding + checkboxWidth + (stringifiedLength + 1) * unitSize;

@@ -41,18 +41,14 @@ export function TableBodyRowCell({
 	}
 
 	function handleFocus() {
-		if (collaborative?.setSelectedCell) {
-			collaborative.setSelectedCell({
-				rowIndex,
-				colId: cell.column.id,
-			});
-		}
+		collaborative.setSelectedCell?.({
+			rowIndex,
+			colId: cell.column.id,
+		});
 	}
 
 	function handleBlur() {
-		if (collaborative?.setSelectedCell) {
-			collaborative.setSelectedCell(null);
-		}
+		collaborative.setSelectedCell?.(null);
 	}
 
 	return (

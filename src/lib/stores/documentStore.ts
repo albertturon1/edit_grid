@@ -5,33 +5,26 @@ import * as Y from "yjs";
  * Ensures document persistence between local and collaborative modes.
  */
 class DocumentStore {
-	private localDoc: Y.Doc;
-	private collaborativeDocs: Map<string, Y.Doc>;
+	#localDoc: Y.Doc;
+	#collaborativeDocs: Map<string, Y.Doc>;
 
 	constructor() {
-		this.localDoc = new Y.Doc();
-		this.collaborativeDocs = new Map();
+		this.#localDoc = new Y.Doc();
+		this.#collaborativeDocs = new Map();
 	}
 
-	/**
-	 * Get the local document instance (used in local mode)
-	 */
 	getLocalDoc(): Y.Doc {
-		return this.localDoc;
+		return this.#localDoc;
 	}
 
-	/**
-	 * Get or create a collaborative document for a specific room
-	 * @param roomId - Unique room identifier
-	 */
-	getOrCreateCollaborativeDoc(roomId: string): Y.Doc {
-		const existingDoc = this.collaborativeDocs.get(roomId);
+	#getOrCreateCollaborativeDoc(roomId: string): Y.Doc {
+		const existingDoc = this.#collaborativeDocs.get(roomId);
 		if (existingDoc) {
 			return existingDoc;
 		}
 
 		const doc = new Y.Doc();
-		this.collaborativeDocs.set(roomId, doc);
+		this.#collaborativeDocs.set(roomId, doc);
 		return doc;
 	}
 
@@ -39,14 +32,13 @@ class DocumentStore {
 	 * Migrate data from local document to collaborative document.
 	 * Uses Y.js transact() to ensure all operations complete atomically
 	 * before the function returns - no setTimeout needed.
-	 * @param roomId - Target room ID
 	 */
 	migrateLocalToCollaborative(roomId: string): Y.Doc {
-		const collaborativeDoc = this.getOrCreateCollaborativeDoc(roomId);
+		const collaborativeDoc = this.#getOrCreateCollaborativeDoc(roomId);
 
 		// Copy data from local to collaborative document
-		const localRows = this.localDoc.getArray("rows").toArray();
-		const localMetadata = this.localDoc.getMap("metadata").toJSON();
+		const localRows = this.#localDoc.getArray("rows").toArray();
+		const localMetadata = this.#localDoc.getMap("metadata").toJSON();
 
 		// Use transact to ensure atomic operation - data is guaranteed
 		// to be present when transact() returns
@@ -67,29 +59,20 @@ class DocumentStore {
 		return collaborativeDoc;
 	}
 
-	/**
-	 * Get current active document based on room ID
-	 * @param roomId - Room ID (undefined for local mode)
-	 */
 	getActiveDoc(roomId?: string): Y.Doc {
 		if (roomId) {
-			return this.getOrCreateCollaborativeDoc(roomId);
+			return this.#getOrCreateCollaborativeDoc(roomId);
 		}
 		return this.getLocalDoc();
 	}
 
-	/**
-	 * Clear collaborative documents (useful for cleanup)
-	 * @param roomId - Specific room ID to clear, or undefined to clear all
-	 */
 	clearCollaborativeDocs(roomId?: string): void {
 		if (roomId) {
-			this.collaborativeDocs.delete(roomId);
+			this.#collaborativeDocs.delete(roomId);
 		} else {
-			this.collaborativeDocs.clear();
+			this.#collaborativeDocs.clear();
 		}
 	}
 }
 
-// Export singleton instance
 export const documentStore = new DocumentStore();

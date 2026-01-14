@@ -6,8 +6,8 @@ import { getValueFromSystemTheme, useTheme } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
 import { NAVBAR_HEIGHT } from "@/routes/__root";
 import { HeadlineFilePicker } from "./components/headline-file-picker";
-import { HeadlineCsvExample } from "./components/headline-csv-example";
 import { useFileImport } from "./hooks/useFileImport";
+import { Button } from "@/components/ui/button";
 
 export function HomePage() {
 	const inputRef = useRef<FilePickerCoreRef>(null);
@@ -64,12 +64,14 @@ export function HomePage() {
 
 						{/* Examples */}
 						<div className="flex flex-col gap-y-2 md:flex-row md:gap-x-5">
-							<HeadlineCsvExample
-								filepath="/example_big.csv"
-								onLoad={importExample}
+							<Button
+								variant={"outline"}
+								onClick={() => {
+									importExample("/example_big.csv");
+								}}
 							>
 								Open example file
-							</HeadlineCsvExample>
+							</Button>
 						</div>
 					</div>
 				</div>

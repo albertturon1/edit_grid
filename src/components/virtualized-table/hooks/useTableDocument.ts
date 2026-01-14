@@ -68,7 +68,22 @@ export function useTableDocument(roomId: string | undefined) {
 			const yMetadataMap = yjsDoc.getMap("metadata");
 
 			const update = (e: Y.YArrayEvent<TableRow> | Y.YMapEvent<unknown>) => {
-				updateState(e, yArray, yMetadataMap, setTableState);
+				if (e.transaction.local && e.transaction.origin === "cell-update") {
+					return;
+				}
+
+				const headers = (yMetadataMap.get("headers") as TableHeaders) ?? [];
+				const filename = (yMetadataMap.get("filename") as string) ?? "";
+				const firstRowValues =
+					(yMetadataMap.get("firstRowValues") as string[]) ?? [];
+				const rows = yArray.toArray();
+
+				setTableState({
+					rows,
+					headers,
+					filename,
+					firstRowValues,
+				});
 			};
 
 			yArray.observe(update);
@@ -136,26 +151,3 @@ export function useTableDocument(roomId: string | undefined) {
 		},
 	};
 }
-
-const updateState = (
-	event: Y.YArrayEvent<TableRow> | Y.YMapEvent<unknown>,
-	yArray: Y.Array<TableRow>,
-	yMetadataMap: Y.Map<unknown>,
-	onUpdate: (state: TableState) => void,
-) => {
-	if (event.transaction.local && event.transaction.origin === "cell-update") {
-		return;
-	}
-
-	const headers = (yMetadataMap.get("headers") as TableHeaders) ?? [];
-	const filename = (yMetadataMap.get("filename") as string) ?? "";
-	const firstRowValues = (yMetadataMap.get("firstRowValues") as string[]) ?? [];
-	const rows = yArray.toArray();
-
-	onUpdate({
-		rows,
-		headers,
-		filename,
-		firstRowValues,
-	});
-};

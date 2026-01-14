@@ -7,28 +7,6 @@ import { NAVBAR_HEIGHT } from "@/routes/__root";
 import { useRoomViewState } from "../hooks/useRoomViewState";
 import { RoomImportForm } from "./import-form";
 
-function LoadingState() {
-	const { height } = useWindowSize();
-	return (
-		<div
-			className="flex flex-col items-center justify-center gap-y-3"
-			style={{ height: height - NAVBAR_HEIGHT }}
-		>
-			<Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-			<p className="text-muted-foreground">Loading...</p>
-		</div>
-	);
-}
-
-function ReconnectingBanner() {
-	return (
-		<div className="fixed top-14 left-0 right-0 z-50 flex items-center justify-center gap-x-2 bg-yellow-500/90 text-yellow-950 py-1.5 px-4 text-sm">
-			<WifiOff className="h-4 w-4" />
-			<span>Reconnecting... Your changes are saved locally.</span>
-		</div>
-	);
-}
-
 interface RoomPageContentProps {
 	roomId: string | undefined;
 }
@@ -88,4 +66,26 @@ export function RoomPageContent({ roomId }: RoomPageContentProps) {
 				</div>
 			);
 	}
+}
+
+function LoadingState() {
+	const { height } = useWindowSize();
+	return (
+		<div
+			className="flex flex-col items-center justify-center gap-y-3"
+			style={{ height: height - NAVBAR_HEIGHT }}
+		>
+			<Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+			<p className="text-muted-foreground">Loading...</p>
+		</div>
+	);
+}
+
+function ReconnectingBanner() {
+	return (
+		<div className="fixed top-14 left-0 right-0 z-50 flex items-center justify-center gap-x-2 bg-yellow-500/90 text-yellow-950 py-1.5 px-4 text-sm">
+			<WifiOff className="h-4 w-4" />
+			<span>Reconnecting... Your changes are saved locally.</span>
+		</div>
+	);
 }
