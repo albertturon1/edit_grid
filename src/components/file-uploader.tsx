@@ -1,14 +1,17 @@
-import { type RefObject, useState } from "react";
+import { useRef, useState } from "react";
+import { UploadFileButton } from "@/components/upload-file-button";
 import {
 	FilePickerCore,
 	type FilePickerCoreProps,
 	type FilePickerCoreRef,
 } from "@/components/file-picker-core";
+
 import {
 	ImportSettingsDialog,
 	type ImportSettingsFormSchema,
 } from "@/components/import-settings-dialog";
 import type { RawTableData } from "@/lib/imports/parsers/types";
+import { toast } from "sonner";
 import { normalizeRawTableData } from "@/lib/imports/transformers/normalizeRawTableData";
 import type { FileImportResult } from "@/lib/imports/types/import";
 
@@ -17,19 +20,17 @@ type Imported = {
 	rawData: RawTableData;
 };
 
-export type FilePickerImportSettingsProps = Omit<
-	FilePickerCoreProps,
-	"onFileImport"
-> & {
+export type FileUploaderProps = Omit<FilePickerCoreProps, "onFileImport"> & {
+	className?: string;
 	onFileImport: (data: FileImportResult) => void;
-	inputRef: RefObject<FilePickerCoreRef>;
 };
 
-export function FilePickerImportDialog({
-	inputRef,
+export function FileUploader({
+	options,
 	onFileImport,
-	...props
-}: FilePickerImportSettingsProps) {
+	className,
+}: FileUploaderProps) {
+	const inputRef = useRef<FilePickerCoreRef>(null);
 	const [dialogOpen, setDialogOpen] = useState(false);
 	const [imported, setImported] = useState<Imported | null>(null);
 
@@ -48,8 +49,10 @@ export function FilePickerImportDialog({
 		firstRowAsHeaders,
 	}: ImportSettingsFormSchema) {
 		if (!imported) {
+			toast.info("Something went wrong. Please try later");
 			return;
 		}
+
 		const data = normalizeRawTableData(imported.rawData, {
 			firstRowAsHeaders,
 		});
@@ -75,8 +78,16 @@ export function FilePickerImportDialog({
 
 	return (
 		<>
+			<UploadFileButton
+				onClick={(e) => {
+					inputRef.current?.showFilePicker(e);
+				}}
+				title={"Click here to upload your file"}
+				subtitle={`File size limit: ${options.fileSizeLimit.size}${options.fileSizeLimit.unit}`}
+				className={className}
+			/>
 			<FilePickerCore
-				{...props}
+				options={options}
 				ref={inputRef}
 				onFileImport={handleOnFileImport}
 			/>

@@ -6,7 +6,7 @@ import { useTableDocument } from "@/components/virtualized-table/hooks/useTableD
 import { useVirtualizedTable } from "@/components/virtualized-table/hooks/useVirtualizedTable";
 import { useCollaborationSession } from "../components/collaborative-provider";
 
-interface TableMetadata {
+export interface TableMetadata {
 	filename: string;
 	firstRowValues: string[];
 }

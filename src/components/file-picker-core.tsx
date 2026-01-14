@@ -9,18 +9,32 @@ import { toast } from "sonner";
 import { parseFile } from "@/lib/imports";
 import type { RawTableData } from "@/lib/imports/parsers/types";
 
+const KB_IN_BYTES = 1024;
 const MB_IN_BYTES = 1024 * 1024;
+const GB_IN_BYTES = 1024 * 1024 * 1024;
+
+function convertToBytes(size: number, unit: "KB" | "MB" | "GB"): number {
+	switch (unit) {
+		case "KB":
+			return size * KB_IN_BYTES;
+		case "MB":
+			return size * MB_IN_BYTES;
+		case "GB":
+			return size * GB_IN_BYTES;
+	}
+}
 
 export type FilePickerCoreProps = {
 	onFileImport: (file: File, result: RawTableData) => void;
-	options?: {
-		fileSizeLimit?: { size: number; unit: "MB" };
+	options: {
+		fileSizeLimit: { size: number; unit: "KB" | "MB" | "GB" };
+		accept: string[];
 	};
 };
 
-function validateFile(file: File, limit?: { size: number }): string | null {
-	if (limit && file.size > MB_IN_BYTES * limit.size) {
-		return `File "${file.name}" is too big. Max size is ${limit.size}MB.`;
+function validateFile(file: File, maxSizeInBytes?: number): string | null {
+	if (maxSizeInBytes && file.size > maxSizeInBytes) {
+		return `File "${file.name}" is too big.`;
 	}
 	return null;
 }
@@ -33,7 +47,10 @@ export const FilePickerCore = forwardRef<
 	FilePickerCoreRef,
 	FilePickerCoreProps
 >(function MyInput({ onFileImport, options }, ref) {
-	const { fileSizeLimit } = options ?? {};
+	const { fileSizeLimit, accept } = options ?? {};
+
+	const acceptExtensions = accept?.join(", ");
+
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	useImperativeHandle(ref, () => {
@@ -55,7 +72,11 @@ export const FilePickerCore = forwardRef<
 			return;
 		}
 
-		const validationError = validateFile(firstFile, fileSizeLimit);
+		const maxSizeInBytes = fileSizeLimit
+			? convertToBytes(fileSizeLimit.size, fileSizeLimit.unit)
+			: undefined;
+
+		const validationError = validateFile(firstFile, maxSizeInBytes);
 		if (validationError) {
 			toast.error(validationError, {
 				description: "Try again with a different file.",
@@ -77,6 +98,12 @@ export const FilePickerCore = forwardRef<
 	}
 
 	return (
-		<input ref={inputRef} type="file" hidden onChange={handleInputChange} />
+		<input
+			ref={inputRef}
+			accept={acceptExtensions}
+			type="file"
+			hidden
+			onChange={handleInputChange}
+		/>
 	);
 });
