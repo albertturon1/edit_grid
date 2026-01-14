@@ -3,10 +3,10 @@ import { useDebounceCallback } from "usehooks-ts";
 import { Textarea } from "@/components/ui/textarea";
 
 interface EditableCellProps {
-	value: string;
-	onUpdate: (rowIndex: number, columnId: string, value: string) => void;
-	rowIndex: number;
-	columnId: string;
+  value: string;
+  onUpdate: (rowIndex: number, columnId: string, value: string) => void;
+  rowIndex: number;
+  columnId: string;
 }
 
 /**
@@ -23,33 +23,33 @@ interface EditableCellProps {
  *
  */
 export function EditableCell({
-	value: initialValue,
-	onUpdate,
-	rowIndex,
-	columnId,
+  value: initialValue,
+  onUpdate,
+  rowIndex,
+  columnId,
 }: EditableCellProps) {
-	const [value, setValue] = useState(initialValue);
+  const [value, setValue] = useState(initialValue);
 
-	useEffect(() => {
-		setValue(initialValue);
-	}, [initialValue]);
+  useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
 
-	const debouncedUpdateCell = useDebounceCallback(
-		(rowIndex: number, columnId: string, val: string) => {
-			onUpdate(rowIndex, columnId, val);
-		},
-		100,
-	);
+  const debouncedUpdateCell = useDebounceCallback(
+    (rowIndex: number, columnId: string, val: string) => {
+      onUpdate(rowIndex, columnId, val);
+    },
+    100,
+  );
 
-	return (
-		<Textarea
-			value={value}
-			onChange={(e) => {
-				const newValue = e.target.value;
-				setValue(newValue);
-				debouncedUpdateCell(rowIndex, columnId, newValue);
-			}}
-			className="bg-inherit rounded-none border-white/0 focus:border-blue-700 px-2 w-full resize-none min-h-0 tabular-nums overflow-hidden hover:overflow-auto focus:overflow-auto text-xs sm:text-sm"
-		/>
-	);
+  return (
+    <Textarea
+      value={value}
+      onChange={(e) => {
+        const newValue = e.target.value;
+        setValue(newValue);
+        debouncedUpdateCell(rowIndex, columnId, newValue);
+      }}
+      className="bg-inherit rounded-none border-white/0 focus:border-blue-700 px-2 w-full resize-none min-h-0 tabular-nums overflow-hidden hover:overflow-auto focus:overflow-auto text-xs sm:text-sm"
+    />
+  );
 }

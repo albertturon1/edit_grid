@@ -3,11 +3,11 @@ import { CollaborationSessionProvider } from "@/features/room/components/collabo
 import { RoomPageContent } from "./components/content";
 
 export function RoomPage() {
-	const { id: roomId } = useSearch({ from: "/room" });
+  const { id: roomId } = useSearch({ from: "/room" });
 
-	return (
-		<CollaborationSessionProvider roomId={roomId}>
-			<RoomPageContent roomId={roomId} />
-		</CollaborationSessionProvider>
-	);
+  return (
+    <CollaborationSessionProvider roomId={roomId}>
+      <RoomPageContent roomId={roomId} />
+    </CollaborationSessionProvider>
+  );
 }

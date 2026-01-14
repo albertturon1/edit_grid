@@ -65,11 +65,3 @@ bun dev
 ```bash
 bun build
 ```
-
-### Code Quality
-
-```bash
-bun lint        # Lint and format code
-bun typescheck  # Type check
-bun precommit   # Run all checks
-```

@@ -5,18 +5,18 @@ import { VirtualizedTable } from "@/components/virtualized-table/virtualized-tab
 import { ReconnectingBanner } from "./reconnecting-banner";
 
 interface RoomReadyProps {
-	table: Table<TableRow>;
-	metadata: TableMetadata;
-	isReconnecting: boolean;
+  table: Table<TableRow>;
+  metadata: TableMetadata;
+  isReconnecting: boolean;
 }
 
 export function RoomReady({ table, metadata, isReconnecting }: RoomReadyProps) {
-	return (
-		<div className="overflow-hidden flex flex-col">
-			{isReconnecting && <ReconnectingBanner />}
-			<div className="w-full h-full px-2 sm:px-5">
-				<VirtualizedTable table={table} metadata={metadata} />
-			</div>
-		</div>
-	);
+  return (
+    <div className="overflow-hidden flex flex-col">
+      {isReconnecting && <ReconnectingBanner />}
+      <div className="w-full h-full px-2 sm:px-5">
+        <VirtualizedTable table={table} metadata={metadata} />
+      </div>
+    </div>
+  );
 }

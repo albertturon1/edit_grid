@@ -7,5 +7,5 @@ export type RawRow = CellValue[];
 export type RawTableData = RawRow[];
 
 export type FileParser = {
-	parse(file: File): Promise<Result<RawTableData, FileParserError>>;
+  parse(file: File): Promise<Result<RawTableData, FileParserError>>;
 };

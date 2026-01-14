@@ -1,5 +1,5 @@
 {
-	"composite": true,
-	"files": ["src/main.tsx"],
-	"include": ["src"]
+  "composite": true,
+  "files": ["src/main.tsx"],
+  "include": ["src"]
 }

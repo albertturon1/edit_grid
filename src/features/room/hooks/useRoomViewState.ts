@@ -7,57 +7,56 @@ import { useVirtualizedTable } from "@/components/virtualized-table/hooks/useVir
 import { useCollaborationSession } from "../components/collaborative-provider";
 
 export interface TableMetadata {
-	filename: string;
-	firstRowValues: string[];
+  filename: string;
+  firstRowValues: string[];
 }
 
 type RoomViewState =
-	| { status: "loading" }
-	| { status: "error"; error: RoomError }
-	| {
-			status: "empty";
-			onImport: (data: FileImportResult) => void;
-	  }
-	| {
-			status: "ready";
-			table: Table<TableRow>;
-			metadata: TableMetadata;
-			isReconnecting: boolean;
-	  };
+  | { status: "loading" }
+  | { status: "error"; error: RoomError }
+  | {
+      status: "empty";
+      onImport: (data: FileImportResult) => void;
+    }
+  | {
+      status: "ready";
+      table: Table<TableRow>;
+      metadata: TableMetadata;
+      isReconnecting: boolean;
+    };
 
 export function useRoomViewState(roomId: string | undefined): RoomViewState {
-	const { roomError, connectionStatus } = useCollaborationSession();
-	const { isResolving, tabledata, metadata, populateData, meta } =
-		useTableDocument(roomId);
-	const table = useVirtualizedTable({ tabledata, meta });
+  const { roomError, connectionStatus } = useCollaborationSession();
+  const { isResolving, tabledata, metadata, populateData, meta } = useTableDocument(roomId);
+  const table = useVirtualizedTable({ tabledata, meta });
 
-	const hasData = table.getRowModel().rows.length > 0;
+  const hasData = table.getRowModel().rows.length > 0;
 
-	// Priority 1: Error state
-	if (roomError) {
-		return { status: "error", error: roomError };
-	}
+  // Priority 1: Error state
+  if (roomError) {
+    return { status: "error", error: roomError };
+  }
 
-	// Priority 2: Loading collaborative room
-	if (roomId && connectionStatus === "loading") {
-		return { status: "loading" };
-	}
+  // Priority 2: Loading collaborative room
+  if (roomId && connectionStatus === "loading") {
+    return { status: "loading" };
+  }
 
-	// Priority 3: Resolving draft from IndexedDB
-	if (isResolving) {
-		return { status: "loading" };
-	}
+  // Priority 3: Resolving draft from IndexedDB
+  if (isResolving) {
+    return { status: "loading" };
+  }
 
-	// Priority 4: No data in local mode
-	if (!hasData && !roomId) {
-		return { status: "empty", onImport: populateData };
-	}
+  // Priority 4: No data in local mode
+  if (!hasData && !roomId) {
+    return { status: "empty", onImport: populateData };
+  }
 
-	// Priority 5: Ready to render table
-	return {
-		status: "ready",
-		table,
-		metadata,
-		isReconnecting: connectionStatus === "reconnecting",
-	};
+  // Priority 5: Ready to render table
+  return {
+    status: "ready",
+    table,
+    metadata,
+    isReconnecting: connectionStatus === "reconnecting",
+  };
 }

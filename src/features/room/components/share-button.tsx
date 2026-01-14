@@ -4,27 +4,22 @@ import { useCollaborationSession } from "@/features/room/components/collaborativ
 import { cn } from "@/lib/utils";
 
 interface ShareButtonProps {
-	className?: string;
+  className?: string;
 }
 
 export function ShareButton({ className }: ShareButtonProps) {
-	const collaborative = useCollaborationSession();
+  const collaborative = useCollaborationSession();
 
-	if (!collaborative || collaborative.connectionStatus !== "idle") {
-		return null; // Don't show if not in local mode
-	}
+  if (!collaborative || collaborative.connectionStatus !== "idle") {
+    return null; // Don't show if not in local mode
+  }
 
-	const { onShare, isSharing } = collaborative;
+  const { onShare, isSharing } = collaborative;
 
-	return (
-		<Button
-			onClick={onShare}
-			disabled={isSharing}
-			className={cn("gap-2", className)}
-			size="sm"
-		>
-			<Share2 className="h-[14px] w-[14px]" />
-			Share
-		</Button>
-	);
+  return (
+    <Button onClick={onShare} disabled={isSharing} className={cn("gap-2", className)} size="sm">
+      <Share2 className="h-[14px] w-[14px]" />
+      Share
+    </Button>
+  );
 }

@@ -3,10 +3,10 @@ import { Toaster } from "@/components/ui/sonner";
 import type { PropsWithChildren } from "react";
 
 export function Providers({ children }: PropsWithChildren) {
-	return (
-		<>
-			<ThemeProvider>{children}</ThemeProvider>
-			<Toaster position="top-left" />
-		</>
-	);
+  return (
+    <>
+      <ThemeProvider>{children}</ThemeProvider>
+      <Toaster position="top-left" />
+    </>
+  );
 }

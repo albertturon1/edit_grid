@@ -12,88 +12,79 @@ import type { TableRow } from "@/lib/imports/types/table";
 import { NAVBAR_HEIGHT } from "@/routes/__root";
 
 export type ActiveCell =
-	| ({ type: "cell" } & Cell<TableRow, unknown>)
-	| ({ type: "header" } & Header<RowData, unknown>);
+  | ({ type: "cell" } & Cell<TableRow, unknown>)
+  | ({ type: "header" } & Header<RowData, unknown>);
 
 export type ExtendedContextMenuPosition = ContextMenuPosition & {
-	activeCell: ActiveCell;
+  activeCell: ActiveCell;
 };
 
 export type HandleOnContextMenuProps = {
-	mouseEvent: React.MouseEvent<HTMLTableCellElement>;
-	activeCell: ActiveCell;
+  mouseEvent: React.MouseEvent<HTMLTableCellElement>;
+  activeCell: ActiveCell;
 };
 
 interface VirtualizedTableProps {
-	table: Table<TableRow>;
-	metadata: ImportedSourceMetadata;
+  table: Table<TableRow>;
+  metadata: ImportedSourceMetadata;
 }
 
 export function VirtualizedTable({ table, metadata }: VirtualizedTableProps) {
-	const { height } = useWindowSize();
-	const tableContainerRef = useRef<HTMLDivElement>(null);
-	const [rowSelectionMode, setRowSelectionMode] = useState(false);
-	const [position, setPosition] = useState<ExtendedContextMenuPosition | null>(
-		null,
-	);
+  const { height } = useWindowSize();
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+  const [rowSelectionMode, setRowSelectionMode] = useState(false);
+  const [position, setPosition] = useState<ExtendedContextMenuPosition | null>(null);
 
-	const handleOnContextMenu = useCallback(
-		({ mouseEvent, activeCell }: HandleOnContextMenuProps) => {
-			mouseEvent.preventDefault();
+  const handleOnContextMenu = useCallback(
+    ({ mouseEvent, activeCell }: HandleOnContextMenuProps) => {
+      mouseEvent.preventDefault();
 
-			setPosition({
-				x: mouseEvent.clientX,
-				y: mouseEvent.clientY,
-				activeCell,
-			});
-		},
-		[],
-	);
+      setPosition({
+        x: mouseEvent.clientX,
+        y: mouseEvent.clientY,
+        activeCell,
+      });
+    },
+    [],
+  );
 
-	const handleOnClose = useCallback(() => {
-		setPosition(null);
-	}, []);
+  const handleOnClose = useCallback(() => {
+    setPosition(null);
+  }, []);
 
-	return (
-		<VirtualizedTableProvider
-			table={table}
-			metadata={metadata}
-			rowSelectionMode={rowSelectionMode}
-			onRowSelectionModeChange={setRowSelectionMode}
-			onContextMenu={handleOnContextMenu}
-		>
-			<div
-				className="w-full text-sm"
-				style={{
-					height: height - NAVBAR_HEIGHT,
-					paddingBottom: NAVBAR_HEIGHT, // to keep scrollbar visible
-				}}
-			>
-				<TableManagement />
-				{/*
+  return (
+    <VirtualizedTableProvider
+      table={table}
+      metadata={metadata}
+      rowSelectionMode={rowSelectionMode}
+      onRowSelectionModeChange={setRowSelectionMode}
+      onContextMenu={handleOnContextMenu}
+    >
+      <div
+        className="w-full text-sm"
+        style={{
+          height: height - NAVBAR_HEIGHT,
+          paddingBottom: NAVBAR_HEIGHT, // to keep scrollbar visible
+        }}
+      >
+        <TableManagement />
+        {/*
 					overflow-auto - scrollable table container
 					relative - needed for sticky header
 				*/}
-				<div
-					className="overflow-auto relative h-full border rounded"
-					ref={tableContainerRef}
-				>
-					<table
-						onContextMenu={(e) => {
-							e.preventDefault();
-						}}
-						className="tabular-nums bg-background grid"
-					>
-						<TableHead />
-						<TableBody tableContainerRef={tableContainerRef} />
-					</table>
-				</div>
-			</div>
-			<TableContextMenu
-				table={table}
-				position={position}
-				onClose={handleOnClose}
-			/>
-		</VirtualizedTableProvider>
-	);
+        <div className="overflow-auto relative h-full border rounded" ref={tableContainerRef}>
+          <table
+            onContextMenu={(e) => {
+              e.preventDefault();
+            }}
+            className="tabular-nums bg-background grid"
+          >
+            <TableHead />
+            <TableBody tableContainerRef={tableContainerRef} />
+          </table>
+        </div>
+      </div>
+      <TableContextMenu table={table} position={position} onClose={handleOnClose} />
+    </VirtualizedTableProvider>
+  );
 }

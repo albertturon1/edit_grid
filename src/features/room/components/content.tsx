@@ -5,26 +5,26 @@ import { RoomReady } from "./room-ready";
 import { RoomError } from "./room-error";
 
 interface RoomPageContentProps {
-	roomId: string | undefined;
+  roomId: string | undefined;
 }
 
 export function RoomPageContent({ roomId }: RoomPageContentProps) {
-	const viewState = useRoomViewState(roomId);
+  const viewState = useRoomViewState(roomId);
 
-	switch (viewState.status) {
-		case "loading":
-			return <RoomLoading />;
-		case "error":
-			return <RoomError error={viewState.error} />;
-		case "empty":
-			return <RoomEmpty onImport={viewState.onImport} />;
-		case "ready":
-			return (
-				<RoomReady
-					table={viewState.table}
-					metadata={viewState.metadata}
-					isReconnecting={viewState.isReconnecting}
-				/>
-			);
-	}
+  switch (viewState.status) {
+    case "loading":
+      return <RoomLoading />;
+    case "error":
+      return <RoomError error={viewState.error} />;
+    case "empty":
+      return <RoomEmpty onImport={viewState.onImport} />;
+    case "ready":
+      return (
+        <RoomReady
+          table={viewState.table}
+          metadata={viewState.metadata}
+          isReconnecting={viewState.isReconnecting}
+        />
+      );
+  }
 }

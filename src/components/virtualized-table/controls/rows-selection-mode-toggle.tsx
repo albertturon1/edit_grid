@@ -4,29 +4,25 @@ import { useTableData } from "@/components/virtualized-table/virtualized-table-c
 import { cn } from "@/lib/utils";
 
 type RowsSelectionModeToggleProps = {
-	className?: string;
+  className?: string;
 };
 
-export function RowsSelectionModeToggle({
-	className,
-}: RowsSelectionModeToggleProps) {
-	const { rowSelectionMode, onRowSelectionModeChange } = useTableData();
+export function RowsSelectionModeToggle({ className }: RowsSelectionModeToggleProps) {
+  const { rowSelectionMode, onRowSelectionModeChange } = useTableData();
 
-	return (
-		<Toggle
-			pressed={rowSelectionMode}
-			onPressedChange={onRowSelectionModeChange}
-			variant={"outline"}
-			aria-label="Toggle italic"
-			className={cn(
-				"justify-start flex items-center gap-x-2 sm:gap-x-3 transition-text bg-background",
-				className,
-			)}
-		>
-			<Rows3
-				className={cn("h-4 w-4", rowSelectionMode ? "text-primary" : "")}
-			/>
-			{"Rows"}
-		</Toggle>
-	);
+  return (
+    <Toggle
+      pressed={rowSelectionMode}
+      onPressedChange={onRowSelectionModeChange}
+      variant={"outline"}
+      aria-label="Toggle italic"
+      className={cn(
+        "justify-start flex items-center gap-x-2 sm:gap-x-3 transition-text bg-background",
+        className,
+      )}
+    >
+      <Rows3 className={cn("h-4 w-4", rowSelectionMode ? "text-primary" : "")} />
+      {"Rows"}
+    </Toggle>
+  );
 }
