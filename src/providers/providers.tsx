@@ -4,9 +4,9 @@ import type { PropsWithChildren } from "react";
 
 export function Providers({ children }: PropsWithChildren) {
   return (
-    <>
-      <ThemeProvider>{children}</ThemeProvider>
+    <ThemeProvider>
+      {children}
       <Toaster position="top-left" />
-    </>
+    </ThemeProvider>
   );
 }

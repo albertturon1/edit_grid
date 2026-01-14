@@ -1,6 +1,7 @@
 node_modules
 .DS_Store
 dist
+dist-ssr
 .partykit
 *.env
 .vscode
@@ -12,5 +13,9 @@ dist
 /playwright/.cache/
 /playwright/.auth/
 
-
 tmp
+.nitro
+.env
+.tanstack
+.wrangler
+.output
