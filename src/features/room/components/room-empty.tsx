@@ -8,17 +8,16 @@ interface RoomEmptyStateProps {
 
 export function RoomEmpty({ onImport }: RoomEmptyStateProps) {
 	return (
-		<div className="flex flex-col items-center justify-center">
-			<div className="w-full max-w-md px-4">
-				<h2 className="text-2xl font-bold text-center mb-8">Import CSV File</h2>
-				<FileUploader
-					onFileImport={onImport}
-					options={{
-						fileSizeLimit: { size: 5, unit: "MB" },
-						accept: ALLOWED_FILE_EXTENSIONS,
-					}}
-				/>
-			</div>
+		<div className="max-w-md px-4 gap-8 flex flex-1 flex-col items-center justify-center">
+			<h2 className="text-2xl font-bold text-center">Import CSV File</h2>
+
+			<FileUploader
+				onFileImport={onImport}
+				options={{
+					fileSizeLimit: { size: 5, unit: "MB" },
+					accept: ALLOWED_FILE_EXTENSIONS,
+				}}
+			/>
 		</div>
 	);
 }

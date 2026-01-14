@@ -1,6 +1,5 @@
 import { useNavigate, useRouter } from "@tanstack/react-router";
 import { Logo } from "@/components/logo";
-// import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 type NavbarProps = {
 	height: number;
@@ -14,25 +13,18 @@ export function Navbar({ height }: NavbarProps) {
 		if (router.state.location.pathname === "/") {
 			router.history.go(0);
 		} else {
-			navigate({
-				to: "/",
-			});
+			navigate({ to: "/" });
 		}
 	}
 
 	return (
 		<div
-			className="flex flex-1 fixed top-0 w-full items-center justify-between border-b border-border px-3 sm:px-5 bg-background z-20"
-			style={{
-				height,
-			}}
+			className="fixed top-0 left-0 z-20 flex w-full items-center justify-between border-b border-border bg-background px-3 sm:px-5"
+			style={{ height }}
 		>
 			<button type="button" onClick={goToIndexPage}>
 				<Logo />
 			</button>
-			{/* <div className="flex items-center gap-3">
-				<ThemeToggle />
-			</div> */}
 		</div>
 	);
 }

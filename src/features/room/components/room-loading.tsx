@@ -6,7 +6,7 @@ export function RoomLoading() {
 	const { height } = useWindowSize();
 	return (
 		<div
-			className="flex flex-col items-center justify-center gap-y-3"
+			className="flex flex-col items-center justify-center gap-y-3 flex-1"
 			style={{ height: height - NAVBAR_HEIGHT }}
 		>
 			<Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />

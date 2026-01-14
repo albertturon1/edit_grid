@@ -23,7 +23,6 @@ export function getBoxes({
 
 	let row = 0;
 	let column = 0;
-
 	for (const id of Array.from({ length: quantity }, (_, i) => i)) {
 		if (row >= horizontalQuantity) {
 			//going to the next column and resetting rows

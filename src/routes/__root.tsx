@@ -1,5 +1,5 @@
 import { NotFound } from "@/components/not-found";
-import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
+import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { Navbar } from "@/components/navbar";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 
@@ -12,16 +12,16 @@ export const NAVBAR_HEIGHT = 60;
 
 function RootComponent() {
 	return (
-		<div>
+		<div className="min-h-dvh w-full">
 			<Navbar height={NAVBAR_HEIGHT} />
+
 			<div
-				style={{
-					paddingTop: NAVBAR_HEIGHT,
-				}}
+				className="min-h-dvh flex flex-col"
+				style={{ paddingTop: NAVBAR_HEIGHT }}
 			>
-				<Link to="/" className="[&.active]:font-bold" />
 				<Outlet />
 			</div>
+
 			<TanStackRouterDevtools />
 		</div>
 	);

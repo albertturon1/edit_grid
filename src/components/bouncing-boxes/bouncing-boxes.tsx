@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { getBoxes } from "@/components/bouncing-boxes/getBoxes";
 import { useAnimationFrame } from "@/hooks/useAnimationFrame";
+import { useWindowSize } from "usehooks-ts";
 // import { handleCollision, isColliding } from "./handleCollision";
 
 export type Box = {
@@ -19,16 +20,10 @@ type BouncingBoxesProps = {
 	color?: string;
 };
 
-type Dimensions = { width: number; height: number };
-
 const WALL_GAP = 0.005;
 
 export function BouncingBoxes({ size, speed, color, gap }: BouncingBoxesProps) {
-	const ref = useRef<HTMLDivElement>(null); // Create a reference to the DOM element
-	const [dimensions, setDimensions] = useState<Dimensions>({
-		width: 0,
-		height: 0,
-	});
+	const { height, width } = useWindowSize();
 	const [boxes, setBoxes] = useState<Box[]>([]);
 
 	//generate new boxes on resize
@@ -38,11 +33,11 @@ export function BouncingBoxes({ size, speed, color, gap }: BouncingBoxesProps) {
 				size,
 				speed,
 				gap,
-				height: dimensions.height,
-				width: dimensions.width,
+				height,
+				width,
 			}),
 		);
-	}, [size, speed, gap, dimensions]);
+	}, [size, speed, gap, width, height]);
 
 	//updated boxes positions on animation frame and handle collisions
 	function updateBoxesPositions() {
@@ -56,15 +51,15 @@ export function BouncingBoxes({ size, speed, color, gap }: BouncingBoxesProps) {
 
 				// Bounce off walls
 				if (
-					box.x <= dimensions.width * WALL_GAP ||
-					box.x + box.size >= dimensions.width * 1 - WALL_GAP
+					box.x <= width * WALL_GAP ||
+					box.x + box.size >= width * 1 - WALL_GAP
 				) {
 					box.vx *= -1;
 				}
 
 				if (
-					box.y <= dimensions.height * WALL_GAP ||
-					box.y + box.size >= dimensions.height * 1 - WALL_GAP
+					box.y <= height * WALL_GAP ||
+					box.y + box.size >= height * 1 - WALL_GAP
 				) {
 					box.vy *= -1;
 				}
@@ -83,29 +78,8 @@ export function BouncingBoxes({ size, speed, color, gap }: BouncingBoxesProps) {
 
 	useAnimationFrame(updateBoxesPositions);
 
-	//update div dimensions
-	useEffect(() => {
-		const updateDimensions = () => {
-			if (ref.current) {
-				setDimensions({
-					width: ref.current.offsetWidth,
-					height: ref.current.offsetHeight,
-				});
-			}
-		};
-
-		// Call once on mount
-		updateDimensions();
-
-		// Optionally listen to window resize events
-		window.addEventListener("resize", updateDimensions);
-
-		// Cleanup the event listener
-		return () => window.removeEventListener("resize", updateDimensions);
-	}, []);
-
 	return (
-		<div ref={ref} className="h-full w-full">
+		<div className="flex-1">
 			{boxes.map((box) => (
 				<Box key={box.id} {...box} color={color} />
 			))}
