@@ -1,6 +1,6 @@
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useNavigate, useRouter } from "@tanstack/react-router";
 import { Logo } from "@/components/logo";
+// import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 type NavbarProps = {
 	height: number;
@@ -11,7 +11,6 @@ export function Navbar({ height }: NavbarProps) {
 	const router = useRouter();
 
 	function goToIndexPage() {
-		//force refresh page if on index page, else go to index
 		if (router.state.location.pathname === "/") {
 			router.history.go(0);
 		} else {
@@ -31,7 +30,9 @@ export function Navbar({ height }: NavbarProps) {
 			<button type="button" onClick={goToIndexPage}>
 				<Logo />
 			</button>
-			<ThemeToggle />
+			{/* <div className="flex items-center gap-3">
+				<ThemeToggle />
+			</div> */}
 		</div>
 	);
 }

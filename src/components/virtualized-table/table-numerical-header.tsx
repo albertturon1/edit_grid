@@ -1,16 +1,10 @@
-import type { HeaderContext } from "@tanstack/react-table";
-import type { FilePickerRow } from "@/features/home/components/headline-file-picker";
-import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
+import { useTableData } from "./virtualized-table-context";
 
-type TableNumericalHeaderProps = HeaderContext<FilePickerRow, string> & {
-	rowSelectionMode: boolean;
-};
+export function TableNumericalHeader() {
+	const { table, rowSelectionMode } = useTableData();
 
-export function TableNumericalHeader({
-	table,
-	rowSelectionMode,
-}: TableNumericalHeaderProps) {
 	function onClick() {
 		table.toggleAllPageRowsSelected();
 	}

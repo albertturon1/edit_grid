@@ -1,3 +1,8 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
 	Dialog,
 	DialogContent,
@@ -6,11 +11,6 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import {
 	Form,
 	FormControl,
@@ -19,10 +19,11 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { ExportDialogRadioGroup } from "@/components/virtualized-table/export-dialog-radio-group";
+import { useExport } from "@/components/virtualized-table/hooks/useExport";
+import { useTableData } from "@/components/virtualized-table/virtualized-table-context";
 import { splitOnLastOccurrence } from "@/lib/utils";
-import type { TableHeaders } from "@/components/file-picker-import-dialog/mapHeadersToRows";
-import { Checkbox } from "@/components/ui/checkbox";
 
 export const EXPORT_TYPE = {
 	all: "all",
@@ -43,27 +44,20 @@ const formSchema = z.object({
 	exportType: exportTypeSchema,
 });
 
+export type ExportDialogFormSchema = z.infer<typeof formSchema>;
+
 export type ExportDialogProps = {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
-	rowSelectionMode: boolean;
-	onSubmit: (data: ExportDialogFormSchema) => void;
-	onCancel: () => void;
-	originalFilename: string;
-	headers: TableHeaders;
 };
 
-export type ExportDialogFormSchema = z.infer<typeof formSchema>;
+export function ExportDialog({ open, onOpenChange }: ExportDialogProps) {
+	const { exportSubmit } = useExport();
+	const { metadata, rowSelectionMode } = useTableData();
 
-export function ExportDialog({
-	open,
-	rowSelectionMode,
-	onCancel,
-	originalFilename,
-	headers,
-	onOpenChange,
-	onSubmit,
-}: ExportDialogProps) {
+	const originalFilename = metadata.filename;
+	const headersAreOriginal = !!metadata.firstRowValues.length;
+
 	const [originalFilenameExtensionless] = splitOnLastOccurrence(
 		originalFilename,
 		".",
@@ -73,13 +67,13 @@ export function ExportDialog({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			filename: originalFilenameExtensionless,
-			includeHeaders: headers.isOriginal, // based on user's selection of `firstRowAsHeaders`
+			includeHeaders: headersAreOriginal,
 			exportType: EXPORT_TYPE.selected,
 		},
 	});
 
 	function handleSubmit(data: ExportDialogFormSchema) {
-		onSubmit(data);
+		exportSubmit(data);
 	}
 
 	function handleOpenChange(isOpen: boolean) {
@@ -139,7 +133,12 @@ export function ExportDialog({
 							<ExportDialogRadioGroup control={form.control} />
 						) : null}
 						<DialogFooter className="w-full flex flex-col-reverse sm:flex-row gap-y-2">
-							<Button variant="outline" onClick={onCancel}>
+							<Button
+								variant="outline"
+								onClick={() => {
+									onOpenChange(false);
+								}}
+							>
 								{"Cancel"}
 							</Button>
 							<Button type="submit">{"Export"}</Button>

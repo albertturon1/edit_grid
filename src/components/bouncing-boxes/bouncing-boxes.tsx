@@ -1,6 +1,6 @@
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getBoxes } from "@/components/bouncing-boxes/getBoxes";
-import { useAnimationFrame } from "@/lib/useAnimationFrame";
+import { useAnimationFrame } from "@/hooks/useAnimationFrame";
 // import { handleCollision, isColliding } from "./handleCollision";
 
 export type Box = {

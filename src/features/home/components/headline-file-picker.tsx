@@ -1,12 +1,10 @@
-import type { MouseEvent } from "react";
 import { FileUp } from "lucide-react";
+import type { MouseEvent } from "react";
 import type { FilePickerCoreProps } from "@/components/file-picker-core";
 import {
 	FilePickerImportDialog,
 	type FilePickerImportSettingsProps,
 } from "@/components/file-picker-import-dialog/file-picker-import-dialog";
-
-export type FilePickerRow = Record<string, string>;
 
 export type FilePickerProps = Omit<FilePickerImportSettingsProps, "options"> & {
 	className?: string;

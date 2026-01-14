@@ -1,15 +1,16 @@
-import { useEffect, useState, type RefObject } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import {
-	TableBodyRow,
-	type TableBodyRowProps,
-} from "@/components/virtualized-table/table-body-row";
+import { type RefObject, useEffect, useState } from "react";
+import { TableBodyRow } from "@/components/virtualized-table/table-body-row";
+import { useTableData } from "./virtualized-table-context";
 
-type TableBodyProps = Pick<TableBodyRowProps, "rows" | "onContextMenu"> & {
+type TableBodyProps = {
 	tableContainerRef: RefObject<HTMLDivElement>;
 };
 
-export function TableBody({ tableContainerRef, ...props }: TableBodyProps) {
+export function TableBody({ tableContainerRef }: TableBodyProps) {
+	const { table } = useTableData();
+	const rows = table.getRowModel().rows;
+
 	const [isMounted, setIsMounted] = useState(false);
 	useEffect(() => {
 		setIsMounted(true);
@@ -20,7 +21,7 @@ export function TableBody({ tableContainerRef, ...props }: TableBodyProps) {
 	}, []);
 
 	const rowVirtualizer = useVirtualizer({
-		count: props.rows.length,
+		count: rows.length,
 		estimateSize: () => 60, //estimate row height for accurate scrollbar dragging
 		getScrollElement: () => tableContainerRef.current,
 		//measure dynamic row height, except in firefox because it measures table border height incorrectly
@@ -33,8 +34,9 @@ export function TableBody({ tableContainerRef, ...props }: TableBodyProps) {
 	});
 
 	if (!isMounted) {
+		// Wait for client-side rendering
 		return null;
-	} // Wait for client-side rendering
+	}
 
 	return (
 		<tbody
@@ -45,7 +47,6 @@ export function TableBody({ tableContainerRef, ...props }: TableBodyProps) {
 		>
 			{rowVirtualizer.getVirtualItems().map((virtualRow, rowIdx) => (
 				<TableBodyRow
-					{...props}
 					key={virtualRow.index}
 					virtualRow={virtualRow}
 					rowVirtualizer={rowVirtualizer}

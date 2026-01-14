@@ -2,31 +2,25 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
-	DialogHeader,
-	DialogFooter,
 	Dialog,
 	DialogContent,
 	DialogDescription,
+	DialogFooter,
+	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
 import {
+	Form,
+	FormControl,
 	FormField,
 	FormItem,
 	FormLabel,
-	FormControl,
-	Form,
-	FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useEffect } from "react";
 
 const importFormSchema = z.object({
 	firstRowAsHeaders: z.boolean(),
-	fromRow: z.coerce.number().min(1, {
-		message: "Value must be over 0.",
-	}),
 });
 
 export type ImportSettingsFormSchema = z.infer<typeof importFormSchema>;
@@ -48,7 +42,6 @@ export function ImportSettingsDialog({
 	const form = useForm<ImportSettingsFormSchema>({
 		resolver: zodResolver(importFormSchema),
 		defaultValues: {
-			fromRow: 1,
 			firstRowAsHeaders: true,
 		},
 		mode: "onTouched",
@@ -67,20 +60,6 @@ export function ImportSettingsDialog({
 		}
 	}
 
-	const [fromRow, firstRowAsHeaders] = form.watch([
-		"fromRow",
-		"firstRowAsHeaders",
-	]);
-
-	const maxInputNumber = firstRowAsHeaders ? dataLength - 1 : dataLength;
-
-	// handle edge case when input "Use First Row as headers" gets toggled and value of `fromRow` is higher than maxInputNumber
-	useEffect(() => {
-		if (firstRowAsHeaders && fromRow > maxInputNumber) {
-			form.setValue("fromRow", Math.max(maxInputNumber, 1));
-		}
-	}, [fromRow, maxInputNumber, firstRowAsHeaders, form.setValue]);
-
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent className="w-11/12 sm:max-w-lg">
@@ -94,24 +73,6 @@ export function ImportSettingsDialog({
 				</DialogHeader>
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-						<FormField
-							control={form.control}
-							name="fromRow"
-							render={({ field }) => (
-								<FormItem className="space-y-2">
-									<FormLabel>{"From row"}</FormLabel>
-									<FormControl>
-										<Input
-											type="number"
-											{...field}
-											min={1}
-											max={Math.max(maxInputNumber, 1)}
-										/>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
 						<FormField
 							control={form.control}
 							name="firstRowAsHeaders"

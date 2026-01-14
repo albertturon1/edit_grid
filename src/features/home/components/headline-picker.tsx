@@ -3,24 +3,19 @@ import { Logo } from "@/components/logo";
 import { cn } from "@/lib/utils";
 import { getValueFromSystemTheme, useTheme } from "@/components/theme-provider";
 import { HeadlineFilePicker } from "@/features/home/components/headline-file-picker";
-import type {
-	TableHeaders,
-	TableRows,
-} from "@/components/file-picker-import-dialog/mapHeadersToRows";
 import type { FilePickerCoreRef } from "@/components/file-picker-core";
 import { HeadlineCsvExample } from "@/features/home/components/headline-csv-example";
-
-export type OnFileImport = {
-	file: File;
-	headers: TableHeaders;
-	rows: TableRows;
-};
+import type { FileImportResult } from "@/lib/imports/types/import";
 
 export type HeadlineWithPickerProps = {
-	onFileImport: (props: OnFileImport) => void;
+	onFileImport: (props: FileImportResult) => void;
+	onLoadExample: (filepath: string) => void;
 };
 
-export function HeadlineWithPicker({ onFileImport }: HeadlineWithPickerProps) {
+export function HeadlineWithPicker({
+	onFileImport,
+	onLoadExample,
+}: HeadlineWithPickerProps) {
 	const { theme } = useTheme();
 	const currentTheme = theme === "system" ? getValueFromSystemTheme() : theme;
 	const overlayColor =
@@ -56,8 +51,8 @@ export function HeadlineWithPicker({ onFileImport }: HeadlineWithPickerProps) {
 				</div>
 				<div className="flex flex-col gap-y-2 md:flex-row gap-x-5">
 					<HeadlineCsvExample
-						onFileImport={onFileImport}
-						filepath="/example_big.csv"
+						onLoad={onLoadExample}
+						filepath="/example_medium.csv"
 					>
 						{"Open example file"}
 					</HeadlineCsvExample>
