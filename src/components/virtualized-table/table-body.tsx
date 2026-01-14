@@ -45,12 +45,12 @@ export function TableBody({ tableContainerRef }: TableBodyProps) {
 				height: `${rowVirtualizer.getTotalSize()}px`, //tells scrollbar how big the table is
 			}}
 		>
-			{rowVirtualizer.getVirtualItems().map((virtualRow, rowIdx) => (
+			{rowVirtualizer.getVirtualItems().map((virtualRow) => (
 				<TableBodyRow
 					key={virtualRow.index}
 					virtualRow={virtualRow}
 					rowVirtualizer={rowVirtualizer}
-					rowIdx={rowIdx}
+					rowIdx={virtualRow.index}
 				/>
 			))}
 		</tbody>

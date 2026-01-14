@@ -56,14 +56,17 @@ export function TableBodyRow({
 				transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
 			}}
 		>
-			{row.getVisibleCells().map((cell) => {
+			{row.getVisibleCells().map((cell, idx) => {
 				const remoteUsersForCell = getRemoteUsersForCell(cell.column.id);
 				return (
 					<TableBodyRowCell
 						key={cell.id}
 						cell={cell}
 						rowIndex={virtualRow.index}
-						className={background}
+						className={cn(
+							background,
+							idx === 0 && "sticky left-0 z-10", // sticky first cell
+						)}
 						remote={remoteUsersForCell}
 						maxAvatars={3}
 					/>

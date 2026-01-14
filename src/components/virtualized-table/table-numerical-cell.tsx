@@ -74,7 +74,6 @@ export function TableNumericalCell({
 
 	return (
 		<div
-			tabIndex={0}
 			onClick={handleOnClick}
 			onKeyDown={handleOnClick}
 			className={cn(

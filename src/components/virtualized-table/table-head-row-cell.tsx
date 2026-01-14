@@ -40,8 +40,7 @@ export function TableHeadRowCell({ header, idx }: TableHeadRowCellProps) {
 			{header.isPlaceholder
 				? null
 				: flexRender(header.column.columnDef.header, header.getContext())}
-			<div
-				tabIndex={0}
+			<button
 				role="button"
 				aria-label="Resize column"
 				onMouseDown={header.getResizeHandler()}

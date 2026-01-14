@@ -8,11 +8,15 @@ type Position = ExtendedContextMenuPosition | null;
 export function useTableContextMenu(yjsDoc: Y.Doc) {
 	const addRow = useCallback(
 		(position: Position) => {
-			if (position?.activeCell.type !== "cell") {
+			if (!position) {
 				return;
 			}
 
-			const afterIndex = position.activeCell.row.index;
+			const index =
+				position?.activeCell.type === "header" // user clicked on the header
+					? 0
+					: position.activeCell.row.index + 1; // +1 to insert new row below active ceel;
+
 			const yArray = yjsDoc.getArray<TableRow>("rows");
 			const yMetadataMap = yjsDoc.getMap<TableHeaders>("metadata");
 			const headers = yMetadataMap.get("headers") ?? [];
@@ -22,7 +26,7 @@ export function useTableContextMenu(yjsDoc: Y.Doc) {
 				return acc;
 			}, {});
 
-			yArray.insert(afterIndex + 1, [newRow]);
+			yArray.insert(index, [newRow]);
 		},
 		[yjsDoc],
 	);
