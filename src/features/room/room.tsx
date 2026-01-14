@@ -7,9 +7,7 @@ export function RoomPage() {
 
 	return (
 		<CollaborationSessionProvider roomId={roomId}>
-			<div className="flex flex-1 justify-center">
-				<RoomPageContent roomId={roomId} />
-			</div>
+			<RoomPageContent roomId={roomId} />
 		</CollaborationSessionProvider>
 	);
 }

@@ -10,6 +10,7 @@ interface RoomPageContentProps {
 
 export function RoomPageContent({ roomId }: RoomPageContentProps) {
 	const viewState = useRoomViewState(roomId);
+	
 	switch (viewState.status) {
 		case "loading":
 			return <RoomLoading />;
@@ -17,7 +18,6 @@ export function RoomPageContent({ roomId }: RoomPageContentProps) {
 			return <RoomError error={viewState.error} />;
 		case "empty":
 			return <RoomEmpty onImport={viewState.onImport} />;
-
 		case "ready":
 			return (
 				<RoomReady

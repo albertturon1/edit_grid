@@ -13,7 +13,7 @@ export function RoomError({ error }: RoomErrorProps) {
 		error.type === "invalid_room_id" ? "Invalid Link" : "Document Not Found";
 
 	return (
-		<div className="flex flex-col items-center justify-center gap-y-4">
+		<div className="flex flex-col items-center justify-center gap-y-3 flex-1">
 			<h1 className="text-xl font-semibold">{title}</h1>
 			<p className="text-muted-foreground text-center max-w-md">
 				{error.message}

@@ -8,7 +8,7 @@ interface RoomEmptyStateProps {
 
 export function RoomEmpty({ onImport }: RoomEmptyStateProps) {
 	return (
-		<div className="max-w-md px-4 gap-8 flex flex-1 flex-col items-center justify-center">
+		<div className="flex flex-col items-center justify-center gap-y-3 flex-1">
 			<h2 className="text-2xl font-bold text-center">Import CSV File</h2>
 
 			<FileUploader

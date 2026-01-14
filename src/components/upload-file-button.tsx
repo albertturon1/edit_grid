@@ -20,7 +20,7 @@ export function UploadFileButton({
 			type="button"
 			onClick={onClick}
 			className={cn(
-				"flex flex-col bg-picker-secondary p-1 rounded-2xl w-full cursor-pointer",
+				"flex flex-col bg-picker-secondary p-1 rounded-2xl cursor-pointer w-full max-w-md",
 				className,
 			)}
 		>
