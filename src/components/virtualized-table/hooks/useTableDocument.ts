@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type * as Y from "yjs";
 import type { FileImportResult } from "@/lib/imports/types/import";
 import type { TableHeaders, TableRow } from "@/lib/imports/types/table";
 import { documentStore } from "@/lib/stores/documentStore";
-import type { ExtendedContextMenuPosition } from "../virtualized-table";
-
-type Position = ExtendedContextMenuPosition | null;
+import { clearDraft, getDraft } from "@/lib/stores/draftStorage";
+import { useTableContextMenu } from "./useTableContextMenu";
 
 interface TableState {
 	rows: TableRow[];
@@ -23,6 +22,44 @@ export function useTableDocument(roomId: string | undefined) {
 		filename: "",
 		firstRowValues: [],
 	});
+
+	const [isResolving, setIsResolving] = useState(!roomId);
+	const hasResolvedDraft = useRef(false);
+
+	const contextMenu = useTableContextMenu(yjsDoc);
+
+	// Resolve draft from IndexedDB (only in local mode, only once)
+	useEffect(() => {
+		if (roomId || hasResolvedDraft.current) {
+			setIsResolving(false);
+			return;
+		}
+
+		async function resolveDraft() {
+			try {
+				const draft = await getDraft();
+				if (draft) {
+					const yArray = yjsDoc.getArray<TableRow>("rows");
+					const yMetadataMap = yjsDoc.getMap("metadata");
+
+					// Clear existing data and populate from draft
+					yArray.delete(0, yArray.length);
+					yArray.push(draft.table.rows);
+
+					yMetadataMap.set("headers", draft.table.headers);
+					yMetadataMap.set("filename", draft.metadata.filename);
+					yMetadataMap.set("firstRowValues", draft.metadata.firstRowValues);
+
+					await clearDraft();
+				}
+			} finally {
+				hasResolvedDraft.current = true;
+				setIsResolving(false);
+			}
+		}
+
+		resolveDraft();
+	}, [roomId, yjsDoc]);
 
 	// Initialize observers
 	useEffect(() => {
@@ -82,130 +119,8 @@ export function useTableDocument(roomId: string | undefined) {
 		[yjsDoc],
 	);
 
-	const addRow = useCallback(
-		(position: Position) => {
-			if (position?.activeCell.type !== "cell") {
-				return;
-			}
-
-			const afterIndex = position.activeCell.row.index;
-
-			const yArray = yjsDoc.getArray<TableRow>("rows");
-			const yMetadataMap = yjsDoc.getMap("metadata");
-			const headers = (yMetadataMap.get("headers") as TableHeaders) ?? [];
-
-			const newRow = headers.reduce<TableRow>((acc, header) => {
-				acc[header] = "";
-				return acc;
-			}, {});
-
-			yArray.insert(afterIndex + 1, [newRow]);
-		},
-		[yjsDoc],
-	);
-
-	const addColumn = useCallback(
-		(position: Position) => {
-			if (!position) {
-				return;
-			}
-
-			const afterColumnId = position.activeCell.column.id;
-			const yArray = yjsDoc.getArray<TableRow>("rows");
-			const yMetadataMap = yjsDoc.getMap("metadata");
-			const headers = (yMetadataMap.get("headers") as TableHeaders) ?? [];
-
-			// Generate new column name
-			let newColumnName = "Column1";
-			let columnIndex = 1;
-			while (headers.includes(newColumnName)) {
-				columnIndex++;
-				newColumnName = `Column${columnIndex}`;
-			}
-
-			// Find insertion index
-			const index = headers.indexOf(afterColumnId);
-			const insertIndex = index === -1 ? headers.length : index + 1;
-
-			// Update headers
-			const newHeaders = [...headers];
-			newHeaders.splice(insertIndex, 0, newColumnName);
-			yMetadataMap.set("headers", newHeaders);
-
-			// Update all rows to include new column
-			const rows = yArray.toArray();
-			yArray.delete(0, rows.length);
-			const updatedRows = rows.map((row) => ({
-				...row,
-				[newColumnName]: "",
-			}));
-			yArray.push(updatedRows);
-		},
-		[yjsDoc],
-	);
-
-	const removeRow = useCallback(
-		(position: Position) => {
-			if (position?.activeCell.type !== "cell") {
-				return;
-			}
-
-			const index = position.activeCell.row.index;
-
-			const yArray = yjsDoc.getArray<TableRow>("rows");
-			if (index >= 0 && index < yArray.length) {
-				yArray.delete(index, 1);
-			}
-		},
-		[yjsDoc],
-	);
-
-	const removeColumn = useCallback(
-		(position: Position) => {
-			if (!position) {
-				return;
-			}
-			const columnId = position.activeCell.column.id;
-			const yArray = yjsDoc.getArray<TableRow>("rows");
-			const yMetadataMap = yjsDoc.getMap("metadata");
-			const headers = (yMetadataMap.get("headers") as TableHeaders) ?? [];
-
-			// Update headers
-			const newHeaders = headers.filter((h) => h !== columnId);
-			yMetadataMap.set("headers", newHeaders);
-
-			// Update all rows to remove column
-			const rows = yArray.toArray();
-			yArray.delete(0, rows.length);
-			const updatedRows = rows.map((row) => {
-				const newRow = { ...row };
-				delete newRow[columnId];
-				return newRow;
-			});
-			yArray.push(updatedRows);
-		},
-		[yjsDoc],
-	);
-
-	const duplicateRow = useCallback(
-		(position: Position) => {
-			if (position?.activeCell.type !== "cell") {
-				return;
-			}
-
-			const index = position.activeCell.row.index;
-
-			const yArray = yjsDoc.getArray<TableRow>("rows");
-			const rows = yArray.toArray();
-			if (rows[index]) {
-				const rowToDuplicate = { ...rows[index] };
-				yArray.insert(index + 1, [rowToDuplicate]);
-			}
-		},
-		[yjsDoc],
-	);
-
 	return {
+		isResolving,
 		tabledata: {
 			headers: tableState.headers,
 			rows: tableState.rows,
@@ -217,13 +132,7 @@ export function useTableDocument(roomId: string | undefined) {
 		populateData,
 		meta: {
 			updateData,
-			contextMenu: {
-				addRow,
-				addColumn,
-				removeRow,
-				removeColumn,
-				duplicateRow,
-			},
+			contextMenu,
 		},
 	};
 }

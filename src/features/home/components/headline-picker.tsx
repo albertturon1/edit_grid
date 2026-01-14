@@ -9,9 +9,13 @@ import type { FileImportResult } from "@/lib/imports/types/import";
 
 export type HeadlineWithPickerProps = {
 	onFileImport: (props: FileImportResult) => void;
+	onLoadExample: (filepath: string) => void;
 };
 
-export function HeadlineWithPicker({ onFileImport }: HeadlineWithPickerProps) {
+export function HeadlineWithPicker({
+	onFileImport,
+	onLoadExample,
+}: HeadlineWithPickerProps) {
 	const { theme } = useTheme();
 	const currentTheme = theme === "system" ? getValueFromSystemTheme() : theme;
 	const overlayColor =
@@ -47,7 +51,7 @@ export function HeadlineWithPicker({ onFileImport }: HeadlineWithPickerProps) {
 				</div>
 				<div className="flex flex-col gap-y-2 md:flex-row gap-x-5">
 					<HeadlineCsvExample
-						onFileImport={onFileImport}
+						onLoad={onLoadExample}
 						filepath="/example_medium.csv"
 					>
 						{"Open example file"}

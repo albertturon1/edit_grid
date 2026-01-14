@@ -5,7 +5,7 @@ import {
 	useImperativeHandle,
 	useRef,
 } from "react";
-import { useToast } from "@/components/hooks/use-toast";
+import { toast } from "sonner";
 import { parseFile } from "@/lib/imports";
 import type { RawTableData } from "@/lib/imports/parsers/types";
 
@@ -34,7 +34,6 @@ export const FilePickerCore = forwardRef<
 	FilePickerCoreProps
 >(function MyInput({ onFileImport, options }, ref) {
 	const { fileSizeLimit } = options ?? {};
-	const { toast } = useToast();
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	useImperativeHandle(ref, () => {
@@ -50,8 +49,7 @@ export const FilePickerCore = forwardRef<
 		const firstFile = event?.target.files?.[0];
 
 		if (!firstFile) {
-			toast({
-				title: "Cannot open provided file.",
+			toast.error("Cannot open provided file.", {
 				description: "Try again with a different file.",
 			});
 			return;
@@ -59,8 +57,7 @@ export const FilePickerCore = forwardRef<
 
 		const validationError = validateFile(firstFile, fileSizeLimit);
 		if (validationError) {
-			toast({
-				title: validationError,
+			toast.error(validationError, {
 				description: "Try again with a different file.",
 			});
 			return;
@@ -69,8 +66,7 @@ export const FilePickerCore = forwardRef<
 		const parsedFile = await parseFile(firstFile);
 
 		if (!parsedFile.success) {
-			toast({
-				title: `Unsupported file format: ${firstFile.name}`,
+			toast.error(`Unsupported file format: ${firstFile.name}`, {
 				description: "Try again with a supported format.",
 			});
 			return;

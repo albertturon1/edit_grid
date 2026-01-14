@@ -7,7 +7,7 @@ import {
 	useMemo,
 	useState,
 } from "react";
-import { toast } from "@/components/hooks/use-toast";
+import { toast } from "sonner";
 import {
 	type ConnectionStatus,
 	type RoomError,
@@ -79,10 +79,8 @@ export const CollaborationSessionProvider = ({
 				search: { id: newRoomId },
 			});
 		} catch (_error) {
-			toast({
-				title: "Something went wrong",
+			toast.error("Something went wrong", {
 				description: "Please try again",
-				variant: "destructive",
 			});
 		} finally {
 			setIsSharing(false);

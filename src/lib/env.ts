@@ -12,6 +12,7 @@ const _env = {
 const parsed = envSchema.safeParse(_env);
 
 if (!parsed.success) {
+	// biome-ignore lint/suspicious/noConsole: valuable message
 	console.error(
 		"Invalid environment variables:",
 		parsed.error.flatten().fieldErrors,

@@ -3,7 +3,6 @@ import {
 	FilePickerCore,
 	type FilePickerCoreRef,
 } from "@/components/file-picker-core";
-import { useToast } from "@/components/hooks/use-toast";
 import {
 	ImportSettingsDialog,
 	type ImportSettingsFormSchema,
@@ -12,6 +11,7 @@ import { parseFile } from "@/lib/imports";
 import type { RawTableData } from "@/lib/imports/parsers/types";
 import { normalizeRawTableData } from "@/lib/imports/transformers/normalizeRawTableData";
 import type { FileImportResult } from "@/lib/imports/types/import";
+import { toast } from "sonner";
 
 interface RoomImportFormProps {
 	onFileImport: (props: FileImportResult) => void;
@@ -24,7 +24,6 @@ interface PendingImport {
 }
 
 export function RoomImportForm({ onFileImport, height }: RoomImportFormProps) {
-	const { toast } = useToast();
 	const inputRef = useRef<FilePickerCoreRef>(null);
 
 	const [pendingImport, setPendingImport] = useState<PendingImport | null>(
@@ -35,7 +34,7 @@ export function RoomImportForm({ onFileImport, height }: RoomImportFormProps) {
 		const result = await parseFile(file);
 
 		if (!result.success) {
-			toast({ title: "Cannot use this file" });
+			toast.info("Cannot use this file");
 			return;
 		}
 
@@ -54,7 +53,7 @@ export function RoomImportForm({ onFileImport, height }: RoomImportFormProps) {
 		});
 
 		if (!normalized) {
-			toast({ title: "Cannot use this file" });
+			toast.info("Cannot use this file");
 			return;
 		}
 
@@ -76,7 +75,7 @@ export function RoomImportForm({ onFileImport, height }: RoomImportFormProps) {
 		const result = commitImport(pendingImport, options);
 
 		if (!result) {
-			toast({ title: "Cannot import file" });
+			toast.info("Cannot import file");
 			return;
 		}
 

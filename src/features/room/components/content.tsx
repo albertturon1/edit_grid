@@ -2,14 +2,12 @@ import { useNavigate } from "@tanstack/react-router";
 import { Loader2, WifiOff } from "lucide-react";
 import { useWindowSize } from "usehooks-ts";
 import { Button } from "@/components/ui/button";
-import { useTableDocument } from "@/components/virtualized-table/hooks/useTableDocument";
-import { useVirtualizedTable } from "@/components/virtualized-table/hooks/useVirtualizedTable";
 import { VirtualizedTable } from "@/components/virtualized-table/virtualized-table";
 import { NAVBAR_HEIGHT } from "@/routes/__root";
-import { useCollaborationSession } from "./collaborative-provider";
+import { useRoomViewState } from "../hooks/useRoomViewState";
 import { RoomImportForm } from "./import-form";
 
-function LoadingState({ message }: { message: string }) {
+function LoadingState() {
 	const { height } = useWindowSize();
 	return (
 		<div
@@ -17,7 +15,7 @@ function LoadingState({ message }: { message: string }) {
 			style={{ height: height - NAVBAR_HEIGHT }}
 		>
 			<Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-			<p className="text-muted-foreground">{message}</p>
+			<p className="text-muted-foreground">Loading...</p>
 		</div>
 	);
 }
@@ -34,60 +32,60 @@ function ReconnectingBanner() {
 interface RoomPageContentProps {
 	roomId: string | undefined;
 }
+
 export function RoomPageContent({ roomId }: RoomPageContentProps) {
 	const { height } = useWindowSize();
 	const navigate = useNavigate();
+	const viewState = useRoomViewState(roomId);
 
-	const { roomError, connectionStatus } = useCollaborationSession();
-	const { tabledata, metadata, populateData, meta } = useTableDocument(roomId);
+	switch (viewState.status) {
+		case "loading":
+			return <LoadingState />;
 
-	const table = useVirtualizedTable({ tabledata, meta });
-	const hasData = table.getRowModel().rows.length > 0;
+		case "error": {
+			const title =
+				viewState.error.type === "invalid_room_id"
+					? "Invalid Link"
+					: "Document Not Found";
 
-	if (roomError) {
-		const title =
-			roomError.type === "invalid_room_id"
-				? "Invalid Link"
-				: "Document Not Found";
+			return (
+				<div
+					className="flex flex-col items-center justify-center gap-y-4"
+					style={{ height: height - NAVBAR_HEIGHT }}
+				>
+					<h1 className="text-xl font-semibold">{title}</h1>
+					<p className="text-muted-foreground text-center max-w-md">
+						{viewState.error.message}
+					</p>
+					<Button onClick={() => navigate({ to: "/room" })}>
+						Start New Document
+					</Button>
+				</div>
+			);
+		}
 
-		return (
-			<div
-				className="flex flex-col items-center justify-center gap-y-4"
-				style={{ height: height - NAVBAR_HEIGHT }}
-			>
-				<h1 className="text-xl font-semibold">{title}</h1>
-				<p className="text-muted-foreground text-center max-w-md">
-					{roomError.message}
-				</p>
-				<Button onClick={() => navigate({ to: "/room" })}>
-					Start New Document
-				</Button>
-			</div>
-		);
+		case "empty":
+			return (
+				<RoomImportForm
+					onFileImport={viewState.onImport}
+					height={height - NAVBAR_HEIGHT}
+				/>
+			);
+
+		case "ready":
+			return (
+				<div
+					className="overflow-hidden flex flex-col"
+					style={{ height: height - NAVBAR_HEIGHT }}
+				>
+					{viewState.isReconnecting && <ReconnectingBanner />}
+					<div className="w-full h-full px-2 sm:px-5">
+						<VirtualizedTable
+							table={viewState.table}
+							metadata={viewState.metadata}
+						/>
+					</div>
+				</div>
+			);
 	}
-
-	if (roomId && connectionStatus === "loading") {
-		return <LoadingState message="Loading..." />;
-	}
-
-	if (!hasData && !roomId) {
-		return (
-			<RoomImportForm
-				onFileImport={populateData}
-				height={height - NAVBAR_HEIGHT}
-			/>
-		);
-	}
-
-	return (
-		<div
-			className="overflow-hidden flex flex-col"
-			style={{ height: height - NAVBAR_HEIGHT }}
-		>
-			{connectionStatus === "reconnecting" && <ReconnectingBanner />}
-			<div className="w-full h-full px-2 sm:px-5">
-				<VirtualizedTable table={table} metadata={metadata} />
-			</div>
-		</div>
-	);
 }

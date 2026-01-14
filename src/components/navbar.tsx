@@ -30,9 +30,9 @@ export function Navbar({ height }: NavbarProps) {
 			<button type="button" onClick={goToIndexPage}>
 				<Logo />
 			</button>
-			<div className="flex items-center gap-3">
+			{/* <div className="flex items-center gap-3">
 				<ThemeToggle />
-			</div>
+			</div> */}
 		</div>
 	);
 }

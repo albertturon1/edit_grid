@@ -25,26 +25,24 @@ export function TableManagement() {
 		<>
 			<div
 				className={cn(
-					"flex sm:hidden flex-col py-2.5",
+					"flex xs:hidden flex-col py-2.5",
 					rowSelectionMode ? "gap-y-2" : "",
 				)}
 			>
 				<div className="flex gap-x-1 justify-between w-full">
-					<div className="flex gap-x-2">
-						<FileDropdownMenu />
-						<RowsSelectionModeToggle />
-						<TableColumnsSelector table={table} />
-					</div>
+					<FileDropdownMenu />
+					<RowsSelectionModeToggle />
+					<TableColumnsSelector table={table} />
 					<ShareButton />
 					<CollaborativeAvatars maxAvatars={1} />
 				</div>
 				<SelectedRowsIndicatorMobile {...rowProps} />
 			</div>
-			<div className="hidden sm:flex">
-				<div className="flex gap-x-3 py-2.5 justify-between w-full">
-					<div className="flex gap-x-3 flex-1">
+			<div className="hidden xs:flex">
+				<div className="flex gap-x-2 py-2.5 justify-between w-full">
+					<div className="flex gap-x-2 flex-1">
 						<FileDropdownMenu />
-						<div className="flex items-center gap-x-3">
+						<div className="flex items-center gap-x-2">
 							<RowsSelectionModeToggle className="flex-1" />
 							<SelectedRowsIndicator {...rowProps} />
 						</div>
