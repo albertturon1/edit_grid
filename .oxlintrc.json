@@ -3,7 +3,7 @@
   "plugins": ["unicorn", "typescript", "oxc"],
   "categories": {
     "correctness": "error",
-    "suspicious": "error",
+    "suspicious": "error"
   },
   "rules": {
     "no-console": "error",
@@ -98,6 +98,7 @@
     "typescript/restrict-template-expressions": "error",
     "typescript/triple-slash-reference": "error",
     "typescript/unbound-method": "error",
+    "typescript/switch-exhaustiveness-check": "error",
     "unicorn/no-await-in-promise-methods": "error",
     "unicorn/no-empty-file": "error",
     "unicorn/no-invalid-fetch-options": "error",
