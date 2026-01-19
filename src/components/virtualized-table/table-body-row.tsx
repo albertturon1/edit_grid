@@ -38,7 +38,9 @@ export function TableBodyRow({ rowVirtualizer, virtualRow, rowIdx }: TableBodyRo
 
   return (
     <tr
-      data-index={virtualRow.index}
+      role="row"
+      aria-rowindex={virtualRow.index}
+      data-testid={`row-${virtualRow.index}`}
       ref={(node) => rowVirtualizer.measureElement(node)}
       key={row.id}
       className={cn(
@@ -46,7 +48,7 @@ export function TableBodyRow({ rowVirtualizer, virtualRow, rowIdx }: TableBodyRo
         background, // needed when no column is selected (none of the <td /> are rendered)
       )}
       style={{
-        transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
+        transform: `translateY(${virtualRow.start}px)`, // this should always be a `style` as it changes on scroll
       }}
     >
       {row.getVisibleCells().map((cell, idx) => {

@@ -79,7 +79,6 @@ export function FileUploader({ options, onFileImport, className }: FileUploaderP
       />
       <FilePickerCore options={options} ref={inputRef} onFileImport={handleOnFileImport} />
       <ImportSettingsDialog
-        dataLength={imported?.rawData.length ?? 0}
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         onCancel={handleOnCancel}

@@ -72,7 +72,11 @@ export function VirtualizedTable({ table, metadata }: VirtualizedTableProps) {
 					overflow-auto - scrollable table container
 					relative - needed for sticky header
 				*/}
-        <div className="overflow-auto relative h-full border rounded" ref={tableContainerRef}>
+        <div
+          data-testid="virtualized-table-container"
+          className="overflow-auto relative h-full border rounded"
+          ref={tableContainerRef}
+        >
           <table
             onContextMenu={(e) => {
               e.preventDefault();

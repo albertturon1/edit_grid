@@ -17,7 +17,7 @@ export function HomePage() {
 
   return (
     <div className="relative flex-1 overflow-hidden">
-      <BouncingBoxes size={30} speed={0.5} gap={25} />
+      <BouncingBoxes size={50} speed={0.7} gap={5} />
 
       <div className={cn("absolute inset-0 z-10 flex flex-col", overlayClass)}>
         <div className="absolute inset-0 z-10 bg-background opacity-30" />
