@@ -66,7 +66,7 @@
         {
           "id": "3.1",
           "description": "Update TableContextMenu to accept TableMutations prop - extract row/column indices from position internally.",
-          "status": "pending",
+          "status": "done",
           "steps": [
             "Open src/components/virtualized-table/table-context-menu.tsx",
             "Add mutations: TableMutations to props interface",
@@ -79,7 +79,7 @@
         {
           "id": "3.2",
           "description": "Update VirtualizedTable to accept mutations prop and pass through to TableContextMenu.",
-          "status": "pending",
+          "status": "done",
           "steps": [
             "Open src/components/virtualized-table/virtualized-table.tsx",
             "Add mutations?: TableMutations to VirtualizedTableProps",

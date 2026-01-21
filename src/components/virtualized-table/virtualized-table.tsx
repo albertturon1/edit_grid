@@ -10,6 +10,7 @@ import { VirtualizedTableProvider } from "@/components/virtualized-table/virtual
 import type { ImportedSourceMetadata } from "@/lib/imports/types/import";
 import type { TableRow } from "@/lib/imports/types/table";
 import { NAVBAR_HEIGHT } from "@/routes/__root";
+import type { TableMutations } from "@/lib/table/types";
 
 export type ActiveCell =
   | ({ type: "cell" } & Cell<TableRow, unknown>)
@@ -27,9 +28,10 @@ export type HandleOnContextMenuProps = {
 interface VirtualizedTableProps {
   table: Table<TableRow>;
   metadata: ImportedSourceMetadata;
+  mutations?: TableMutations;
 }
 
-export function VirtualizedTable({ table, metadata }: VirtualizedTableProps) {
+export function VirtualizedTable({ table, metadata, mutations }: VirtualizedTableProps) {
   const { height } = useWindowSize();
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const [rowSelectionMode, setRowSelectionMode] = useState(false);
@@ -88,7 +90,7 @@ export function VirtualizedTable({ table, metadata }: VirtualizedTableProps) {
           </table>
         </div>
       </div>
-      <TableContextMenu table={table} position={position} onClose={handleOnClose} />
+      <TableContextMenu position={position} onClose={handleOnClose} mutations={mutations} />
     </VirtualizedTableProvider>
   );
 }

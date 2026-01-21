@@ -101,3 +101,35 @@
 - useRoomDataProvider is the core data abstraction - integrates with useRoomViewState in Task 4.3.
 - Draft resolution uses IndexedDB via getDraft/clearDraft from draftStorage.ts.
 - Collaboration info only included when roomId is provided (local mode has no collaboration).
+
+-------------------------------------------------------------------------------
+
+## 2026-01-21: Completed Tasks 3.1 and 3.2 - TableContextMenu and VirtualizedTable accept TableMutations
+
+### What was done:
+- Updated `src/components/virtualized-table/table-context-menu.tsx`:
+  - Added `mutations?: TableMutations` prop
+  - Removed dependency on `table.options.meta.contextMenu`
+  - Extracts `rowIndex` from `position.activeCell.row.index` and `columnId` from `position.activeCell.column.id`
+  - Conditionally renders menu items based on mutation availability
+  - Removed unused imports and the `table` prop
+
+- Updated `src/components/virtualized-table/virtualized-table.tsx`:
+  - Added `mutations?: TableMutations` prop
+  - Passes mutations to TableContextMenu component
+
+### Verification:
+- bun tsc - PASSED
+- bun unit - PASSED (2 tests)
+- bun e2e - PASSED (12 tests)
+
+### Files changed:
+- src/components/virtualized-table/table-context-menu.tsx
+- src/components/virtualized-table/virtualized-table.tsx
+- specs/prd.json (Tasks 3.1, 3.2 marked done)
+
+### Notes for next person:
+- Phase 3 COMPLETE (Tasks 3.1, 3.2 done).
+- Recommended next task: Task 4.2 (Update useVirtualizedTable to accept TableMutations).
+- The data flow is now: TableMutations → VirtualizedTable → TableContextMenu.
+- TableContextMenu no longer depends on TanStack Table meta for mutations.
