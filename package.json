@@ -81,7 +81,9 @@
       "bun fmt:check",
       "bun lint",
       "sh -c \"bun tsc --noEmit -p tsconfig.json\"",
-      "bun unit --passWithNoTests",
+      "bun unit --passWithNoTests"
+    ],
+    "tests/**/*.spec.ts": [
       "bun e2e"
     ]
   },

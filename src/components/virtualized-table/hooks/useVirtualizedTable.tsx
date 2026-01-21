@@ -13,6 +13,8 @@ import { tableDefaultColumn } from "@/components/virtualized-table/default-colum
 import { TableNumericalCell } from "@/components/virtualized-table/table-numerical-cell";
 import { TableNumericalHeader } from "@/components/virtualized-table/table-numerical-header";
 import type { TableData, TableRow } from "@/lib/imports/types/table";
+import type { TableMutations } from "@/lib/table/types";
+import type { ExtendedContextMenuPosition } from "@/components/virtualized-table/virtualized-table";
 
 const columnHelper = createColumnHelper<TableRow>();
 
@@ -21,10 +23,12 @@ export const ___INTERNAL_ID_COLUMN_NAME = "___000___";
 
 interface UseVirtualizedTableProps {
   tabledata: TableData;
-  meta: TableMeta;
+  mutations?: TableMutations;
 }
 
-export function useVirtualizedTable({ tabledata, meta }: UseVirtualizedTableProps) {
+type ContextMenuAction = (position: ExtendedContextMenuPosition | null) => void;
+
+export function useVirtualizedTable({ tabledata, mutations }: UseVirtualizedTableProps) {
   const [anchorRow, setAnchorRow] = useState<Row<TableRow> | null>(null);
   const [isModifierActive, setIsModifierActive] = useState(false);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -61,6 +65,65 @@ export function useVirtualizedTable({ tabledata, meta }: UseVirtualizedTableProp
       }),
     ];
   }, [headers, rows.length, anchorRow, isModifierActive, screenWidth]);
+
+  const meta: TableMeta<TableRow> = useMemo(() => {
+    const extractRowIndex = (position: ExtendedContextMenuPosition | null): number | null => {
+      if (!position) return null;
+      if (position.activeCell.type === "header") return 0;
+      return position.activeCell.row.index;
+    };
+
+    const extractColumnId = (position: ExtendedContextMenuPosition | null): string | null => {
+      if (!position) return null;
+      return position.activeCell.column.id;
+    };
+
+    const addRow: ContextMenuAction = (position) => {
+      if (!mutations?.rows?.add) return;
+      const index = extractRowIndex(position);
+      if (index === null) return;
+      mutations!.rows!.add(index);
+    };
+
+    const addColumn: ContextMenuAction = (position) => {
+      if (!mutations?.columns?.add) return;
+      const afterColumnId = extractColumnId(position);
+      if (!afterColumnId) return;
+      mutations!.columns!.add(afterColumnId);
+    };
+
+    const removeRow: ContextMenuAction = (position) => {
+      if (!mutations?.rows?.remove) return;
+      if (!position) return;
+      if (position.activeCell.type !== "cell") return;
+      mutations!.rows!.remove(position.activeCell.row.index);
+    };
+
+    const removeColumn: ContextMenuAction = (position) => {
+      if (!mutations?.columns?.remove) return;
+      const columnId = extractColumnId(position);
+      if (!columnId) return;
+      mutations!.columns!.remove(columnId);
+    };
+
+    const duplicateRow: ContextMenuAction = (position) => {
+      if (!mutations?.rows?.duplicate) return;
+      if (!position) return;
+      if (position.activeCell.type !== "cell") return;
+      mutations!.rows!.duplicate(position.activeCell.row.index);
+    };
+
+    return {
+      updateData: mutations?.updateCell ?? (() => {}),
+      contextMenu: {
+        addRow,
+        addColumn,
+        removeRow,
+        removeColumn,
+        duplicateRow,
+      },
+    };
+  }, [mutations]);
 
   const reactTable = useReactTable<TableRow>({
     data: rows,

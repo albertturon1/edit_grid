@@ -1,0 +1,211 @@
+## 2026-01-21: Completed Task 1.1 - Create TableMutations and TableDataSource interfaces
+
+### What was done:
+- Created `src/lib/table/types.ts` with the following interfaces:
+  - `TableMutations` - Pure mutation functions with optional updateCell, rows (add/remove/duplicate), and columns (add/remove)
+  - `TableSourceMetadata` - filename and firstRowValues from imported file
+  - `CollaborationInfo` - isReconnecting and users array for real-time collaboration state
+  - `TableDataSource` - Discriminated union type with loading/error/empty/ready states
+
+### Verification:
+- `bun tsc` - PASSED
+- `bun unit` - PASSED (2 tests)
+- `bun e2e` - PASSED (12 tests)
+
+### Notes for next person:
+- Phase 1 COMPLETE. Proceed to Phase 2.
+- Recommended next task: Task 2.1 (Create useYjsMutations hook).
+- The types are designed to match the existing useTableContextMenu patterns but with primitive parameters.
+
+-------------------------------------------------------------------------------
+
+## 2026-01-21: Completed Task 2.1 - Create useYjsMutations hook
+
+### What was done:
+- Created `src/components/virtualized-table/hooks/useYjsMutations.ts` with the following:
+  - `updateCell(rowIndex, columnId, value)` - Updates a cell value in the Y.js document
+  - `rows.add(atIndex)` - Adds a new row at the specified index
+  - `rows.remove(index)` - Removes a row at the specified index
+  - `rows.duplicate(index)` - Duplicates a row at the specified index
+  - `columns.add(afterColumnId)` - Adds a new column after the specified column
+  - `columns.remove(columnId)` - Removes the specified column
+- Returns a `TableMutations` interface object as specified in types.ts
+- Refactored from original useTableContextMenu to use pure function signatures with primitive parameters
+
+### Verification:
+- `bun tsc` - PASSED
+- `bun unit` - PASSED (2 tests)
+- `bun e2e` - PASSED (12 tests)
+
+### Notes for next person:
+- Continue with Task 2.2 (useYjsTableDocument hook) or Task 2.3 (useYjsPopulateData hook).
+- The new hook expects the caller (TableContextMenu) to extract rowIndex/columnId.
+- See TableContextMenu refactoring in Phase 3 for integration details.
+- Original useTableContextMenu hook is still in place; delete in Phase 6.
+
+-------------------------------------------------------------------------------
+
+## 2026-01-21: Completed Task 2.2 - Create useYjsTableDocument hook
+
+### What was done:
+- Created `src/components/virtualized-table/hooks/useYjsTableDocument.ts` with the following:
+  - Accepts `yjsDoc: Y.Doc` as parameter (removed documentStore dependency)
+  - Sets up Y.js observers on rows array and metadata map
+  - Returns `{ data: TableData, metadata: TableSourceMetadata, isLoading: boolean }`
+  - Removed draft resolution logic (moved to data provider layer)
+  - Removed useTableContextMenu call (mutations handled separately)
+
+### Verification:
+- `bun tsc` - PASSED
+- `bun unit` - PASSED (2 tests)
+- `bun e2e` - PASSED (12 tests)
+
+### Notes for next person:
+- Task 2.2 COMPLETE. Continue with Phase 2.
+- Recommended next task: Task 2.3 (useYjsPopulateData hook) or Task 3.1 (TableContextMenu refactoring).
+- The hook returns isLoading=true when all fields are empty, matching original behavior.
+- Draft resolution logic was intentionally omitted - this should be handled by data providers (useRoomDataProvider).
+
+-------------------------------------------------------------------------------
+
+## 2026-01-21: Completed Tasks 2.3 and 4.1 - useYjsPopulateData and useRoomDataProvider hooks
+
+### What was done:
+- Created `src/components/virtualized-table/hooks/useYjsPopulateData.ts`:
+  - Extracts populateData function from useTableDocument
+  - Accepts yjsDoc: Y.Doc as parameter
+  - Returns { populateData } for writing FileImportResult to Y.js document
+
+- Created `src/features/room/hooks/useRoomDataProvider.ts`:
+  - Core architectural abstraction orchestrating all Y.js hooks
+  - Gets Y.Doc from documentStore, calls useCollaboration, useYjsTableDocument, useYjsMutations, useYjsPopulateData
+  - Handles draft resolution for local mode (when roomId is undefined)
+  - Returns TableDataSource discriminated union (loading/error/empty/ready states)
+  - Includes collaboration info (isReconnecting, users) for collaborative rooms
+
+### Verification:
+- bun tsc - PASSED
+- bun unit - PASSED (2 tests)
+- bun e2e - PASSED (12 tests)
+- bun fmt - PASSED
+- bun lint - PASSED (0 warnings, 0 errors)
+
+### Files changed:
+- src/components/virtualized-table/hooks/useYjsPopulateData.ts (new)
+- src/features/room/hooks/useRoomDataProvider.ts (new)
+- specs/prd.json (updated Task 2.3 and 4.1 status to "done")
+
+### Notes for next person:
+- Phase 2 COMPLETE (Tasks 2.1, 2.2, 2.3 done). Phase 4 in progress.
+- Recommended next task: Task 4.2 (Update useVirtualizedTable to accept TableMutations) or Task 3.1 (TableContextMenu refactoring).
+- useRoomDataProvider is the core data abstraction - integrates with useRoomViewState in Task 4.3.
+- Draft resolution uses IndexedDB via getDraft/clearDraft from draftStorage.ts.
+- Collaboration info only included when roomId is provided (local mode has no collaboration).
+
+-------------------------------------------------------------------------------
+
+## 2026-01-21: Completed Tasks 3.1 and 3.2 - TableContextMenu and VirtualizedTable accept TableMutations
+
+### What was done:
+- Updated `src/components/virtualized-table/table-context-menu.tsx`:
+  - Added `mutations?: TableMutations` prop
+  - Removed dependency on `table.options.meta.contextMenu`
+  - Extracts `rowIndex` from `position.activeCell.row.index` and `columnId` from `position.activeCell.column.id`
+  - Conditionally renders menu items based on mutation availability
+  - Removed unused imports and the `table` prop
+
+- Updated `src/components/virtualized-table/virtualized-table.tsx`:
+  - Added `mutations?: TableMutations` prop
+  - Passes mutations to TableContextMenu component
+
+### Verification:
+- bun tsc - PASSED
+- bun unit - PASSED (2 tests)
+- bun e2e - PASSED (12 tests)
+
+### Files changed:
+- src/components/virtualized-table/table-context-menu.tsx
+- src/components/virtualized-table/virtualized-table.tsx
+- specs/prd.json (Tasks 3.1, 3.2 marked done)
+
+### Notes for next person:
+- Phase 3 COMPLETE (Tasks 3.1, 3.2 done).
+- Recommended next task: Task 4.2 (Update useVirtualizedTable to accept TableMutations).
+- The data flow is now: TableMutations → VirtualizedTable → TableContextMenu.
+- TableContextMenu no longer depends on TanStack Table meta for mutations.
+
+-------------------------------------------------------------------------------
+
+## 2026-01-21: Completed Tasks 4.2, 4.3, 4.4 - useVirtualizedTable accepts TableMutations, useRoomDataProvider integration
+
+### What was done:
+- Updated `src/components/virtualized-table/hooks/useVirtualizedTable.tsx`:
+  - Changed prop from `meta: TableMeta` to `mutations?: TableMutations`
+  - Creates internal meta object that bridges mutations to TanStack Table format
+  - Wraps mutation functions to extract rowIndex/columnId from ExtendedContextMenuPosition
+
+- Updated `src/features/room/hooks/useRoomDataProvider.ts`:
+  - Refactored to always return same shape (data, metadata, mutations) for all states
+  - Added `status` field to indicate loading/error/empty/ready state
+  - Fixed React hooks invariant violation by ensuring consistent hook count
+
+- Updated `src/features/room/hooks/useRoomViewState.ts`:
+  - Replaced `useTableDocument` with `useRoomDataProvider`
+  - Always calls `useVirtualizedTable` first (before any early returns) to satisfy React hooks rules
+  - Maps provider states to RoomViewState return type
+
+### Verification:
+- bun tsc - PASSED
+- bun unit - PASSED (2 tests)
+- bun e2e - PASSED (12 tests)
+
+### Files changed:
+- src/components/virtualized-table/hooks/useVirtualizedTable.tsx
+- src/features/room/hooks/useRoomDataProvider.ts
+- src/features/room/hooks/useRoomViewState.ts
+- specs/prd.json (Tasks 4.2, 4.3, 4.4 marked done)
+
+### Notes for next person:
+- Phase 4 COMPLETE (Tasks 4.1, 4.2, 4.3, 4.4 done).
+- Recommended next task: Task 5.1 (Create usePlaygroundDataProvider hook) or Task 6.1 (Delete old useTableContextMenu hook).
+- Key gotcha: React hooks must be called in the same order on every render. Early returns before hook calls cause "Rendered more hooks than during the previous render" errors.
+- useRoomDataProvider now always returns data/mutations even in loading/error states - caller handles state logic.
+
+ -------------------------------------------------------------------------------
+
+## 2026-01-21: Completed Tasks 5.1, 5.2, 5.3, 5.4 - Playground Feature
+
+### What was done:
+- Created `src/features/playground/hooks/usePlaygroundDataProvider.ts`:
+  - Defines PLAYGROUND_ROOM_ID = 'playground'
+  - Orchestrates Y.js hooks (useCollaboration, useYjsTableDocument, useYjsMutations)
+  - Implements auto-seed: fetches /customers-1000.csv and populates Y.js doc when empty
+  - Returns status (loading/error/empty/ready) with data, metadata, mutations, collaboration
+
+- Created `src/features/playground/playground.tsx`:
+  - Standalone component rendering collaborative table
+  - Handles loading, error, empty, and ready states
+  - Uses useVirtualizedTable to create table from provider data
+  - Renders VirtualizedTable with table, metadata, mutations
+
+- Updated `src/features/home/home.tsx`:
+  - Imported Playground component
+  - Added playground section below main content with title and description
+
+### Verification:
+- bun tsc - PASSED
+- bun unit - PASSED (2 tests)
+- bun e2e - PASSED (12 tests)
+
+### Files changed:
+- src/features/playground/hooks/usePlaygroundDataProvider.ts (new)
+- src/features/playground/playground.tsx (new)
+- src/features/home/home.tsx
+- specs/prd.json (Tasks 5.1, 5.2, 5.3, 5.4 marked done)
+
+### Notes for next person:
+- Phase 5 COMPLETE (all tasks done).
+- Recommended next task: Task 6.3 (Remove deprecated types from TanStack Table augmentation) or Task 6.1 (Delete old useTableContextMenu hook).
+- Playground auto-seeds from /customers-1000.csv on first load when document is empty.
+- The demo file (public/customers-1000.csv) exists and is valid CSV.
+- Phase 6 cleanup tasks are independent and can be done in any order.
