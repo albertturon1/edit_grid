@@ -1,0 +1,19 @@
+## 2026-01-21: Completed Task 1.1 - Create TableMutations and TableDataSource interfaces
+
+### What was done:
+- Created `src/lib/table/types.ts` with the following interfaces:
+  - `TableMutations` - Pure mutation functions with optional updateCell, rows (add/remove/duplicate), and columns (add/remove)
+  - `TableSourceMetadata` - filename and firstRowValues from imported file
+  - `CollaborationInfo` - isReconnecting and users array for real-time collaboration state
+  - `TableDataSource` - Discriminated union type with loading/error/empty/ready states
+
+### Verification:
+- `bun tsc` - PASSED
+- `bun unit` - PASSED (2 tests)
+- `bun e2e` - PASSED (12 tests)
+
+### Notes for next person:
+- Phase 1 is now COMPLETE. You can proceed to Phase 2 (Refactor Y.js Hooks).
+- Recommended next task: Task 2.1 (Create useYjsMutations hook) - this refactors useTableContextMenu to use pure function signatures matching TableMutations interface.
+- The types are designed to match the existing useTableContextMenu patterns but with primitive parameters instead of ExtendedContextMenuPosition.
+- The CollaborationInfo type imports RemoteUser from @/lib/collaboration/types to maintain consistency with existing collaboration types.
