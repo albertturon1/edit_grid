@@ -65,3 +65,39 @@
 - Recommended next task: Task 2.3 (useYjsPopulateData hook) or Task 3.1 (TableContextMenu refactoring).
 - The hook returns isLoading=true when all fields are empty, matching original behavior.
 - Draft resolution logic was intentionally omitted - this should be handled by data providers (useRoomDataProvider).
+
+-------------------------------------------------------------------------------
+
+## 2026-01-21: Completed Tasks 2.3 and 4.1 - useYjsPopulateData and useRoomDataProvider hooks
+
+### What was done:
+- Created `src/components/virtualized-table/hooks/useYjsPopulateData.ts`:
+  - Extracts populateData function from useTableDocument
+  - Accepts yjsDoc: Y.Doc as parameter
+  - Returns { populateData } for writing FileImportResult to Y.js document
+
+- Created `src/features/room/hooks/useRoomDataProvider.ts`:
+  - Core architectural abstraction orchestrating all Y.js hooks
+  - Gets Y.Doc from documentStore, calls useCollaboration, useYjsTableDocument, useYjsMutations, useYjsPopulateData
+  - Handles draft resolution for local mode (when roomId is undefined)
+  - Returns TableDataSource discriminated union (loading/error/empty/ready states)
+  - Includes collaboration info (isReconnecting, users) for collaborative rooms
+
+### Verification:
+- bun tsc - PASSED
+- bun unit - PASSED (2 tests)
+- bun e2e - PASSED (12 tests)
+- bun fmt - PASSED
+- bun lint - PASSED (0 warnings, 0 errors)
+
+### Files changed:
+- src/components/virtualized-table/hooks/useYjsPopulateData.ts (new)
+- src/features/room/hooks/useRoomDataProvider.ts (new)
+- specs/prd.json (updated Task 2.3 and 4.1 status to "done")
+
+### Notes for next person:
+- Phase 2 COMPLETE (Tasks 2.1, 2.2, 2.3 done). Phase 4 in progress.
+- Recommended next task: Task 4.2 (Update useVirtualizedTable to accept TableMutations) or Task 3.1 (TableContextMenu refactoring).
+- useRoomDataProvider is the core data abstraction - integrates with useRoomViewState in Task 4.3.
+- Draft resolution uses IndexedDB via getDraft/clearDraft from draftStorage.ts.
+- Collaboration info only included when roomId is provided (local mode has no collaboration).

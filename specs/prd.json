@@ -1,0 +1,228 @@
+{
+  "title": "Implementation Plan: Table Architecture Refactor",
+  "goal": "Decouple table components from Y.js, create unified TableMutations interface, enable playground feature",
+  "globalVerification": "bun tsc && bun unit && bun e2e",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "Foundation - Types & Interfaces",
+      "tasks": [
+        {
+          "id": "1.1",
+          "description": "Create TableMutations interface - core type definitions for table mutations. Pure data operations - no UI concepts.",
+          "status": "done",
+          "steps": [
+            "Create file src/lib/table/types.ts",
+            "Define TableMutations interface with all optional fields",
+            "Export the interface"
+          ]
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "Refactor Y.js Hooks - Remove UI Coupling",
+      "tasks": [
+        {
+          "id": "2.1",
+          "description": "Create useYjsMutations hook - refactor useTableContextMenu to return pure TableMutations functions. Remove ExtendedContextMenuPosition from signatures.",
+          "status": "done",
+          "steps": [
+            "Create file src/components/virtualized-table/hooks/useYjsMutations.ts",
+            "Copy logic from useTableContextMenu.ts with refactored function signatures",
+            "Accept Y.Doc as parameter",
+            "Return object matching TableMutations interface"
+          ]
+        },
+        {
+          "id": "2.2",
+          "description": "Create useYjsTableDocument hook - refactor useTableDocument to accept Y.Doc as parameter. Remove documentStore import and draft resolution logic.",
+          "status": "done",
+          "steps": [
+            "Create file src/components/virtualized-table/hooks/useYjsTableDocument.ts",
+            "Copy observer logic from useTableDocument.ts",
+            "Change signature to useYjsTableDocument(yjsDoc: Y.Doc)",
+            "Remove documentStore import and roomId parameter",
+            "Return { data, metadata, isLoading }"
+          ]
+        },
+        {
+          "id": "2.3",
+          "description": "Create useYjsPopulateData hook - extract populateData function into separate hook for writing FileImportResult to Y.js document.",
+          "status": "done",
+          "steps": [
+            "Create file src/components/virtualized-table/hooks/useYjsPopulateData.ts",
+            "Accept yjsDoc: Y.Doc as parameter",
+            "Implement populateData(importResult: FileImportResult)",
+            "Return { populateData }"
+          ]
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "Refactor TableContextMenu - Accept TableMutations",
+      "tasks": [
+        {
+          "id": "3.1",
+          "description": "Update TableContextMenu to accept TableMutations prop - extract row/column indices from position internally.",
+          "status": "pending",
+          "steps": [
+            "Open src/components/virtualized-table/table-context-menu.tsx",
+            "Add mutations: TableMutations to props interface",
+            "Replace table.options.meta.contextMenu with mutations prop",
+            "Extract rowIndex and columnId from position internally",
+            "Update onClick handlers to call mutations with primitives",
+            "Conditionally render menu items based on mutation availability"
+          ]
+        },
+        {
+          "id": "3.2",
+          "description": "Update VirtualizedTable to accept mutations prop and pass through to TableContextMenu.",
+          "status": "pending",
+          "steps": [
+            "Open src/components/virtualized-table/virtualized-table.tsx",
+            "Add mutations?: TableMutations to VirtualizedTableProps",
+            "Pass mutations to TableContextMenu component"
+          ]
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "Create Room Data Provider",
+      "tasks": [
+        {
+          "id": "4.1",
+          "description": "Create useRoomDataProvider hook - orchestrate Y.js document access, collaboration, and mutations. Return simple object.",
+          "status": "done",
+          "steps": [
+            "Create src/features/room/hooks/useRoomDataProvider.ts",
+            "Import documentStore, useCollaborationSession, useYjsTableDocument, useYjsMutations, useYjsPopulateData",
+            "Implement useRoomDataProvider(roomId)",
+            "Get yjsDoc from documentStore.getActiveDoc(roomId)",
+            "Call the three Y.js hooks",
+            "Handle draft resolution for local mode",
+            "Return { data, metadata, mutations, onImport, error, isLoading }"
+          ]
+        },
+        {
+          "id": "4.2",
+          "description": "Update useVirtualizedTable to accept TableMutations - change meta: TableMeta to mutations?: TableMutations.",
+          "status": "pending",
+          "steps": [
+            "Open src/components/virtualized-table/hooks/useVirtualizedTable.tsx",
+            "Change prop from meta: TableMeta to mutations?: TableMutations",
+            "Create internal meta object that bridges mutations to TanStack Table format",
+            "Pass constructed meta to useReactTable"
+          ]
+        },
+        {
+          "id": "4.3",
+          "description": "Integrate useRoomDataProvider into useRoomViewState - replace direct useTableDocument calls.",
+          "status": "pending",
+          "steps": [
+            "Open src/features/room/hooks/useRoomViewState.ts",
+            "Replace useTableDocument with useRoomDataProvider",
+            "Map provider states to existing RoomViewState return type",
+            "Pass mutations from provider to useVirtualizedTable"
+          ]
+        },
+        {
+          "id": "4.4",
+          "description": "Wire mutations through Room component - pass mutations from view state to VirtualizedTable.",
+          "status": "pending",
+          "steps": [
+            "Open Room component",
+            "Extract mutations from ready state",
+            "Pass to VirtualizedTable"
+          ]
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "Create Playground Feature",
+      "tasks": [
+        {
+          "id": "5.1",
+          "description": "Create usePlaygroundDataProvider hook - playground-specific provider with hardcoded room ID and auto-seeding.",
+          "status": "pending",
+          "steps": [
+            "Create src/features/playground/hooks/usePlaygroundDataProvider.ts",
+            "Define PLAYGROUND_ROOM_ID = 'playground'",
+            "Get yjsDoc from documentStore.getActiveDoc(PLAYGROUND_ROOM_ID)",
+            "Call same Y.js hooks as room provider",
+            "Implement auto-seed: if empty, fetch /customers-1000.csv and populate",
+            "Return { data, metadata, mutations, onImport, error, isLoading }"
+          ]
+        },
+        {
+          "id": "5.2",
+          "description": "Create Playground component - standalone component rendering collaborative table on home page.",
+          "status": "pending",
+          "steps": [
+            "Create src/features/playground/playground.tsx",
+            "Call usePlaygroundDataProvider()",
+            "Handle loading state",
+            "Call useVirtualizedTable on ready",
+            "Render VirtualizedTable with table, metadata, mutations",
+            "Add container styling for home page embedding"
+          ]
+        },
+        {
+          "id": "5.3",
+          "description": "Verify demo data file exists - ensure playground can auto-seed from existing demo file.",
+          "status": "pending",
+          "steps": ["Check public/customers-1000.csv exists", "Verify it's valid CSV format"]
+        },
+        {
+          "id": "5.4",
+          "description": "Integrate Playground into Home page - add playground section to home page layout.",
+          "status": "pending",
+          "steps": [
+            "Open src/features/home/home.tsx",
+            "Import Playground from @/features/playground/playground",
+            "Add playground section to layout"
+          ]
+        }
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "Cleanup - Remove Deprecated Code",
+      "tasks": [
+        {
+          "id": "6.1",
+          "description": "Delete old useTableContextMenu hook - remove deprecated file after verifying no imports.",
+          "status": "pending",
+          "steps": [
+            "Verify no remaining imports of useTableContextMenu",
+            "Delete src/components/virtualized-table/hooks/useTableContextMenu.ts"
+          ]
+        },
+        {
+          "id": "6.2",
+          "description": "Delete old useTableDocument hook - remove deprecated file after verifying no imports.",
+          "status": "pending",
+          "steps": [
+            "Verify no remaining imports of useTableDocument",
+            "Delete src/components/virtualized-table/hooks/useTableDocument.ts"
+          ]
+        },
+        {
+          "id": "6.3",
+          "description": "Remove deprecated types from TanStack Table augmentation - clean up tanstack-react-table.d.ts.",
+          "status": "pending",
+          "steps": [
+            "Open src/lib/types/tanstack-react-table.d.ts",
+            "Remove ContextMenuAction type",
+            "Remove UpdateData type",
+            "Simplify or remove TableMeta interface",
+            "Remove ExtendedContextMenuPosition import if unused"
+          ]
+        }
+      ]
+    }
+  ]
+}
