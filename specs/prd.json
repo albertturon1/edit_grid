@@ -147,7 +147,7 @@
         {
           "id": "5.1",
           "description": "Create usePlaygroundDataProvider hook - playground-specific provider with hardcoded room ID and auto-seeding.",
-          "status": "pending",
+          "status": "done",
           "steps": [
             "Create src/features/playground/hooks/usePlaygroundDataProvider.ts",
             "Define PLAYGROUND_ROOM_ID = 'playground'",
@@ -160,7 +160,7 @@
         {
           "id": "5.2",
           "description": "Create Playground component - standalone component rendering collaborative table on home page.",
-          "status": "pending",
+          "status": "done",
           "steps": [
             "Create src/features/playground/playground.tsx",
             "Call usePlaygroundDataProvider()",
@@ -173,13 +173,13 @@
         {
           "id": "5.3",
           "description": "Verify demo data file exists - ensure playground can auto-seed from existing demo file.",
-          "status": "pending",
+          "status": "done",
           "steps": ["Check public/customers-1000.csv exists", "Verify it's valid CSV format"]
         },
         {
           "id": "5.4",
           "description": "Integrate Playground into Home page - add playground section to home page layout.",
-          "status": "pending",
+          "status": "done",
           "steps": [
             "Open src/features/home/home.tsx",
             "Import Playground from @/features/playground/playground",

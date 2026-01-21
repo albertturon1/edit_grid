@@ -170,3 +170,42 @@
 - Recommended next task: Task 5.1 (Create usePlaygroundDataProvider hook) or Task 6.1 (Delete old useTableContextMenu hook).
 - Key gotcha: React hooks must be called in the same order on every render. Early returns before hook calls cause "Rendered more hooks than during the previous render" errors.
 - useRoomDataProvider now always returns data/mutations even in loading/error states - caller handles state logic.
+
+ -------------------------------------------------------------------------------
+
+## 2026-01-21: Completed Tasks 5.1, 5.2, 5.3, 5.4 - Playground Feature
+
+### What was done:
+- Created `src/features/playground/hooks/usePlaygroundDataProvider.ts`:
+  - Defines PLAYGROUND_ROOM_ID = 'playground'
+  - Orchestrates Y.js hooks (useCollaboration, useYjsTableDocument, useYjsMutations)
+  - Implements auto-seed: fetches /customers-1000.csv and populates Y.js doc when empty
+  - Returns status (loading/error/empty/ready) with data, metadata, mutations, collaboration
+
+- Created `src/features/playground/playground.tsx`:
+  - Standalone component rendering collaborative table
+  - Handles loading, error, empty, and ready states
+  - Uses useVirtualizedTable to create table from provider data
+  - Renders VirtualizedTable with table, metadata, mutations
+
+- Updated `src/features/home/home.tsx`:
+  - Imported Playground component
+  - Added playground section below main content with title and description
+
+### Verification:
+- bun tsc - PASSED
+- bun unit - PASSED (2 tests)
+- bun e2e - PASSED (12 tests)
+
+### Files changed:
+- src/features/playground/hooks/usePlaygroundDataProvider.ts (new)
+- src/features/playground/playground.tsx (new)
+- src/features/home/home.tsx
+- specs/prd.json (Tasks 5.1, 5.2, 5.3, 5.4 marked done)
+
+### Notes for next person:
+- Phase 5 COMPLETE (all tasks done).
+- Recommended next task: Task 6.3 (Remove deprecated types from TanStack Table augmentation) or Task 6.1 (Delete old useTableContextMenu hook).
+- Playground auto-seeds from /customers-1000.csv on first load when document is empty.
+- The demo file (public/customers-1000.csv) exists and is valid CSV.
+- Phase 6 cleanup tasks are independent and can be done in any order.

@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { useFileImport } from "./hooks/useFileImport";
 import { Button } from "@/components/ui/button";
 import { ALLOWED_FILE_EXTENSIONS } from "@/lib/imports";
+import { Playground } from "@/features/playground/playground";
 
 export function HomePage() {
   const { theme } = useTheme();
@@ -60,6 +61,16 @@ export function HomePage() {
                 }}
               />
             </div>
+          </div>
+
+          <div className="w-full max-w-4xl px-4">
+            <div className="mb-2">
+              <h2 className="text-lg font-semibold">Playground</h2>
+              <p className="text-sm text-muted-foreground">
+                Try the collaborative table editor below
+              </p>
+            </div>
+            <Playground />
           </div>
         </div>
       </div>
