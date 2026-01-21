@@ -42,3 +42,26 @@
 - The new hook expects the caller (TableContextMenu) to extract rowIndex/columnId.
 - See TableContextMenu refactoring in Phase 3 for integration details.
 - Original useTableContextMenu hook is still in place; delete in Phase 6.
+
+-------------------------------------------------------------------------------
+
+## 2026-01-21: Completed Task 2.2 - Create useYjsTableDocument hook
+
+### What was done:
+- Created `src/components/virtualized-table/hooks/useYjsTableDocument.ts` with the following:
+  - Accepts `yjsDoc: Y.Doc` as parameter (removed documentStore dependency)
+  - Sets up Y.js observers on rows array and metadata map
+  - Returns `{ data: TableData, metadata: TableSourceMetadata, isLoading: boolean }`
+  - Removed draft resolution logic (moved to data provider layer)
+  - Removed useTableContextMenu call (mutations handled separately)
+
+### Verification:
+- `bun tsc` - PASSED
+- `bun unit` - PASSED (2 tests)
+- `bun e2e` - PASSED (12 tests)
+
+### Notes for next person:
+- Task 2.2 COMPLETE. Continue with Phase 2.
+- Recommended next task: Task 2.3 (useYjsPopulateData hook) or Task 3.1 (TableContextMenu refactoring).
+- The hook returns isLoading=true when all fields are empty, matching original behavior.
+- Draft resolution logic was intentionally omitted - this should be handled by data providers (useRoomDataProvider).

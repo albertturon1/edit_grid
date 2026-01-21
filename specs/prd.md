@@ -61,7 +61,7 @@ A task is NOT complete until this verification passes. No exceptions.
 
 ---
 
-### [ ] 2.2 Create useYjsTableDocument hook
+### [x] 2.2 Create useYjsTableDocument hook
 
 **Description:** Refactor `useTableDocument` to accept `Y.Doc` as a parameter instead of accessing `documentStore` internally. This removes the Y.js coupling from the component layer.
 
