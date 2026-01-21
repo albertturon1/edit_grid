@@ -5,9 +5,22 @@ import { useCollaboration } from "@/hooks/useCollaboration";
 import { useYjsTableDocument } from "@/components/virtualized-table/hooks/useYjsTableDocument";
 import { useYjsMutations } from "@/components/virtualized-table/hooks/useYjsMutations";
 import { useYjsPopulateData } from "@/components/virtualized-table/hooks/useYjsPopulateData";
-import type { TableDataSource } from "@/lib/table/types";
+import type { TableSourceMetadata, TableMutations, CollaborationInfo } from "@/lib/table/types";
+import type { TableData } from "@/lib/imports/types/table";
+import type { RoomError } from "@/hooks/useCollaboration";
+import type { FileImportResult } from "@/lib/imports/types/import";
 
-export function useRoomDataProvider(roomId: string | undefined): TableDataSource {
+interface RoomProviderResult {
+  status: "loading" | "error" | "empty" | "ready";
+  data: TableData;
+  metadata: TableSourceMetadata;
+  mutations: TableMutations;
+  onImport?: (data: FileImportResult) => void;
+  error?: RoomError;
+  collaboration?: CollaborationInfo;
+}
+
+export function useRoomDataProvider(roomId: string | undefined): RoomProviderResult {
   const yjsDoc = documentStore.getActiveDoc(roomId);
 
   const collaboration = useCollaboration(roomId, yjsDoc);
@@ -55,23 +68,39 @@ export function useRoomDataProvider(roomId: string | undefined): TableDataSource
   if (collaboration?.roomError) {
     return {
       status: "error",
-      error: {
-        type: collaboration.roomError.type,
-        message: collaboration.roomError.message,
-      },
+      error: collaboration.roomError,
+      data,
+      metadata,
+      mutations,
     };
   }
 
   if (roomId && collaboration?.connectionStatus === "loading") {
-    return { status: "loading" };
+    return {
+      status: "loading",
+      data,
+      metadata,
+      mutations,
+    };
   }
 
   if (isLoading) {
-    return { status: "loading" };
+    return {
+      status: "loading",
+      data,
+      metadata,
+      mutations,
+    };
   }
 
   if (!hasData && !roomId) {
-    return { status: "empty", onImport: populateData };
+    return {
+      status: "empty",
+      data,
+      metadata,
+      mutations,
+      onImport: populateData,
+    };
   }
 
   const collaborationInfo = roomId

@@ -133,3 +133,40 @@
 - Recommended next task: Task 4.2 (Update useVirtualizedTable to accept TableMutations).
 - The data flow is now: TableMutations → VirtualizedTable → TableContextMenu.
 - TableContextMenu no longer depends on TanStack Table meta for mutations.
+
+-------------------------------------------------------------------------------
+
+## 2026-01-21: Completed Tasks 4.2, 4.3, 4.4 - useVirtualizedTable accepts TableMutations, useRoomDataProvider integration
+
+### What was done:
+- Updated `src/components/virtualized-table/hooks/useVirtualizedTable.tsx`:
+  - Changed prop from `meta: TableMeta` to `mutations?: TableMutations`
+  - Creates internal meta object that bridges mutations to TanStack Table format
+  - Wraps mutation functions to extract rowIndex/columnId from ExtendedContextMenuPosition
+
+- Updated `src/features/room/hooks/useRoomDataProvider.ts`:
+  - Refactored to always return same shape (data, metadata, mutations) for all states
+  - Added `status` field to indicate loading/error/empty/ready state
+  - Fixed React hooks invariant violation by ensuring consistent hook count
+
+- Updated `src/features/room/hooks/useRoomViewState.ts`:
+  - Replaced `useTableDocument` with `useRoomDataProvider`
+  - Always calls `useVirtualizedTable` first (before any early returns) to satisfy React hooks rules
+  - Maps provider states to RoomViewState return type
+
+### Verification:
+- bun tsc - PASSED
+- bun unit - PASSED (2 tests)
+- bun e2e - PASSED (12 tests)
+
+### Files changed:
+- src/components/virtualized-table/hooks/useVirtualizedTable.tsx
+- src/features/room/hooks/useRoomDataProvider.ts
+- src/features/room/hooks/useRoomViewState.ts
+- specs/prd.json (Tasks 4.2, 4.3, 4.4 marked done)
+
+### Notes for next person:
+- Phase 4 COMPLETE (Tasks 4.1, 4.2, 4.3, 4.4 done).
+- Recommended next task: Task 5.1 (Create usePlaygroundDataProvider hook) or Task 6.1 (Delete old useTableContextMenu hook).
+- Key gotcha: React hooks must be called in the same order on every render. Early returns before hook calls cause "Rendered more hooks than during the previous render" errors.
+- useRoomDataProvider now always returns data/mutations even in loading/error states - caller handles state logic.

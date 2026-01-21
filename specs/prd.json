@@ -109,7 +109,7 @@
         {
           "id": "4.2",
           "description": "Update useVirtualizedTable to accept TableMutations - change meta: TableMeta to mutations?: TableMutations.",
-          "status": "pending",
+          "status": "done",
           "steps": [
             "Open src/components/virtualized-table/hooks/useVirtualizedTable.tsx",
             "Change prop from meta: TableMeta to mutations?: TableMutations",
@@ -120,7 +120,7 @@
         {
           "id": "4.3",
           "description": "Integrate useRoomDataProvider into useRoomViewState - replace direct useTableDocument calls.",
-          "status": "pending",
+          "status": "done",
           "steps": [
             "Open src/features/room/hooks/useRoomViewState.ts",
             "Replace useTableDocument with useRoomDataProvider",
@@ -131,7 +131,7 @@
         {
           "id": "4.4",
           "description": "Wire mutations through Room component - pass mutations from view state to VirtualizedTable.",
-          "status": "pending",
+          "status": "done",
           "steps": [
             "Open Room component",
             "Extract mutations from ready state",

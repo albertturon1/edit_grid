@@ -64,9 +64,8 @@ export function useYjsTableDocument(yjsDoc: Y.Doc) {
     firstRowValues: tableState.firstRowValues,
   };
 
-  const isLoading = tableState.rows.length === 0 &&
-                    tableState.headers.length === 0 &&
-                    tableState.filename === "";
+  const isLoading =
+    tableState.rows.length === 0 && tableState.headers.length === 0 && tableState.filename === "";
 
   return { data, metadata, isLoading };
 }
