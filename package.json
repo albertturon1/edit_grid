@@ -14,7 +14,9 @@
     "unit:watch": "vitest",
     "e2e": "playwright test",
     "party:dev": "partykit dev",
-    "party:deploy": "partykit deploy"
+    "party:deploy": "partykit deploy",
+    "prepare": "husky install",
+    "feedback": "bun fmt && bun lint && bun tsc && bun unit && bun e2e"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -64,6 +66,8 @@
     "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.23",
     "happy-dom": "^15.11.7",
+    "husky": "^8.0.0",
+    "lint-staged": "^16.2.7",
     "oxfmt": "^0.24.0",
     "oxlint": "^1.39.0",
     "postcss": "^8.5.6",
@@ -71,6 +75,15 @@
     "typescript": "^5.9.3",
     "vite": "^5.4.21",
     "vitest": "^2.1.9"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "bun fmt:check",
+      "bun lint",
+      "sh -c \"bun tsc --noEmit -p tsconfig.json\"",
+      "bun unit --passWithNoTests",
+      "bun e2e"
+    ]
   },
   "packageManager": "bun@1.3.5"
 }

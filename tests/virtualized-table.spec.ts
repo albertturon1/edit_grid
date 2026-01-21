@@ -1,5 +1,4 @@
 import { expect, test } from "@playwright/test";
-import path from "node:path";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
@@ -8,9 +7,7 @@ test.beforeEach(async ({ page }) => {
   await page.getByLabel("Click here to upload your file").click();
   const fileChooser = await fileChooserPromise;
 
-  await fileChooser.setFiles(
-    path.join(import.meta.dirname, "../public/customers-1000.csv"),
-  );
+  await fileChooser.setFiles("public/customers-1000.csv");
 
   await page.getByRole("button", { name: "Import" }).click();
   await page.waitForURL("/room");
