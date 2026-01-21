@@ -13,7 +13,32 @@
 - `bun e2e` - PASSED (12 tests)
 
 ### Notes for next person:
-- Phase 1 is now COMPLETE. You can proceed to Phase 2 (Refactor Y.js Hooks).
-- Recommended next task: Task 2.1 (Create useYjsMutations hook) - this refactors useTableContextMenu to use pure function signatures matching TableMutations interface.
-- The types are designed to match the existing useTableContextMenu patterns but with primitive parameters instead of ExtendedContextMenuPosition.
-- The CollaborationInfo type imports RemoteUser from @/lib/collaboration/types to maintain consistency with existing collaboration types.
+- Phase 1 COMPLETE. Proceed to Phase 2.
+- Recommended next task: Task 2.1 (Create useYjsMutations hook).
+- The types are designed to match the existing useTableContextMenu patterns but with primitive parameters.
+
+-------------------------------------------------------------------------------
+
+## 2026-01-21: Completed Task 2.1 - Create useYjsMutations hook
+
+### What was done:
+- Created `src/components/virtualized-table/hooks/useYjsMutations.ts` with the following:
+  - `updateCell(rowIndex, columnId, value)` - Updates a cell value in the Y.js document
+  - `rows.add(atIndex)` - Adds a new row at the specified index
+  - `rows.remove(index)` - Removes a row at the specified index
+  - `rows.duplicate(index)` - Duplicates a row at the specified index
+  - `columns.add(afterColumnId)` - Adds a new column after the specified column
+  - `columns.remove(columnId)` - Removes the specified column
+- Returns a `TableMutations` interface object as specified in types.ts
+- Refactored from original useTableContextMenu to use pure function signatures with primitive parameters
+
+### Verification:
+- `bun tsc` - PASSED
+- `bun unit` - PASSED (2 tests)
+- `bun e2e` - PASSED (12 tests)
+
+### Notes for next person:
+- Continue with Task 2.2 (useYjsTableDocument hook) or Task 2.3 (useYjsPopulateData hook).
+- The new hook expects the caller (TableContextMenu) to extract rowIndex/columnId.
+- See TableContextMenu refactoring in Phase 3 for integration details.
+- Original useTableContextMenu hook is still in place; delete in Phase 6.

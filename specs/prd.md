@@ -43,7 +43,7 @@ A task is NOT complete until this verification passes. No exceptions.
 
 ## Phase 2: Refactor Y.js Hooks - Remove UI Coupling
 
-### [ ] 2.1 Create useYjsMutations hook with pure function signatures
+### [x] 2.1 Create useYjsMutations hook with pure function signatures
 
 **Description:** Refactor `useTableContextMenu` into `useYjsMutations`. The new hook returns `TableMutations` interface - pure functions accepting primitive values (rowIndex, columnId) instead of `ExtendedContextMenuPosition`.
 
