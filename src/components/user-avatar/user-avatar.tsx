@@ -20,7 +20,7 @@ export function UserAvatar({ user, isLocal = false, size = "md", className }: Us
   return (
     <div
       className={cn(
-        "relative flex items-center justify-center rounded-full text-white ring-1 ring-background shadow-sm font-medium",
+        "relative flex items-center justify-center rounded-full text-white ring-1 ring-background shadow-xs font-medium",
         sizeClasses[size],
         isLocal && "ring-2 ring-white ring-offset-1 ring-offset-background",
         className,

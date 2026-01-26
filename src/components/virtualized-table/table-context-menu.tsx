@@ -36,7 +36,7 @@ export function TableContextMenu({ onClose, position, table }: TableContextMenuP
 
   return (
     <ContextMenu position={position} onClose={onClose}>
-      <ContextMenuContent className="[&>*]:gap-x-8 z-50">
+      <ContextMenuContent className="*:gap-x-8 z-50">
         <ContextMenuItem onClick={createAction(addRow)}>
           {"Add Row"}
           <ArrowBigDown className="w-5 h-5" strokeWidth={1.5} />
