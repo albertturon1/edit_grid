@@ -3,12 +3,12 @@ import { useCallback, useEffect, useRef } from "react";
 export function useAnimationFrame(callback: (...args: any[]) => any) {
   // Use useRef for mutable variables that we want to persist
   // without triggering a re-render on their change
-  const requestRef = useRef<number>();
-  const previousTimeRef = useRef<number>();
+  const requestRef = useRef<number>(null);
+  const previousTimeRef = useRef<number>(null);
 
   const animate = useCallback(
     (time: number) => {
-      if (previousTimeRef.current !== undefined) {
+      if (previousTimeRef.current !== null) {
         const deltaTime = time - previousTimeRef.current;
         callback(deltaTime);
       }
@@ -21,7 +21,10 @@ export function useAnimationFrame(callback: (...args: any[]) => any) {
   useEffect(() => {
     requestRef.current = requestAnimationFrame(animate);
 
-    //@ts-expect-error
-    return () => cancelAnimationFrame(requestRef.current);
+    return () => {
+      if (requestRef.current !== null) {
+        cancelAnimationFrame(requestRef.current);
+      }
+    };
   }, [animate]);
 }

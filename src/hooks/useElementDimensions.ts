@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 
-export function useElementDimensions(ref: React.RefObject<HTMLElement>) {
+export function useElementDimensions(ref: React.RefObject<HTMLElement | null>) {
   const getDimensions = useCallback(() => {
     return {
       width: ref.current?.offsetWidth ?? 0,
