@@ -8,17 +8,17 @@ export function HeroSection() {
   const { importFile } = useFileImport();
 
   return (
-    <section className="relative min-h-[65dvh] flex flex-col items-center justify-center px-4 py-20 overflow-hidden">
+    <section className="relative flex flex-col items-center justify-center px-4 py-12 sm:py-20">
       {/* Background grid */}
       <div
         aria-hidden
         className="
-    pointer-events-none absolute inset-0
-    bg-[linear-gradient(to_right,var(--grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-line)_1px,transparent_1px)]
-    bg-size-[40px_40px]
-    mask-[linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)]
-    [-webkit-mask:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)]
-  "
+          pointer-events-none absolute inset-0
+          bg-[linear-gradient(to_right,var(--grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-line)_1px,transparent_1px)]
+          bg-size-[40px_40px]
+          mask-[linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)]
+          [-webkit-mask:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)]
+        "
       />
 
       {/* Glow effect */}
