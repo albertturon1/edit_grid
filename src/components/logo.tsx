@@ -2,8 +2,9 @@ import { cn } from "@/lib/utils";
 
 export function Logo({ className }: { className?: string }) {
   return (
-    <span className={cn("text-lg font-black", className)}>
-      <span className="text-purple-400">Edit</span>Grid
-    </span>
+    <h1 className={cn("text-xl font-bold", className)}>
+      <span className="text-foreground">Edit</span>
+      <span className="text-accent">Grid</span>
+    </h1>
   );
 }

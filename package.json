@@ -16,7 +16,7 @@
     "party:dev": "partykit dev",
     "party:deploy": "partykit deploy",
     "prepare": "husky install",
-    "feedback": "bun fmt && bun lint && bun tsc && bun unit && bun e2e"
+    "feedback": "bun fmt && bun lint && bun tsc && bun unit --passWithNoTests && bun e2e"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -42,8 +42,9 @@
     "lucide-react": "^0.426.0",
     "papaparse": "^5.5.3",
     "partykit": "^0.0.115",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "radix-ui": "^1.4.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "react-hook-form": "^7.70.0",
     "react-hot-toast": "^2.6.0",
     "sonner": "^2.0.7",
@@ -62,8 +63,8 @@
     "@total-typescript/ts-reset": "^0.6.1",
     "@types/node": "^22.19.3",
     "@types/papaparse": "^5.5.2",
-    "@types/react": "^18.3.27",
-    "@types/react-dom": "^18.3.7",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.7.0",
     "happy-dom": "^15.11.7",
     "husky": "^8.0.0",

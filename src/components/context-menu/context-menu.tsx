@@ -1,4 +1,4 @@
-import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
+import { ContextMenu as ContextMenuPrimitive } from "radix-ui";
 import * as Portal from "@radix-ui/react-portal";
 import React, { createContext, type ReactNode, type RefObject, useContext, useRef } from "react";
 import { useEventListener, useOnClickOutside, useWindowSize } from "usehooks-ts";
@@ -22,7 +22,7 @@ function ContextMenu({ onClose, children, position }: ContextMenuProps) {
   const ref = useRef<HTMLDivElement>(null);
   const coordinates = useCoordinates(ref, position);
 
-  useOnClickOutside(ref, () => {
+  useOnClickOutside(ref as RefObject<HTMLDivElement>, () => {
     onClose?.();
   });
 
@@ -41,7 +41,10 @@ function ContextMenu({ onClose, children, position }: ContextMenuProps) {
   );
 }
 
-function useCoordinates(ref: RefObject<HTMLDivElement>, position: ContextMenuPosition | null) {
+function useCoordinates(
+  ref: RefObject<HTMLDivElement | null>,
+  position: ContextMenuPosition | null,
+) {
   const { width: screenWidth, height: screenHeight } = useWindowSize();
   const dimensions = useElementDimensions(ref);
 
@@ -112,7 +115,7 @@ function ContextMenuItem({
       onClick={onClick}
       type="button"
       className={cn(
-        "relative flex cursor-default select-none items-center rounded-sm px-3 py-1.5 text-sm outline-hidden hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 w-full justify-between",
+        "relative flex cursor-default select-none items-center rounded-sm px-3 py-1.5 text-sm outline-hidden hover:bg-muted-foreground hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 w-full justify-between",
         inset && "pl-8",
         className,
       )}
@@ -123,16 +126,18 @@ function ContextMenuItem({
 }
 ContextMenuItem.displayName = "ContextMenuItem";
 
-const ContextMenuSeparator = React.forwardRef<
-  React.ElementRef<typeof ContextMenuPrimitive.Separator>,
-  React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Separator>
->(({ className, ...props }, ref) => (
-  <ContextMenuPrimitive.Separator
-    ref={ref}
-    className={cn("-mx-1 my-1 h-px bg-border", className)}
-    {...props}
-  />
-));
+function ContextMenuSeparator({
+  className,
+  ...props
+}: React.ComponentProps<typeof ContextMenuPrimitive.Separator>) {
+  return (
+    <ContextMenuPrimitive.Separator
+      data-slot="context-menu-separator"
+      className={cn("bg-border -mx-1 my-1 h-px", className)}
+      {...props}
+    />
+  );
+}
 ContextMenuSeparator.displayName = ContextMenuPrimitive.Separator.displayName;
 
 export { ContextMenu, ContextMenuItem, ContextMenuContent, ContextMenuSeparator };

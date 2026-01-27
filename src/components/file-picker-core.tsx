@@ -1,46 +1,23 @@
-import { type ChangeEvent, forwardRef, type MouseEvent, useImperativeHandle, useRef } from "react";
+import { type ChangeEvent, type MouseEvent, type Ref, useImperativeHandle, useRef } from "react";
 import { toast } from "sonner";
 import { parseFile } from "@/lib/imports";
+import { validateFile, type FileSizeLimit } from "@/lib/imports/file-validation";
 import type { RawTableData } from "@/lib/imports/parsers/types";
-
-const KB_IN_BYTES = 1024;
-const MB_IN_BYTES = 1024 * 1024;
-const GB_IN_BYTES = 1024 * 1024 * 1024;
-
-function convertToBytes(size: number, unit: "KB" | "MB" | "GB"): number {
-  switch (unit) {
-    case "KB":
-      return size * KB_IN_BYTES;
-    case "MB":
-      return size * MB_IN_BYTES;
-    case "GB":
-      return size * GB_IN_BYTES;
-  }
-}
-
-export type FilePickerCoreProps = {
-  onFileImport: (file: File, result: RawTableData) => void;
-  options: {
-    fileSizeLimit: { size: number; unit: "KB" | "MB" | "GB" };
-    accept: string[];
-  };
-};
-
-function validateFile(file: File, maxSizeInBytes?: number): string | null {
-  if (maxSizeInBytes && file.size > maxSizeInBytes) {
-    return `File "${file.name}" is too big.`;
-  }
-  return null;
-}
 
 export type FilePickerCoreRef = {
   showFilePicker: (event: MouseEvent<HTMLElement>) => void;
 };
 
-export const FilePickerCore = forwardRef<FilePickerCoreRef, FilePickerCoreProps>(function MyInput(
-  { onFileImport, options },
-  ref,
-) {
+export type FilePickerCoreProps = {
+  onFileImport: (file: File, result: RawTableData) => void;
+  options: {
+    fileSizeLimit: FileSizeLimit;
+    accept: string[];
+  };
+  ref: Ref<FilePickerCoreRef>;
+};
+
+export function FilePickerCore({ onFileImport, options, ref }: FilePickerCoreProps) {
   const { fileSizeLimit, accept } = options ?? {};
 
   const acceptExtensions = accept?.join(", ");
@@ -66,11 +43,11 @@ export const FilePickerCore = forwardRef<FilePickerCoreRef, FilePickerCoreProps>
       return;
     }
 
-    const maxSizeInBytes = fileSizeLimit
-      ? convertToBytes(fileSizeLimit.size, fileSizeLimit.unit)
-      : undefined;
+    const validationError = validateFile(firstFile, {
+      fileSizeLimit,
+      accept,
+    });
 
-    const validationError = validateFile(firstFile, maxSizeInBytes);
     if (validationError) {
       toast.error(validationError, {
         description: "Try again with a different file.",
@@ -100,4 +77,4 @@ export const FilePickerCore = forwardRef<FilePickerCoreRef, FilePickerCoreProps>
       onChange={handleInputChange}
     />
   );
-});
+}

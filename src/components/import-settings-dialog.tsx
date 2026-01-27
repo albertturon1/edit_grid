@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -50,15 +51,15 @@ export function ImportSettingsDialog({ open, onCancel, ...props }: ImportSetting
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-11/12 sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>{"Import File"}</DialogTitle>
-          <DialogDescription>
-            {"Adjust settings for importing this file. Click import when you're done."}
-          </DialogDescription>
-        </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <DialogContent className="sm:max-w-[425px]">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <DialogHeader>
+            <DialogTitle>{"Import File"}</DialogTitle>
+            <DialogDescription>
+              {"Adjust settings for importing this file. Click import when you're done."}
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...form}>
             <FormField
               control={form.control}
               name="firstRowAsHeaders"
@@ -71,14 +72,16 @@ export function ImportSettingsDialog({ open, onCancel, ...props }: ImportSetting
                 </FormItem>
               )}
             />
-            <DialogFooter className="w-full flex flex-col-reverse sm:flex-row gap-y-2">
+          </Form>
+          <DialogFooter>
+            <DialogClose asChild>
               <Button variant="outline" onClick={onCancel}>
                 {"Cancel"}
               </Button>
-              <Button type="submit">{"Import"}</Button>
-            </DialogFooter>
-          </form>
-        </Form>
+            </DialogClose>
+            <Button type="submit">{"Import"}</Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

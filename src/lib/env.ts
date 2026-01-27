@@ -3,10 +3,12 @@ import z from "zod";
 
 const envSchema = z.object({
   VITE_PARTYKIT_HOST: z.string(),
+  VITE_REPO_URL: z.string(),
 });
 
 const _env = {
   VITE_PARTYKIT_HOST: import.meta.env.VITE_PARTYKIT_HOST,
+  VITE_REPO_URL: import.meta.env.VITE_REPO_URL,
 };
 
 const parsed = envSchema.safeParse(_env);

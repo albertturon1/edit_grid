@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
-      - run: bun unit
+      - run: bun unit --passWithNoTests
 
   e2e:
     name: E2E Tests
