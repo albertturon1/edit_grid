@@ -15,7 +15,12 @@ function RootComponent() {
     <div className="min-h-dvh w-full">
       <Navbar height={NAVBAR_HEIGHT} />
 
-      <div className="min-h-dvh flex flex-col" style={{ paddingTop: NAVBAR_HEIGHT }}>
+      <div
+        className="flex flex-col min-h-[calc(100dvh-60px)]"
+        style={{
+          paddingTop: NAVBAR_HEIGHT,
+        }}
+      >
         <Outlet />
       </div>
 

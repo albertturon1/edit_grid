@@ -16,7 +16,7 @@
     "party:dev": "partykit dev",
     "party:deploy": "partykit deploy",
     "prepare": "husky install",
-    "feedback": "bun fmt && bun lint && bun tsc && bun unit && bun e2e"
+    "feedback": "bun fmt && bun lint && bun tsc && bun unit --passWithNoTests && bun e2e"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

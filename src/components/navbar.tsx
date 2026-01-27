@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { FileSpreadsheet } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Padding } from "./padding";
+import { Logo } from "./logo";
+import { ThemeToggle } from "./ui/theme-toggle";
 
 interface NavbarProps {
   height: number;
@@ -30,11 +32,9 @@ export function Navbar({ height }: NavbarProps) {
           {/* Logo */}
           <a href="/" className="flex items-center gap-2">
             <FileSpreadsheet className="w-6 h-6 text-accent" />
-            <span className="text-xl font-bold">
-              <span className="text-foreground">Edit</span>
-              <span className="text-accent">Grid</span>
-            </span>
+            <Logo />
           </a>
+          <ThemeToggle />
         </nav>
       </Padding>
     </header>

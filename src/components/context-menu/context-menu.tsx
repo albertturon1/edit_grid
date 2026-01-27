@@ -1,17 +1,7 @@
-import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
+import { ContextMenu as ContextMenuPrimitive } from "radix-ui";
 import * as Portal from "@radix-ui/react-portal";
-import React, {
-  createContext,
-  type ReactNode,
-  type RefObject,
-  useContext,
-  useRef,
-} from "react";
-import {
-  useEventListener,
-  useOnClickOutside,
-  useWindowSize,
-} from "usehooks-ts";
+import React, { createContext, type ReactNode, type RefObject, useContext, useRef } from "react";
+import { useEventListener, useOnClickOutside, useWindowSize } from "usehooks-ts";
 import { useElementDimensions } from "@/hooks/useElementDimensions";
 import { cn } from "@/lib/utils";
 
@@ -65,17 +55,11 @@ function useCoordinates(
     };
   }
 
-  const leftOutOfScreen =
-    !!dimensions && position.x + dimensions.width > screenWidth * 0.97;
-  const topOutOfScreen =
-    !!dimensions && position.y + dimensions.height > screenHeight * 0.97;
+  const leftOutOfScreen = !!dimensions && position.x + dimensions.width > screenWidth * 0.97;
+  const topOutOfScreen = !!dimensions && position.y + dimensions.height > screenHeight * 0.97;
 
-  const visibleLeft = leftOutOfScreen
-    ? position.x - dimensions.width
-    : position.x;
-  const visibleTop = topOutOfScreen
-    ? position.y - dimensions.height
-    : position.y;
+  const visibleLeft = leftOutOfScreen ? position.x - dimensions.width : position.x;
+  const visibleTop = topOutOfScreen ? position.y - dimensions.height : position.y;
 
   return {
     top: visibleTop,
@@ -123,9 +107,7 @@ function ContextMenuItem({
   const isInsideContextMenuContent = useContext(ContextMenuContentContext);
 
   if (!isInsideContextMenuContent) {
-    throw new Error(
-      "`ContextMenuItem` must be used within `ContextMenuContent`",
-    );
+    throw new Error("`ContextMenuItem` must be used within `ContextMenuContent`");
   }
 
   return (
@@ -158,9 +140,4 @@ function ContextMenuSeparator({
 }
 ContextMenuSeparator.displayName = ContextMenuPrimitive.Separator.displayName;
 
-export {
-  ContextMenu,
-  ContextMenuItem,
-  ContextMenuContent,
-  ContextMenuSeparator,
-};
+export { ContextMenu, ContextMenuItem, ContextMenuContent, ContextMenuSeparator };

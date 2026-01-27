@@ -21,6 +21,17 @@ interface StatusEvent {
 const uuidSchema = z.string().uuid();
 
 /**
+ * Special room IDs that bypass UUID validation.
+ * Used for shared spaces like playground that have fixed IDs.
+ */
+const SPECIAL_ROOM_IDS = ["PLAYGROUND"] as const;
+type SpecialRoomId = (typeof SPECIAL_ROOM_IDS)[number];
+
+function isValidRoomId(id: string): boolean {
+  return uuidSchema.safeParse(id).success || SPECIAL_ROOM_IDS.includes(id as SpecialRoomId);
+}
+
+/**
  * Collaborative features hook that works only when roomId exists.
  * Handles PartyKit connection, awareness, and remote users.
  *
@@ -77,10 +88,8 @@ export function useCollaboration(roomId?: string, yjsDoc?: Y.Doc) {
       return;
     }
 
-    // Validate roomId is a valid UUID before connecting
-    const isValidRoomId = uuidSchema.safeParse(roomId).success;
-
-    if (!isValidRoomId) {
+    // Validate roomId is a valid UUID or special room ID before connecting
+    if (!isValidRoomId(roomId)) {
       setRoomError({
         type: "invalid_room_id",
         message: "Invalid room link.",
@@ -155,14 +164,19 @@ export function useCollaboration(roomId?: string, yjsDoc?: Y.Doc) {
         if (!hasCompletedInitialSync.current) {
           hasCompletedInitialSync.current = true;
 
-          const rowsCount = yjsDoc.getArray("rows").length;
-          const hasHeaders = !!yjsDoc.getMap("metadata").get("headers");
+          // Skip room_not_found check for special room IDs (e.g., playground)
+          // These rooms are initialized dynamically and may be empty initially
+          const isSpecialRoom = SPECIAL_ROOM_IDS.includes(roomId as SpecialRoomId);
+          if (!isSpecialRoom) {
+            const rowsCount = yjsDoc.getArray("rows").length;
+            const hasHeaders = !!yjsDoc.getMap("metadata").get("headers");
 
-          if (!rowsCount && !hasHeaders) {
-            setRoomError({
-              type: "room_not_found",
-              message: "This shared document doesn't exist or has expired.",
-            });
+            if (!rowsCount && !hasHeaders) {
+              setRoomError({
+                type: "room_not_found",
+                message: "This shared document doesn't exist or has expired.",
+              });
+            }
           }
         }
       }

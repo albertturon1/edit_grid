@@ -1,10 +1,9 @@
-import { Button } from "@/components/ui/button";
 import { useNavigate } from "@tanstack/react-router";
-import type { RoomError as TRoomError } from "@/hooks/useCollaboration";
+import { Button } from "@/components/ui/button";
 
-type RoomErrorProps = {
-  error: TRoomError;
-};
+interface RoomErrorProps {
+  error: { type: string; message: string };
+}
 
 export function RoomError({ error }: RoomErrorProps) {
   const navigate = useNavigate();

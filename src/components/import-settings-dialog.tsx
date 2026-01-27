@@ -12,13 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 
 const importFormSchema = z.object({
   firstRowAsHeaders: z.boolean(),
@@ -33,11 +27,7 @@ export type ImportSettingsDialogProps = {
   onSubmit: (data: ImportSettingsFormSchema) => void;
 };
 
-export function ImportSettingsDialog({
-  open,
-  onCancel,
-  ...props
-}: ImportSettingsDialogProps) {
+export function ImportSettingsDialog({ open, onCancel, ...props }: ImportSettingsDialogProps) {
   const form = useForm<ImportSettingsFormSchema>({
     resolver: zodResolver(importFormSchema),
     defaultValues: {
@@ -66,9 +56,7 @@ export function ImportSettingsDialog({
           <DialogHeader>
             <DialogTitle>{"Import File"}</DialogTitle>
             <DialogDescription>
-              {
-                "Adjust settings for importing this file. Click import when you're done."
-              }
+              {"Adjust settings for importing this file. Click import when you're done."}
             </DialogDescription>
           </DialogHeader>
           <Form {...form}>
@@ -78,10 +66,7 @@ export function ImportSettingsDialog({
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center space-x-3 space-y-0">
                   <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
+                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                   </FormControl>
                   <FormLabel>{"Use first row as headers"}</FormLabel>
                 </FormItem>

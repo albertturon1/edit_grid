@@ -5,7 +5,7 @@ test("should import CSV file and display data in table", async ({ page }) => {
   await page.goto("/");
 
   const fileChooserPromise = page.waitForEvent("filechooser");
-  await page.getByLabel("Click here to upload your file").click();
+  await page.getByLabel("Upload your file").click();
   const fileChooser = await fileChooserPromise;
 
   await fileChooser.setFiles(path.join(import.meta.dirname, "../public/customers-1000.csv"));
@@ -13,7 +13,7 @@ test("should import CSV file and display data in table", async ({ page }) => {
   await page.getByRole("button", { name: "Import" }).click();
   await page.waitForURL("/room");
 
-  const tableContainer = page.getByTestId("virtualized-table-container");
+  const tableContainer = page.getByTestId("data-table-container");
   const firstRow = tableContainer.getByTestId("row-0");
   const firstCell = firstRow.locator("td").first();
 

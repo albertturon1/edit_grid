@@ -4,7 +4,7 @@ test.beforeEach(async ({ page }) => {
   await page.goto("/");
 
   const fileChooserPromise = page.waitForEvent("filechooser");
-  await page.getByLabel("Click here to upload your file").click();
+  await page.getByLabel("Upload your file").click();
   const fileChooser = await fileChooserPromise;
 
   await fileChooser.setFiles("public/customers-1000.csv");
@@ -12,7 +12,7 @@ test.beforeEach(async ({ page }) => {
   await page.getByRole("button", { name: "Import" }).click();
   await page.waitForURL("/room");
 
-  const tableContainer = page.getByTestId("virtualized-table-container");
+  const tableContainer = page.getByTestId("data-table-container");
   await expect(tableContainer).toBeVisible();
 
   const firstRow = tableContainer.getByTestId("row-0");
@@ -23,7 +23,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("keeps header sticky on vertical scroll", async ({ page }) => {
-  const container = page.getByTestId("virtualized-table-container");
+  const container = page.getByTestId("data-table-container");
   const header = page.getByRole("columnheader").first();
 
   await expect(header).toBeVisible();
@@ -35,7 +35,7 @@ test("keeps header sticky on vertical scroll", async ({ page }) => {
 });
 
 test("keeps first column sticky on horizontal scroll", async ({ page }) => {
-  const container = page.getByTestId("virtualized-table-container");
+  const container = page.getByTestId("data-table-container");
   const stickyCell = page.getByRole("row").nth(1).locator("td").first();
 
   await expect(stickyCell).toBeVisible();

@@ -8,9 +8,14 @@ interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
   ref?: React.Ref<HTMLTableElement>;
 }
 
-function Table({ className, withWrapper = true, ref, ...props }: TableProps) {
+function Table({ className, withWrapper = false, ref, ...props }: TableProps) {
   const table = (
-    <table ref={ref} className={cn("w-full caption-bottom text-sm", className)} {...props} />
+    <table
+      data-testid="data-table-container"
+      ref={ref}
+      className={cn("w-full caption-bottom text-sm tabular-nums bg-background grid", className)}
+      {...props}
+    />
   );
 
   if (!withWrapper) {

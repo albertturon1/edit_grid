@@ -1,30 +1,24 @@
-import { useRoomViewState } from "../hooks/useRoomViewState";
+import { useRoomData } from "../hooks/useRoomData";
 import { RoomEmpty } from "./room-empty";
-import { RoomLoading } from "./room-loading";
-import { RoomReady } from "./room-ready";
 import { RoomError } from "./room-error";
+import { RoomLoading } from "./room-loading";
+import { RoomTable } from "./room-table";
 
 interface RoomPageContentProps {
   roomId: string | undefined;
 }
 
 export function RoomPageContent({ roomId }: RoomPageContentProps) {
-  const viewState = useRoomViewState(roomId);
+  const roomData = useRoomData(roomId);
 
-  switch (viewState.status) {
+  switch (roomData.status) {
     case "loading":
       return <RoomLoading />;
     case "error":
-      return <RoomError error={viewState.error} />;
+      return <RoomError error={roomData.error} />;
     case "empty":
-      return <RoomEmpty onImport={viewState.onImport} />;
+      return <RoomEmpty onImport={roomData.onImport} />;
     case "ready":
-      return (
-        <RoomReady
-          table={viewState.table}
-          metadata={viewState.metadata}
-          isReconnecting={viewState.isReconnecting}
-        />
-      );
+      return <RoomTable roomData={roomData} />;
   }
 }
