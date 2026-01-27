@@ -25,6 +25,7 @@ interface RoomReadyProps {
 }
 
 export function RoomTable({ roomData }: RoomReadyProps) {
+  "use no memo"; // mandatory for tanstack table v8 https://github.com/TanStack/table/issues/5567
   const { height } = useWindowSize();
   const { data, metadata, mutations, collaboration } = roomData;
   const isReconnecting = collaboration?.connectionStatus === "reconnecting";

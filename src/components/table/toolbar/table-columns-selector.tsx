@@ -18,6 +18,7 @@ interface TableColumnsSelectorProps {
 }
 
 export function TableColumnsSelector({ className, table }: TableColumnsSelectorProps) {
+  "use no memo"; // mandatory for tanstack table v8 https://github.com/TanStack/table/issues/5567
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -37,7 +38,6 @@ export function TableColumnsSelector({ className, table }: TableColumnsSelectorP
           if (typeof column.columnDef.header !== "string") {
             return null;
           }
-
           return (
             <DropdownMenuCheckboxItem
               onSelect={(event) => {
@@ -45,7 +45,9 @@ export function TableColumnsSelector({ className, table }: TableColumnsSelectorP
               }}
               key={column.columnDef.header}
               checked={column.getIsVisible()}
-              onCheckedChange={() => column.toggleVisibility()}
+              onCheckedChange={() => {
+                column.toggleVisibility();
+              }}
             >
               {column.columnDef.header}
             </DropdownMenuCheckboxItem>
