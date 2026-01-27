@@ -126,7 +126,10 @@ export function useRoomData(roomId?: string): TableDataSource {
   }
 
   // Priority 2: Loading collaborative room
-  if (roomId && collaboration?.connectionStatus === "loading") {
+  if (
+    roomId &&
+    (collaboration?.connectionStatus === "loading" || collaboration?.connectionStatus === "idle")
+  ) {
     return { status: "loading" };
   }
 

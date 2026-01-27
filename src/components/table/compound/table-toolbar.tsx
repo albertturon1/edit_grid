@@ -13,6 +13,7 @@ interface TableToolbarProps {
 }
 
 export function TableToolbar({ table, metadata, collaboration }: TableToolbarProps) {
+  "use no memo"; // mandatory for tanstack table v8 https://github.com/TanStack/table/issues/5567
   const showShareButton = collaboration?.connectionStatus === "idle" && collaboration?.onShare;
   const hasRemoteUsers = (collaboration?.users.remote.length ?? 0) > 0;
 

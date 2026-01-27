@@ -11,6 +11,7 @@ interface TableHeaderProps {
 }
 
 export function TableHeader({ table, onContextMenu }: TableHeaderProps) {
+  "use no memo"; // mandatory for tanstack table v8 https://github.com/TanStack/table/issues/5567
   return (
     <UITableHeader className="bg-background grid sticky top-0 z-10 border-b text-xs sm:text-sm">
       {table.getHeaderGroups().map((headerGroup) => (

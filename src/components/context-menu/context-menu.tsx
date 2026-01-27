@@ -1,6 +1,7 @@
 import { ContextMenu as ContextMenuPrimitive } from "radix-ui";
 import * as Portal from "@radix-ui/react-portal";
-import React, { createContext, type ReactNode, type RefObject, useContext, useRef } from "react";
+import { createContext, useContext, useRef } from "react";
+import type { ComponentProps, ReactNode, RefObject } from "react";
 import { useEventListener, useOnClickOutside, useWindowSize } from "usehooks-ts";
 import { useElementDimensions } from "@/hooks/useElementDimensions";
 import { cn } from "@/lib/utils";
@@ -129,7 +130,7 @@ ContextMenuItem.displayName = "ContextMenuItem";
 function ContextMenuSeparator({
   className,
   ...props
-}: React.ComponentProps<typeof ContextMenuPrimitive.Separator>) {
+}: ComponentProps<typeof ContextMenuPrimitive.Separator>) {
   return (
     <ContextMenuPrimitive.Separator
       data-slot="context-menu-separator"

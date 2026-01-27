@@ -14,6 +14,7 @@ interface TableCellProps {
 }
 
 export function TableCell({ cell, rowIndex, className, onContextMenu }: TableCellProps) {
+  "use no memo"; // mandatory for tanstack table v8 https://github.com/TanStack/table/issues/5567
   const isEvenRow = rowIndex % 2 === 0;
 
   return (
