@@ -20,7 +20,7 @@ export function Playground() {
 
 function PlaygroundLoading() {
   return (
-    <div className="flex flex-1 items-center justify-center">
+    <div className="flex flex-1 items-center justify-center w-full h-full">
       <div className="flex flex-1 flex-col items-center gap-3">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         <p className="text-sm text-muted-foreground">Loading playground...</p>
