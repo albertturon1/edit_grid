@@ -39,19 +39,6 @@ export function TablePreview() {
         <div className="border border-border rounded-b-xl overflow-hidden bg-background h-100">
           <Playground />
         </div>
-
-        {/* Status bar */}
-        {/* <div className="flex items-center justify-between px-4 py-2 border border-t-0 border-border rounded-b-xl bg-secondary/30 -mt-[1px]">
-          <div className="text-xs text-muted-foreground">
-            {sampleData.length} rows • {columns.length} columns
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-accent rounded-full animate-pulse" />
-            <span className="text-xs text-muted-foreground">
-              Auto-saving...
-            </span>
-          </div>
-        </div> */}
       </div>
     </section>
   );

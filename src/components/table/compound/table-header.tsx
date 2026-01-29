@@ -34,12 +34,8 @@ export function TableHeader({ table, onContextMenu }: TableHeaderProps) {
               <button
                 type="button"
                 aria-label="Resize column"
-                onMouseDown={() => {
-                  header.getResizeHandler();
-                }}
-                onTouchStart={() => {
-                  header.getResizeHandler();
-                }}
+                onMouseDown={header.getResizeHandler()}
+                onTouchStart={header.getResizeHandler()}
                 className={cn(
                   "absolute right-0 top-0 h-full w-[5px] cursor-col-resize select-none touch-none",
                 )}

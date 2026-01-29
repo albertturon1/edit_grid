@@ -14,6 +14,7 @@ interface PlaygroundTableProps {
 }
 
 export default function PlaygroundTable({ playgroundData }: PlaygroundTableProps) {
+  "use no memo"; // mandatory for tanstack table v8 https://github.com/TanStack/table/issues/5567
   const { data, mutations } = playgroundData;
 
   const tableContainerRef = useRef<HTMLTableElement | null>(null);
