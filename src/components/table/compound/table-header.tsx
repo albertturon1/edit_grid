@@ -11,6 +11,7 @@ interface TableHeaderProps {
 }
 
 export function TableHeader({ table, onContextMenu }: TableHeaderProps) {
+  "use no memo"; // mandatory for tanstack table v8 https://github.com/TanStack/table/issues/5567
   return (
     <UITableHeader className="bg-background grid sticky top-0 z-10 border-b text-xs sm:text-sm">
       {table.getHeaderGroups().map((headerGroup) => (
@@ -37,7 +38,6 @@ export function TableHeader({ table, onContextMenu }: TableHeaderProps) {
                 onTouchStart={header.getResizeHandler()}
                 className={cn(
                   "absolute right-0 top-0 h-full w-[5px] cursor-col-resize select-none touch-none",
-                  header.column.getIsResizing() ? "bg-blue-300 opacity-100" : "",
                 )}
               />
             </TableHead>

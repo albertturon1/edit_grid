@@ -28,6 +28,7 @@ export function TableBody({
   overscan = 10,
   estimateRowSize = 60,
 }: TableBodyProps) {
+  "use no memo"; // mandatory for tanstack table v8 https://github.com/TanStack/table/issues/5567
   const [isMounted, setIsMounted] = useState(false);
   const rows = table.getRowModel().rows;
 
