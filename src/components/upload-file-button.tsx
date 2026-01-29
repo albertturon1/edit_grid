@@ -1,6 +1,7 @@
 import { ArrowRight, FileUp } from "lucide-react";
 import type { ButtonHTMLAttributes } from "react";
 import { Button } from "./ui/button";
+import { cn } from "@/lib/utils";
 
 type UploadFileButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
@@ -11,7 +12,7 @@ export function UploadFileButton(props: UploadFileButtonProps) {
       {...props}
       aria-label={title}
       size="lg"
-      className="h-14 px-8 text-base font-medium gap-2 group"
+      className={cn("h-14 px-8 text-base font-medium gap-2 group", props.className)}
     >
       <FileUp className="w-5 h-5" />
       {title}

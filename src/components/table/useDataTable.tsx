@@ -8,7 +8,6 @@ import {
 import { useMemo } from "react";
 import { useWindowSize } from "usehooks-ts";
 import { TableBodyNumericalCell } from "@/components/table/table-numerical-cell";
-import { TableHeaderNumericalCell } from "@/components/table/table-header-numerical-cell";
 import type { TableData, TableRow } from "@/lib/imports/types/table";
 import type { TableMutations } from "@/lib/table/types";
 import { DefaultTableCell } from "@/components/table/compound/default-table-cell";
@@ -48,7 +47,6 @@ export function useDataTable({ data, mutations }: UseDataTableProps) {
     return [
       columnHelper.accessor(DATA_TABLE_ROW_NUMBER_COLUMN_NAME, {
         id: DATA_TABLE_ROW_NUMBER_COLUMN_ID,
-        header: ({ table }) => <TableHeaderNumericalCell table={table} />,
         cell: (props) => <TableBodyNumericalCell row={props.row} table={props.table} />,
         size: getRowNumberCellSize({ dataLength: rows.length, screenWidth }),
       }),
